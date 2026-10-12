@@ -1,0 +1,29 @@
+## 1. Script k6
+
+- [ ] 1.1 Écrire `k6/traffic.js` : petit corpus, jeton unique, parcours upload → suivi du statut → recherche du jeton une fois `done`
+- [ ] 1.2 Scénarios `constant-arrival-rate` avec débits paramétrables par variables d'environnement et `preAllocatedVUs` dimensionnés pour 2 s de latence
+- [ ] 1.3 Vérifier en local qu'en régime nominal 100 % des recherches renvoient au moins un résultat
+
+## 2. Intégration au chart
+
+- [ ] 2.1 ConfigMap du script et Job k6 (image `grafana/k6` figée, 3 h, cible `http://api`), débits en valeurs du chart
+- [ ] 2.2 Ajuster requêtes, limites et quotas pour inclure k6
+- [ ] 2.3 Vérifier qu'aucune série `k6_*` n'arrive dans Prometheus
+
+## 3. README
+
+Le README existe déjà pour l'application (change `add-docshare-app`) : ces tâches le complètent, sans réécrire les sections existantes.
+
+
+- [ ] 3.1 Prérequis et création du cluster pour GKE Standard, EKS (EBS CSI) et k3d
+- [ ] 3.2 Installation, distribution des kubeconfigs, accès à Grafana, délai de 15 min de trafic sain
+- [ ] 3.3 Enrichir les fiches de pannes existantes : commandes via `port-forward`, temps de réaction des SLO et alertes, message pédagogique
+- [ ] 3.4 Déroulé de la séance de 2 h, remise à zéro, relance du Job k6
+
+## 4. Vérification de bout en bout
+
+- [ ] 4.1 Installer deux équipes sur k3d avec les solutions SLO appliquées, attendre 15 min de trafic sain
+- [ ] 4.2 Pour chaque panne, l'activer dans `team-a` seulement : vérifier le SLI dégradé, les SLI intacts et l'absence d'effet sur `team-b`, mesurer le temps de réaction
+- [ ] 4.3 `upload_error_rate=0.02` pendant 25 min : burn rate ≈ 4, aucune alerte ; `0.5` : page en moins de 10 min, budget restant entre 0 et 100 %
+- [ ] 4.4 Consigner les temps mesurés dans le README
+- [ ] 4.5 Répétition générale sur GKE avec 4 équipes en suivant uniquement le README

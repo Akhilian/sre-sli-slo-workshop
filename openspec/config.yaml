@@ -1,0 +1,17 @@
+schema: spec-driven
+
+context: |
+  Projet : DocShare, système fictif servant de support à un workshop SLI / SLO de 2 h
+  pour des développeurs sans connaissance SRE. Support pédagogique, pas un produit :
+  code minimal et lisible, outils open source uniquement.
+  Stack : Python (FastAPI + prometheus_client), Redis, Postgres, Helm, kube-prometheus-stack,
+  Sloth (contrôleur, CRD PrometheusServiceLevel), Grafana, k6.
+  Cible : Kubernetes (GKE en priorité, EKS et k3d local), un namespace par équipe,
+  jusqu'à 4 équipes par session, monitoring partagé dans le namespace `monitoring`.
+  Langue : tous les artefacts sont rédigés en français. Les titres imposés par le schéma
+  (Why, What Changes, ADDED Requirements, Requirement:, Scenario:, WHEN/THEN) et les
+  mots-clés normatifs SHALL / MUST restent en anglais.
+
+rules:
+  specs:
+    - Chaque exigence liée à une panne précise quel SLI elle doit dégrader et lesquels elle doit laisser intacts
