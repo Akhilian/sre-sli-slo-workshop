@@ -1,22 +1,22 @@
 ## 1. Script k6
 
-- [ ] 1.1 Écrire `k6/traffic.js` : petit corpus, jeton unique, parcours upload → suivi du statut → recherche du jeton une fois `done`
-- [ ] 1.2 Scénarios `constant-arrival-rate` avec débits paramétrables par variables d'environnement et `preAllocatedVUs` dimensionnés pour 2 s de latence
-- [ ] 1.3 Vérifier en local qu'en régime nominal 100 % des recherches renvoient au moins un résultat
+- [x] 1.1 Écrire `charts/docshare/k6/traffic.js` : petit corpus, jeton unique, parcours upload → suivi du statut → recherche du jeton une fois `done`
+- [x] 1.2 Scénarios `constant-arrival-rate` avec débits paramétrables par variables d'environnement et `preAllocatedVUs` dimensionnés pour 2 s de latence
+- [x] 1.3 Vérifier en local qu'en régime nominal 100 % des recherches renvoient au moins un résultat, et que le débit d'upload tient sous `worker_slow` et `upload_latency`
 
 ## 2. Intégration au chart
 
-- [ ] 2.1 ConfigMap du script et Job k6 (image `grafana/k6` figée, 3 h, cible `http://api`), débits en valeurs du chart
-- [ ] 2.2 Ajuster requêtes, limites et quotas pour inclure k6
-- [ ] 2.3 Vérifier qu'aucune série `k6_*` n'arrive dans Prometheus
+- [x] 2.1 ConfigMap du script et Job k6 (image `grafana/k6` figée, 3 h, cible `http://api`), débits en valeurs du chart
+- [x] 2.2 Ajuster requêtes, limites et quotas pour inclure k6
+- [x] 2.3 Vérifier qu'aucune série `k6_*` n'arrive dans Prometheus
 
 ## 3. README
 
 Le README existe déjà pour l'application (change `add-docshare-app`) : ces tâches le complètent, sans réécrire les sections existantes.
 
 
-- [ ] 3.1 Prérequis et création du cluster pour GKE Standard, EKS (EBS CSI) et k3s local (colima)
-- [ ] 3.2 Installation, distribution des kubeconfigs, accès à Grafana, délai de 15 min de trafic sain
+- [x] 3.1 Prérequis et création du cluster pour GKE Standard, EKS (EBS CSI) et k3s local (colima)
+- [x] 3.2 Installation, distribution des kubeconfigs, accès à Grafana, délai de 15 min de trafic sain
 - [ ] 3.3 Enrichir les fiches de pannes existantes : commandes via `port-forward`, temps de réaction des SLO et alertes, message pédagogique
 - [ ] 3.4 Déroulé de la séance de 2 h, remise à zéro, relance du Job k6
 

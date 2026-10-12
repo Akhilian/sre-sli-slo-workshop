@@ -16,12 +16,12 @@ L'application, le déploiement par équipe, les SLO et les dashboards existent. 
 
 ## Decisions
 
-**Job plutôt que k6-operator.** Un `Job` avec l'image officielle `grafana/k6` et le script monté par ConfigMap ; `backoffLimit` faible, `activeDeadlineSeconds` de 3 h. Pas de CRD supplémentaire à installer sur chaque cible.
+**Job plutôt que k6-operator.** Un `Job` avec l'image officielle `grafana/k6:1.4.0` et le script monté par ConfigMap ; `backoffLimit` faible, durée de 3 h fixée dans le script. Le Job est nommé `k6-<révision Helm>` : son spec est immuable, et relancer `scripts/setup.sh` le remplace et repart pour 3 h. Le script vit dans `charts/docshare/k6/traffic.js`, car Helm ne lit pas de fichier hors du chart. Pas de CRD supplémentaire à installer sur chaque cible.
 Alternative écartée : k6-operator. Utile pour le distribué, inutile à 5 requêtes/s.
 
-**Trois scénarios `constant-arrival-rate`.** `uploads`, `consultations`, `recherches`, chacun avec son débit et un `preAllocatedVUs` suffisant pour absorber 2 s de latence (débit × durée max + marge). Un modèle à VU constants ferait baisser le débit quand la latence monte et fausserait les ratios.
+**Un scénario `constant-arrival-rate`.** Un modèle à VU constants ferait baisser le débit quand la latence monte et fausserait les ratios. Tous les VU sont pré-alloués (débit × (60 s + 20 s)) : mesuré sur le k3s local, k6 abandonnait jusqu'à un tiers des uploads dans la première minute de `worker_slow`, le temps de créer des VU supplémentaires. Coût : ~33 Mi pour 80 VU.
 
-**Partage d'état entre scénarios.** Les VU k6 ne partagent pas de mémoire. Le scénario `consultations` n'a donc pas accès aux `id` du scénario `uploads`. Solution retenue : chaque itération d'upload enchaîne elle-même le suivi de son document — upload, puis consultations espacées (`GET /documents/{id}` toutes les 2 s, au plus 60 s), puis une recherche du jeton dès que le statut est `done`. Les débits de consultation et de recherche résultent de ce parcours ; un scénario séparé complète les consultations jusqu'à ~2/s sur des `id` récents connus du VU.
+**Partage d'état entre scénarios.** Les VU k6 ne partagent pas de mémoire. Le scénario `consultations` n'a donc pas accès aux `id` du scénario `uploads`. Solution retenue : chaque itération d'upload enchaîne elle-même le suivi de son document — upload, puis consultations espacées (`GET /documents/{id}` toutes les 2 s, au plus 60 s), puis `searchesPerDoc` recherches du jeton (2 par défaut) dès que le statut est `done`. Les débits de consultation (~1,5/s) et de recherche (2/s) résultent de ce parcours, sans scénario séparé.
 Alternative écartée : stocker les `id` dans Redis côté k6. Ajoute un couplage entre l'outil de trafic et l'application.
 Conséquence : sous `worker_slow`, un document qui n'est pas `done` dans les 60 s n'est pas recherché ; la qualité reste donc intacte, comme attendu.
 

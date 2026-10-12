@@ -1,11 +1,15 @@
 ## ADDED Requirements
 
 ### Requirement: Trafic constant par équipe
-Le chart SHALL installer dans chaque namespace d'équipe un Job k6 qui cible le Service `api` du namespace, en `constant-arrival-rate`, avec par défaut 1 upload/s, 2 consultations/s et 2 recherches/s, pendant 3 h. Les débits MUST être configurables par les valeurs du chart.
+Le chart SHALL installer dans chaque namespace d'équipe un Job k6 qui cible le Service `api` du namespace, en `constant-arrival-rate`, avec par défaut 1 upload/s, environ 1,5 consultation/s (suivi du statut) et 2 recherches/s, pendant 3 h. Le débit d'upload et le nombre de recherches par document MUST être configurables par les valeurs du chart.
 
 #### Scenario: Débit maintenu sous latence
 - **WHEN** `upload_latency=2.0` est active
 - **THEN** le débit d'uploads reçu par l'API reste d'environ 1/s
+
+#### Scenario: Débit maintenu sous worker lent
+- **WHEN** `worker_slow=10` est active et que chaque itération k6 attend 60 s le statut `done`
+- **THEN** le débit d'uploads reste d'environ 1/s, y compris dans la première minute de la panne
 
 #### Scenario: Trafic dès l'installation
 - **WHEN** une équipe vient d'être installée

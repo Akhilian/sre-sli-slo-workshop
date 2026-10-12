@@ -2,7 +2,7 @@
 
 Système fictif de partage de documents, support d'un workshop SLI / SLO de 2 h. Les participants partent d'un SLI fonctionnel, l'implémentent en SLO avec Sloth, puis regardent le budget d'erreur brûler pendant de vraies pannes.
 
-> État actuel : l'application et son déploiement Kubernetes existent. Les SLO, les dashboards et le trafic k6 arrivent dans les changes OpenSpec suivants (`openspec list`). Ce README sera complété au fur et à mesure.
+> État actuel : l'application, son déploiement Kubernetes et le trafic k6 existent. Les SLO et les dashboards arrivent dans les changes OpenSpec suivants (`openspec list`). Ce README sera complété au fur et à mesure.
 
 ## Architecture
 
@@ -100,7 +100,24 @@ Le script affiche le contexte kubectl et demande confirmation hors du k3s local 
 - la pile DocShare (api, worker à 1 réplique sans autoscaling, notifier, Redis, Postgres) et sa collecte de métriques ;
 - un ServiceAccount aux droits `edit` limités au namespace, et son kubeconfig dans `out/kubeconfigs/<nom>.yaml` (jeton valable 8 h, `TOKEN_DURATION` pour changer).
 
+Lancez l'installation au moins 15 min avant la séance : les fenêtres d'une heure des alertes ont besoin d'un historique sain pour que les pannes réagissent dans les temps annoncés.
+
 À la fin, il affiche l'adresse de Grafana (port 3000, lecture anonyme ; le mot de passe admin est dans le secret `kps-grafana` du namespace `monitoring`).
+
+### Trafic
+
+Chaque équipe reçoit un trafic constant, sans action de sa part : un Job k6 (`k6-<révision>`) démarre avec l'installation et tourne 3 h. Script : `charts/docshare/k6/traffic.js`.
+
+Débits par défaut : 1 upload/s, ~1,5 consultation/s, 2 recherches/s. Chaque upload contient un jeton unique (`doc-xxxxxxxx`) ; k6 consulte le document jusqu'à ce qu'il soit `done` (60 s au plus), puis recherche ce jeton. On ne cherche donc que des documents traités : une recherche vide signale un index périmé (`stale_index`), jamais un simple retard (`worker_slow`).
+
+Le débit d'upload ne baisse pas quand l'API ralentit (`constant-arrival-rate`). Les métriques de k6 ne sont exportées nulle part : les SLI se mesurent uniquement côté serveur.
+
+```bash
+kubectl get jobs -n team-a                 # Job en cours
+scripts/setup.sh local a                   # relancer le trafic pour 3 h (remplace le Job)
+```
+
+Réglages dans les valeurs du chart : `k6.uploadRate`, `k6.searchesPerDoc`, `k6.duration`, `k6.enabled`.
 
 ### Côté équipe
 
@@ -204,6 +221,14 @@ Effets mesurés en local :
 | `worker_slow=10` à 1 upload/s | uploads toujours en 202 ; au bout de 2 min, file à 92 jobs et premiers documents traités en plus de 60 s |
 | `stale_index=1` | document `done` mais introuvable ; de nouveau trouvable après la coupure |
 | `notifier_drop=0.2` | 18,7 % de notifications perdues sur 300, aucune ligne de log |
+
+Effets mesurés sur le k3s local avec le trafic k6, panne dans `team-a` seulement (`team-b` reste nominale à chaque fois) :
+
+| Panne | Mesure |
+| --- | --- |
+| `worker_slow=10` | uploads maintenus à 60/min ; file à 138 jobs après 4 min ; 83 % des documents traités en plus de 60 s ; 0 % de recherches vides |
+| `stale_index=1` | 100 % de recherches vides, toutes en 200 ; aucun upload en erreur ; fraîcheur intacte |
+| `upload_latency=2` | débit d'upload maintenu à 1/s ; 100 % des uploads au-delà de 1 s ; qualité intacte |
 
 Une panne à la fois. Après `worker_slow`, la file met du temps à se vider (environ 1 min pour 100 jobs en attente). Attendez que `queue_depth` revienne à 0 avant la panne suivante, sinon le retard hérité fausse ce qu'elle montre.
 

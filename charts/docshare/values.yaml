@@ -42,10 +42,23 @@ postgres:
     requests: { cpu: 100m, memory: 256Mi }
     limits: { cpu: 500m, memory: 512Mi }
 
-# Quota du namespace : pile complète (k6 compris) + 50 % de marge.
+# Trafic constant (Job k6, script dans k6/traffic.js). Chaque upload est suivi
+# jusqu'à « done » (~1 à 2 consultations) puis recherché searchesPerDoc fois.
+k6:
+  enabled: true
+  image: grafana/k6:1.4.0
+  uploadRate: 1
+  searchesPerDoc: 2
+  duration: 3h
+  resources:
+    requests: { cpu: 50m, memory: 64Mi }
+    limits: { cpu: 500m, memory: 256Mi }
+
+# Quota du namespace : pile complète (k6 compris) + 50 % de marge, et de quoi
+# remplacer l'API lors d'une mise à jour.
 quota:
   requests: { cpu: 900m, memory: 1536Mi }
-  limits: { cpu: "3", memory: 3Gi }
+  limits: { cpu: "4", memory: 4Gi }
   pods: "15"
   storage: 5Gi
 
