@@ -1,0 +1,33 @@
+# SLO de latence de l'upload : à compléter.
+#
+# Question : à partir de quelle durée un upload est-il « trop lent » pour l'utilisateur ?
+#
+# Métriques disponibles (rôle api) :
+#   http_request_duration_seconds_bucket{route="/documents",le="..."}  uploads plus rapides que le
+#                                                                      seuil le (0.1, 0.3, 1.0, 3.0, +Inf)
+#   http_request_duration_seconds_count{route="/documents"}            tous les uploads
+# Attention : les bornes s'écrivent en flottant, le="1.0" et non le="1".
+#
+# Appliquer : kubectl apply -f sloth/upload-latency.yaml
+# Vérifier  : kubectl get prometheusservicelevels   (colonne GEN OK)
+apiVersion: sloth.slok.dev/v1
+kind: PrometheusServiceLevel
+metadata:
+  name: docshare-upload-latency
+spec:
+  service: docshare-upload
+  slos:
+    - name: latency
+      objective: TODO  # en %, ex. 99
+      sli:
+        events:
+          # TODO : quels uploads sont de mauvais événements ? (rate sur [{{.window}}])
+          errorQuery: TODO
+          # TODO : quels uploads comptent ?
+          totalQuery: TODO
+      alerting:
+        name: DocshareUploadLatency
+        pageAlert:
+          labels: { severity: page }
+        ticketAlert:
+          labels: { severity: ticket }

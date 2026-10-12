@@ -1,7 +1,17 @@
-## ADDED Requirements
+# slo-dashboards Specification
+
+## Purpose
+TBD - created by archiving change add-slo-and-dashboards. Update Purpose after archive.
+## Requirements
+### Requirement: Requêtes PromQL accessibles aux équipes
+Grafana SHALL permettre aux visiteurs anonymes d'utiliser l'Explore sur la source Prometheus (`viewers_can_edit`), sans pouvoir enregistrer de dashboard. Grafana MUST NOT proposer de source de données Alertmanager.
+
+#### Scenario: Écrire un SLI pendant la séance
+- **WHEN** un participant ouvre l'Explore de Grafana sans se connecter
+- **THEN** il peut exécuter une requête PromQL sur les métriques de son équipe
 
 ### Requirement: Dashboards provisionnés
-Les dashboards SHALL être livrés sous forme de JSON dans `grafana/`, empaquetés en ConfigMaps avec le label `grafana_dashboard`, et visibles dans Grafana sans configuration manuelle. Chaque dashboard MUST avoir une variable `namespace`.
+Les dashboards SHALL être livrés sous forme de JSON dans `grafana/`, produits par `grafana/generate.py`, empaquetés par `scripts/setup.sh` dans une ConfigMap du namespace `monitoring` avec le label `grafana_dashboard`, et visibles dans Grafana sans configuration manuelle. Chaque dashboard MUST avoir une variable `namespace`.
 
 #### Scenario: Grafana neuf
 - **WHEN** le monitoring et une équipe viennent d'être installés
@@ -22,7 +32,7 @@ Un dashboard SHALL afficher, pour le namespace et le SLO choisis, les burn rates
 - **THEN** le burn rate 5 min dépasse 14.4 en quelques minutes, suivi du 30 min puis du 1 h
 
 ### Requirement: Budget calculé pour un historique court
-Le budget restant MUST NOT utiliser directement `slo:period_error_budget_remaining:ratio`. Il SHALL être calculé ainsi : budget total = (1 − objectif) × volume attendu sur 30 j (débit moyen actuel × 30 j), budget consommé = erreurs observées depuis l'installation de l'équipe, budget restant = 1 − consommé / total ; temps avant épuisement = budget restant × 30 j / burn rate actuel. Le panneau MUST indiquer l'hypothèse « la période non observée est supposée parfaite ».
+Le budget restant MUST NOT utiliser directement `slo:period_error_budget_remaining:ratio`. Il SHALL être calculé à partir du taux d'erreur intégré sur la plage affichée : budget consommé = Σ(ratio d'erreur 5 min × intervalle d'évaluation de 15 s) / ((1 − objectif) × 30 j), budget restant = 1 − consommé (borné à 0) ; temps avant épuisement = budget restant × 30 j / burn rate 1 h. Ce calcul suppose un trafic régulier, ce que garantit k6. Le panneau MUST indiquer l'hypothèse « la période non observée est supposée parfaite ».
 
 #### Scenario: 30 min de panne avec 2 h d'historique
 - **WHEN** une équipe a subi 30 min de `upload_error_rate=0.5` après 1 h 30 de trafic sain
@@ -31,3 +41,4 @@ Le budget restant MUST NOT utiliser directement `slo:period_error_budget_remaini
 #### Scenario: Aucune erreur
 - **WHEN** aucune panne n'a eu lieu depuis l'installation
 - **THEN** le budget restant affiché est 100 % et le temps avant épuisement est indéfini ou affiché comme « ∞ »
+

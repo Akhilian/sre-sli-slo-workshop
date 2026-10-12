@@ -33,7 +33,10 @@ for ns in ${namespaces[@]+"${namespaces[@]}"}; do
 done
 
 if [[ $1 == --all ]]; then
+  helm --kube-context "$CONTEXT" uninstall sloth --namespace monitoring --ignore-not-found
   helm --kube-context "$CONTEXT" uninstall kps --namespace monitoring --ignore-not-found
+  k delete -f "$ROOT/monitoring/rbac.yaml" --ignore-not-found
+  k delete configmap docshare-dashboards --namespace monitoring --ignore-not-found
   k delete namespace monitoring --ignore-not-found --wait=false
-  echo "Les CRD de Prometheus Operator (monitoring.coreos.com) sont conservées."
+  echo "Les CRD de Prometheus Operator et de Sloth sont conservées."
 fi

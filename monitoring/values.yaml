@@ -35,6 +35,16 @@ prometheus:
     ruleSelectorNilUsesHelmValues: false
     probeSelectorNilUsesHelmValues: false
     scrapeConfigSelectorNilUsesHelmValues: false
+    # Isolation des équipes : l'opérateur injecte namespace="<namespace de l'objet>"
+    # dans chaque règle et chaque collecte. Un SLO de team-a ne lit que les
+    # métriques de team-a, sans filtre à écrire dans le YAML.
+    enforcedNamespaceLabel: namespace
+    # Sauf pour ce qui appartient au monitoring lui-même : ses règles et ses
+    # collectes (kubelet, kube-state-metrics...) portent sur tous les namespaces.
+    excludedFromEnforcement:
+      - { group: monitoring.coreos.com, resource: prometheusrules, namespace: monitoring }
+      - { group: monitoring.coreos.com, resource: servicemonitors, namespace: monitoring }
+      - { group: monitoring.coreos.com, resource: podmonitors, namespace: monitoring }
     # Fenêtres de 5 min réactives en une à deux minutes.
     scrapeInterval: 5s
     evaluationInterval: 15s
@@ -57,6 +67,10 @@ grafana:
     auth.anonymous:
       enabled: true
       org_role: Viewer
+    # Ouvre l'Explore aux lecteurs : les équipes y écrivent leurs requêtes PromQL
+    # pendant la séquence « SLI mesurable ». Les dashboards restent non enregistrables.
+    users:
+      viewers_can_edit: true
   service:
     type: LoadBalancer
     port: 3000
@@ -66,3 +80,7 @@ grafana:
       enabled: true
       label: grafana_dashboard
       searchNamespace: ALL
+    # Pas d'Alertmanager : sa source de données resterait vide et sèmerait le doute.
+    datasources:
+      alertmanager:
+        enabled: false

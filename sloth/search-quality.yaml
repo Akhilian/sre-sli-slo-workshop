@@ -1,0 +1,34 @@
+# SLO de qualité de la recherche : à compléter.
+#
+# Question : une recherche qui répond 200 est-elle forcément réussie ?
+# Les participants ne cherchent que des documents qui existent.
+#
+# Métriques disponibles (rôle api) :
+#   search_results_count_bucket{le="..."}   recherches ayant renvoyé au plus le résultats
+#                                           (0.0, 1.0, 5.0, 20.0, +Inf)
+#   search_results_count_count              recherches traitées par Postgres
+#   search_requests_total{status="ok|fallback"}
+#   search_fallback_total                   recherches en échec masquées par une réponse vide
+#
+# Appliquer : kubectl apply -f sloth/search-quality.yaml
+apiVersion: sloth.slok.dev/v1
+kind: PrometheusServiceLevel
+metadata:
+  name: docshare-search-quality
+spec:
+  service: docshare-search
+  slos:
+    - name: quality
+      objective: TODO
+      sli:
+        events:
+          # TODO : quelles recherches sont de mauvais événements ?
+          errorQuery: TODO
+          # TODO : quelles recherches comptent ?
+          totalQuery: TODO
+      alerting:
+        name: DocshareSearchQuality
+        pageAlert:
+          labels: { severity: page }
+        ticketAlert:
+          labels: { severity: ticket }

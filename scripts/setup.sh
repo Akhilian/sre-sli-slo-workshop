@@ -11,6 +11,7 @@
 set -euo pipefail
 
 KPS_VERSION=92.3.0
+SLOTH_VERSION=0.16.0
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 
 usage() { echo "usage : $0 [-y] <local|gke|eks> <équipe> [<équipe> ...]" >&2; exit 1; }
@@ -71,6 +72,20 @@ h upgrade --install kps prometheus-community/kube-prometheus-stack \
   ${SOURCE_RANGES[@]+"${SOURCE_RANGES[@]}"} \
   --wait --timeout 10m >/dev/null
 
+echo "==> Sloth $SLOTH_VERSION"
+helm repo add sloth https://slok.github.io/sloth --force-update >/dev/null
+h upgrade --install sloth sloth/sloth \
+  --version "$SLOTH_VERSION" \
+  --namespace monitoring \
+  -f "$ROOT/monitoring/sloth-values.yaml" \
+  --wait --timeout 5m >/dev/null
+k apply -f "$ROOT/monitoring/rbac.yaml" >/dev/null
+
+echo "==> Dashboards"
+k create configmap docshare-dashboards --namespace monitoring --from-file="$ROOT/grafana/parcours.json" \
+  --from-file="$ROOT/grafana/burn-rate.json" --dry-run=client -o yaml \
+  | k label --local -f - grafana_dashboard=1 -o yaml | k apply -f - >/dev/null
+
 # --- Équipes -----------------------------------------------------------------
 
 SERVER=$(k config view --minify --raw -o jsonpath="{.clusters[0].cluster.server}")
@@ -87,6 +102,8 @@ for team in "${TEAMS[@]}"; do
     -f "$ROOT/values/$TARGET/docshare.yaml" \
     --set team="$team" \
     --wait --timeout 5m >/dev/null
+  # SLO d'upload fourni ; les autres sont à écrire par l'équipe (sloth/).
+  k apply -n "$ns" -f "$ROOT/sloth/upload-availability.yaml" >/dev/null
 
   token=$(k create token team --namespace "$ns" --duration "${TOKEN_DURATION:-8h}")
   kubeconfig=$ROOT/out/kubeconfigs/$team.yaml

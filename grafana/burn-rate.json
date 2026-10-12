@@ -1,0 +1,473 @@
+{
+  "uid": "docshare-burn-rate",
+  "title": "DocShare · Burn rate et budget",
+  "description": "Burn rate, alertes et budget d'erreur d'un SLO de l'équipe choisie.",
+  "tags": [
+    "docshare"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "editable": false,
+  "refresh": "10s",
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "namespace",
+        "label": "Équipe",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": {
+          "query": "label_values(slo:objective:ratio, namespace)",
+          "refId": "ns"
+        },
+        "definition": "label_values(slo:objective:ratio, namespace)",
+        "refresh": 2,
+        "sort": 1
+      },
+      {
+        "name": "slo",
+        "label": "SLO",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": {
+          "query": "label_values(slo:objective:ratio{namespace=\"$namespace\"}, sloth_id)",
+          "refId": "slo"
+        },
+        "definition": "label_values(slo:objective:ratio{namespace=\"$namespace\"}, sloth_id)",
+        "refresh": 2,
+        "sort": 1
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Burn rate",
+      "description": "Vitesse de consommation du budget. 1 = le budget est épuisé en exactement 30 jours. Page si 1 h et 5 min dépassent 14,4, ou si 6 h et 30 min dépassent 6.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 10
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(slo:sli_error:ratio_rate5m{namespace=\"$namespace\",sloth_id=\"$slo\"}) / max(slo:error_budget:ratio{namespace=\"$namespace\",sloth_id=\"$slo\"})",
+          "legendFormat": "5 min",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(slo:sli_error:ratio_rate30m{namespace=\"$namespace\",sloth_id=\"$slo\"}) / max(slo:error_budget:ratio{namespace=\"$namespace\",sloth_id=\"$slo\"})",
+          "legendFormat": "30 min",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(slo:sli_error:ratio_rate1h{namespace=\"$namespace\",sloth_id=\"$slo\"}) / max(slo:error_budget:ratio{namespace=\"$namespace\",sloth_id=\"$slo\"})",
+          "legendFormat": "1 h",
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "thresholdsStyle": {
+              "mode": "line+area"
+            }
+          },
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 6
+              },
+              {
+                "color": "red",
+                "value": 14.4
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "id": 1
+    },
+    {
+      "type": "stat",
+      "title": "Burn rate actuel (1 h)",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 8,
+        "h": 5
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(slo:sli_error:ratio_rate1h{namespace=\"$namespace\",sloth_id=\"$slo\"}) / max(slo:error_budget:ratio{namespace=\"$namespace\",sloth_id=\"$slo\"})",
+          "legendFormat": "",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 6
+              },
+              {
+                "color": "red",
+                "value": 14.4
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "id": 2
+    },
+    {
+      "type": "stat",
+      "title": "SLI sur 1 h",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 5,
+        "w": 4,
+        "h": 5
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "1 - max(slo:sli_error:ratio_rate1h{namespace=\"$namespace\",sloth_id=\"$slo\"})",
+          "legendFormat": "",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "noValue": "",
+          "decimals": 2
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "id": 3
+    },
+    {
+      "type": "stat",
+      "title": "Objectif",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 20,
+        "y": 5,
+        "w": 4,
+        "h": 5
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(slo:objective:ratio{namespace=\"$namespace\",sloth_id=\"$slo\"})",
+          "legendFormat": "",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "noValue": "",
+          "decimals": 2
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "id": 4
+    },
+    {
+      "type": "stat",
+      "title": "Budget restant (30 j)",
+      "description": "Part du budget d'erreur mensuel encore disponible.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 10,
+        "w": 6,
+        "h": 6
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "clamp_min(1 - (sum(sum_over_time(slo:sli_error:ratio_rate5m{namespace=\"$namespace\",sloth_id=\"$slo\"}[$__range])) * 15) / (max(slo:error_budget:ratio{namespace=\"$namespace\",sloth_id=\"$slo\"}) * 30 * 86400), 0)",
+          "legendFormat": "",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "noValue": "",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.25
+              },
+              {
+                "color": "green",
+                "value": 0.5
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "id": 5
+    },
+    {
+      "type": "stat",
+      "title": "Temps avant épuisement",
+      "description": "Au rythme du burn rate sur 1 h.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 10,
+        "w": 6,
+        "h": 6
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "clamp_min(1 - (sum(sum_over_time(slo:sli_error:ratio_rate5m{namespace=\"$namespace\",sloth_id=\"$slo\"}[$__range])) * 15) / (max(slo:error_budget:ratio{namespace=\"$namespace\",sloth_id=\"$slo\"}) * 30 * 86400), 0) * 30 * 86400 / (max(slo:sli_error:ratio_rate1h{namespace=\"$namespace\",sloth_id=\"$slo\"}) / max(slo:error_budget:ratio{namespace=\"$namespace\",sloth_id=\"$slo\"}) > 0)",
+          "legendFormat": "",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "∞ (aucune erreur)"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "id": 6
+    },
+    {
+      "type": "text",
+      "title": "Hypothèse de calcul",
+      "gridPos": {
+        "x": 12,
+        "y": 10,
+        "w": 12,
+        "h": 6
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Le budget est calculé sur **30 jours**, mais l'historique ne couvre que la plage affichée (3 h par défaut).\n\n**La période non observée est supposée parfaite** : seules les erreurs visibles ici entament le budget.\n\nNe pas lire `slo:period_error_budget_remaining:ratio` de Sloth : c'est une moyenne sur l'historique disponible, qui compterait 30 min de panne comme un quart du mois."
+      },
+      "id": 7
+    },
+    {
+      "type": "table",
+      "title": "Alertes actives de l'équipe",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 24,
+        "h": 6
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "ALERTS{namespace=\"$namespace\",alertstate=\"firing\"}",
+          "legendFormat": "",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "Aucune alerte"
+        },
+        "overrides": []
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "__name__": true,
+              "alertstate": true,
+              "namespace": true,
+              "sloth_id": true
+            },
+            "renameByName": {
+              "alertname": "Alerte",
+              "severity": "Sévérité",
+              "sloth_service": "Service",
+              "sloth_slo": "SLO"
+            }
+          }
+        }
+      ],
+      "id": 8
+    }
+  ]
+}

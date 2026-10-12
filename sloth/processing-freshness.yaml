@@ -1,0 +1,33 @@
+# SLO de fraîcheur du traitement : à compléter.
+#
+# Question : au bout de combien de temps un document doit-il être traité
+# (consultable, indexé) après son upload ?
+#
+# Métriques disponibles (rôle worker) :
+#   document_processing_delay_seconds_bucket{le="..."}  documents traités en moins de le secondes
+#                                                       (10.0, 60.0, 300.0, 900.0, +Inf)
+#   document_processing_delay_seconds_count             tous les documents traités
+#   queue_depth                                         jobs en attente (est-ce un bon SLI ?)
+#
+# Appliquer : kubectl apply -f sloth/processing-freshness.yaml
+apiVersion: sloth.slok.dev/v1
+kind: PrometheusServiceLevel
+metadata:
+  name: docshare-processing-freshness
+spec:
+  service: docshare-processing
+  slos:
+    - name: freshness
+      objective: TODO
+      sli:
+        events:
+          # TODO : quels documents sont de mauvais événements ?
+          errorQuery: TODO
+          # TODO : quels documents comptent ?
+          totalQuery: TODO
+      alerting:
+        name: DocshareProcessingFreshness
+        pageAlert:
+          labels: { severity: page }
+        ticketAlert:
+          labels: { severity: ticket }

@@ -1,0 +1,23 @@
+# Solution : une recherche sans résultat est un échec, même en 200, puisqu'on ne
+# cherche que des documents existants.
+# À discuter : les recherches en repli (search_fallback_total) ne passent pas dans
+# cet histogramme ; elles échappent à ce SLI comme à celui de disponibilité.
+apiVersion: sloth.slok.dev/v1
+kind: PrometheusServiceLevel
+metadata:
+  name: docshare-search-quality
+spec:
+  service: docshare-search
+  slos:
+    - name: quality
+      objective: 99
+      sli:
+        events:
+          errorQuery: sum(rate(search_results_count_bucket{le="0.0"}[{{.window}}]))
+          totalQuery: sum(rate(search_results_count_count[{{.window}}]))
+      alerting:
+        name: DocshareSearchQuality
+        pageAlert:
+          labels: { severity: page }
+        ticketAlert:
+          labels: { severity: ticket }

@@ -2,7 +2,7 @@
 
 Système fictif de partage de documents, support d'un workshop SLI / SLO de 2 h. Les participants partent d'un SLI fonctionnel, l'implémentent en SLO avec Sloth, puis regardent le budget d'erreur brûler pendant de vraies pannes.
 
-> État actuel : l'application, son déploiement Kubernetes et le trafic k6 existent. Les SLO et les dashboards arrivent dans les changes OpenSpec suivants (`openspec list`). Ce README sera complété au fur et à mesure.
+> État actuel : l'application, son déploiement Kubernetes, le trafic k6, les SLO et les dashboards existent. Restent à écrire le déroulé de séance et les temps de réaction mesurés des alertes (`openspec list`).
 
 ## Architecture
 
@@ -139,6 +139,50 @@ scripts/teardown.sh --all    # supprime toutes les équipes et le monitoring
 
 Pour repartir avec un budget d'erreur vierge, recréez l'équipe sous un autre nom : l'historique de Prometheus est partagé et garde les séries de l'ancien namespace.
 
+## SLO et dashboards
+
+### Écrire un SLO (équipes)
+
+Les SLO sont des ressources Sloth (`PrometheusServiceLevel`). Le contrôleur Sloth du namespace `monitoring` les transforme en règles Prometheus : enregistrement des SLI sur plusieurs fenêtres et alertes multi-fenêtres (page 1 h + 5 min à un burn rate de 14,4, page 6 h + 30 min à 6, ticket 1 j + 2 h à 3, ticket 3 j + 6 h à 1).
+
+| Fichier | État |
+| --- | --- |
+| `sloth/upload-availability.yaml` | complet, installé dans chaque équipe par `setup.sh` : c'est l'exemple de référence |
+| `sloth/upload-latency.yaml` | squelette à compléter |
+| `sloth/processing-freshness.yaml` | squelette à compléter |
+| `sloth/search-quality.yaml` | squelette à compléter |
+| `sloth/notification-coverage.yaml` | squelette à compléter |
+
+Chaque squelette rappelle les métriques disponibles. Les requêtes s'écrivent **sans filtre de namespace** : Prometheus ajoute lui-même `namespace="team-<nom>"` à chaque règle d'une équipe, qui ne voit donc que ses propres métriques.
+
+```bash
+export KUBECONFIG=out/kubeconfigs/a.yaml
+kubectl apply -f sloth/search-quality.yaml
+kubectl get prometheusservicelevels     # GEN OK = true : les règles sont générées
+```
+
+| Symptôme | Cause |
+| --- | --- |
+| `kubectl apply` refusé : `objective ... must be of type number` | l'objectif est encore `TODO` |
+| `GEN OK` à `false` | une requête est invalide ou encore `TODO` ; l'animateur lit la cause avec `kubectl logs -n monitoring deploy/sloth` |
+| Burn rate absent au lieu de 0 | la requête d'erreurs ne renvoie rien tant qu'aucune erreur n'a eu lieu : ajouter `or vector(0)` (voir le SLO d'upload) |
+
+Solutions pour l'animateur : `sloth/solutions/` (`kubectl apply -n team-a -f sloth/solutions/`).
+
+### Grafana
+
+Accès anonyme en lecture, à l'adresse affichée par `setup.sh` (port 3000).
+
+- **DocShare · Parcours** : métriques brutes de chaque parcours pour l'équipe choisie.
+- **DocShare · Burn rate et budget** : pour un SLO de l'équipe, burn rate sur 5 min, 30 min et 1 h avec les seuils 6 et 14,4, SLI et objectif, budget restant sur 30 jours, temps avant épuisement, alertes actives.
+- **Explore** : ouvert aux visiteurs pour écrire des requêtes PromQL (séquence « SLI mesurable »). Les dashboards ne peuvent pas être enregistrés.
+
+Le budget restant suppose que **la période non observée est parfaite** : il intègre le taux d'erreur sur la plage affichée (3 h par défaut) et le rapporte au budget de 30 jours. On n'utilise pas `slo:period_error_budget_remaining:ratio` de Sloth, qui ferait la moyenne sur le seul historique disponible et compterait 30 min de panne comme un quart du mois.
+
+Avec un historique de quelques heures, les fenêtres longues réagissent fort : après une grosse panne, l'alerte page 6 h + 30 min peut sonner encore une vingtaine de minutes après la coupure. Attendez que les burn rates repassent sous 1 avant la panne suivante.
+
+Les dashboards sont produits par `grafana/generate.py` (modifier le script, puis `python3 grafana/generate.py grafana` et relancer `setup.sh`).
+
 ## Utiliser l'API
 
 | Endpoint | Rôle |
@@ -230,11 +274,24 @@ Effets mesurés sur le k3s local avec le trafic k6, panne dans `team-a` seulemen
 | `stale_index=1` | 100 % de recherches vides, toutes en 200 ; aucun upload en erreur ; fraîcheur intacte |
 | `upload_latency=2` | débit d'upload maintenu à 1/s ; 100 % des uploads au-delà de 1 s ; qualité intacte |
 
+Burn rate sur 5 min de chaque SLO (solutions de `sloth/solutions/`), mesuré sur le k3s local après 2 min 30 de panne, deux pannes différentes en parallèle dans `team-a` et `team-b`. Chaque panne ne fait monter qu'un SLO, et seulement dans son équipe :
+
+| Panne | Disponibilité | Latence | Fraîcheur | Qualité | Couverture |
+| --- | --- | --- | --- | --- | --- |
+| `upload_error_rate=0.5` | **44,7** | 0 | 0 | 0 | 0 |
+| `upload_latency=2` | 0 | **45,1** | 0 | 0 | 0,7 (bruit) |
+| `worker_slow=10` | 0 | 0 | **1,4** | 0 | 0 |
+| `stale_index=1` | 0 | 0 | 0 | **45,0** | 0 |
+| `notifier_drop=0.2` | 0 | 0 | 0 | 0 | **21,7** |
+
+La fraîcheur réagit lentement : un document n'est compté en retard qu'une fois traité, plus de 60 s après son upload. Comptez environ 5 min de `worker_slow` pour un effet net (83 % des documents en retard après 4 min).
+
 Une panne à la fois. Après `worker_slow`, la file met du temps à se vider (environ 1 min pour 100 jobs en attente). Attendez que `queue_depth` revienne à 0 avant la panne suivante, sinon le retard hérité fausse ce qu'elle montre.
 
 ## Développement
 
 - Code : `app/` (`main.py` aiguille vers `api.py`, `worker.py` ou `notifier.py` ; `db.py`, `jobqueue.py` et `faults.py` sont partagés).
+- SLO et dashboards : `sloth/` (SLO et squelettes), `sloth/solutions/`, `grafana/generate.py`, `monitoring/sloth-values.yaml`, `monitoring/rbac.yaml`.
 - Déploiement : `charts/docshare/` (pile d'une équipe), `monitoring/values.yaml` (kube-prometheus-stack), `values/<cible>/` (différences par cible), `scripts/setup.sh` et `scripts/teardown.sh`. Les scripts tournent avec le bash 3.2 de macOS.
 - Image : `.github/workflows/image.yml` publie à chaque push sur `main` une image amd64 + arm64 sur `ghcr.io/<owner>/docshare`, taguée par SHA et `latest`.
 - Spécifications et plan de travail : `openspec/` (`openspec list`, `openspec show <change>`).

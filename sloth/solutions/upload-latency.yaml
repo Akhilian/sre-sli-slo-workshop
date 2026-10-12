@@ -1,0 +1,24 @@
+# Solution : un upload est trop lent au-delà de 0,3 s.
+apiVersion: sloth.slok.dev/v1
+kind: PrometheusServiceLevel
+metadata:
+  name: docshare-upload-latency
+spec:
+  service: docshare-upload
+  slos:
+    - name: latency
+      objective: 99
+      sli:
+        events:
+          # Uploads au-delà de 0,3 s = tous les uploads moins ceux sous le seuil.
+          errorQuery: |
+            sum(rate(http_request_duration_seconds_count{route="/documents"}[{{.window}}]))
+            -
+            sum(rate(http_request_duration_seconds_bucket{route="/documents",le="0.3"}[{{.window}}]))
+          totalQuery: sum(rate(http_request_duration_seconds_count{route="/documents"}[{{.window}}]))
+      alerting:
+        name: DocshareUploadLatency
+        pageAlert:
+          labels: { severity: page }
+        ticketAlert:
+          labels: { severity: ticket }

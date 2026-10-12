@@ -1,0 +1,30 @@
+# Solution : notifications perdues = demandées - envoyées.
+# Limite à discuter : les deux compteurs viennent de deux processus ; une
+# notification demandée mais pas encore envoyée compte un instant comme perdue,
+# et la différence peut être légèrement négative (d'où clamp_min).
+# Ce bruit de mesure vaut un burn rate de ~1 au repos pour un objectif de 99,5 :
+# l'objectif est fixé à 99 pour qu'il ne déclenche pas le ticket 3 j + 6 h.
+apiVersion: sloth.slok.dev/v1
+kind: PrometheusServiceLevel
+metadata:
+  name: docshare-notification-coverage
+spec:
+  service: docshare-notifications
+  slos:
+    - name: coverage
+      objective: 99
+      sli:
+        events:
+          errorQuery: |
+            clamp_min(
+              sum(rate(notifications_enqueued_total[{{.window}}]))
+              - (sum(rate(notifications_sent_total{status="ok"}[{{.window}}])) or vector(0)),
+              0
+            )
+          totalQuery: sum(rate(notifications_enqueued_total[{{.window}}]))
+      alerting:
+        name: DocshareNotificationCoverage
+        pageAlert:
+          labels: { severity: page }
+        ticketAlert:
+          labels: { severity: ticket }

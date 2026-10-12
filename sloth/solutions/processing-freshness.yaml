@@ -1,0 +1,26 @@
+# Solution : un document doit être traité moins d'une minute après son upload.
+# Limite à discuter : un document bloqué dans la file n'est compté qu'une fois
+# traité (biais du survivant), et queue_depth n'est pas un SLI (aucun lien avec
+# ce que vit l'utilisateur).
+apiVersion: sloth.slok.dev/v1
+kind: PrometheusServiceLevel
+metadata:
+  name: docshare-processing-freshness
+spec:
+  service: docshare-processing
+  slos:
+    - name: freshness
+      objective: 95
+      sli:
+        events:
+          errorQuery: |
+            sum(rate(document_processing_delay_seconds_count[{{.window}}]))
+            -
+            sum(rate(document_processing_delay_seconds_bucket{le="60.0"}[{{.window}}]))
+          totalQuery: sum(rate(document_processing_delay_seconds_count[{{.window}}]))
+      alerting:
+        name: DocshareProcessingFreshness
+        pageAlert:
+          labels: { severity: page }
+        ticketAlert:
+          labels: { severity: ticket }

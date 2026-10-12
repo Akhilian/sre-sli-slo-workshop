@@ -1,0 +1,25 @@
+# SLO de disponibilité de l'upload, fourni et installé dans chaque équipe.
+# Exemple de référence pour écrire les autres SLO de ce dossier.
+apiVersion: sloth.slok.dev/v1
+kind: PrometheusServiceLevel
+metadata:
+  name: docshare-upload-availability
+spec:
+  service: docshare-upload
+  slos:
+    - name: availability
+      objective: 99.5
+      description: "Les uploads aboutissent : réponse autre qu'une erreur serveur."
+      sli:
+        events:
+          # Mauvais événements : les uploads en erreur serveur. « or vector(0) » : tant
+          # qu'aucune erreur n'a eu lieu, la série n'existe pas et le SLI serait vide au lieu de 0.
+          errorQuery: sum(rate(http_requests_total{route="/documents",status=~"5.."}[{{.window}}])) or vector(0)
+          # Tous les événements, hors erreurs du client (4xx) dont le service n'est pas responsable.
+          totalQuery: sum(rate(http_requests_total{route="/documents",status!~"4.."}[{{.window}}]))
+      alerting:
+        name: DocshareUploadAvailability
+        pageAlert:
+          labels: { severity: page }
+        ticketAlert:
+          labels: { severity: ticket }
