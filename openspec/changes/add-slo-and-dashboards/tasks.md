@@ -2,7 +2,7 @@
 
 - [ ] 1.1 Ajouter l'installation du contrôleur Sloth (chart officiel, version figée) à `scripts/setup.sh`
 - [ ] 1.2 Activer `enforcedNamespaceLabel: namespace` et exclure les règles de `monitoring` dans `monitoring/values.yaml`
-- [ ] 1.3 Valider sur k3d avec deux namespaces : même SLO d'upload appliqué dans les deux, panne dans un seul, burn rates distincts ; sinon basculer sur le repli décrit dans le design
+- [ ] 1.3 Valider sur le k3s local avec deux namespaces : même SLO d'upload appliqué dans les deux, panne dans un seul, burn rates distincts ; sinon basculer sur le repli décrit dans le design
 - [ ] 1.4 Vérifier qu'aucune règle de kube-prometheus-stack n'est cassée (page `/rules` sans erreur)
 
 ## 2. Définitions de SLO
@@ -21,6 +21,6 @@
 
 ## 4. Vérification
 
-- [ ] 4.1 Sur k3d, avec les solutions appliquées et un trafic minimal (boucle `curl`), vérifier que chaque SLO produit des séries et qu'une panne fait monter le bon burn rate
+- [ ] 4.1 Sur le k3s local, avec les solutions appliquées et un trafic minimal (boucle `curl`), vérifier que chaque SLO produit des séries et qu'une panne fait monter le bon burn rate
 - [ ] 4.2 Vérifier les dashboards avec deux namespaces : la variable `namespace` isole bien chaque équipe
 Les vérifications chronométrées (page en moins de 10 min, petite fuite sans alerte, budget cohérent) sont faites avec le trafic k6 dans le change `add-traffic-and-runbook`

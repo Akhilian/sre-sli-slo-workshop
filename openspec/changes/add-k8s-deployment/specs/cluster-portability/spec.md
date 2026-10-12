@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Chart indépendant du fournisseur
-Le chart et la configuration du monitoring SHALL fonctionner sur GKE Standard, EKS et k3d. Les différences MUST être limitées aux fichiers `values-gke.yaml`, `values-eks.yaml` et `values-local.yaml`.
+Le chart et la configuration du monitoring SHALL fonctionner sur GKE Standard, EKS et un k3s local (colima). Les différences MUST être limitées aux fichiers `values/<cible>/monitoring.yaml` et `values/<cible>/docshare.yaml` (cibles `local`, `gke`, `eks`).
 
 #### Scenario: Même chart, trois cibles
 - **WHEN** `scripts/setup.sh` est lancé sur chacune des trois cibles avec son fichier de valeurs
@@ -26,7 +26,7 @@ Le chart SHALL permettre d'activer un Ingress par équipe avec un `ingressClassN
 - **THEN** les équipes accèdent à leur API par `port-forward`
 
 ### Requirement: Dimensionnement documenté
-Le projet SHALL documenter les ressources demandées pour 4 équipes (environ 4 vCPU et 7 Gi) et la taille de cluster recommandée par cible, et `infra/k3d.yaml` MUST décrire un cluster local capable d'héberger 4 équipes.
+Le projet SHALL documenter les ressources demandées pour 4 équipes (environ 4 vCPU et 7 Gi) et la taille de cluster recommandée par cible, et MUST donner la commande `colima` qui crée un k3s local capable d'héberger 4 équipes.
 
 #### Scenario: 4 équipes sur le cluster recommandé
 - **WHEN** 4 équipes sont installées sur 3 nœuds `e2-standard-4`

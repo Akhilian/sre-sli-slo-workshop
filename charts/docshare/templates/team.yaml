@@ -1,0 +1,45 @@
+# Ressources de l'équipe : quota, valeurs par défaut des conteneurs, droits limités au namespace.
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: docshare
+  labels: {{- include "docshare.labels" . | nindent 4 }}
+spec:
+  hard:
+    requests.cpu: {{ .Values.quota.requests.cpu }}
+    requests.memory: {{ .Values.quota.requests.memory }}
+    limits.cpu: {{ .Values.quota.limits.cpu | quote }}
+    limits.memory: {{ .Values.quota.limits.memory }}
+    pods: {{ .Values.quota.pods | quote }}
+    requests.storage: {{ .Values.quota.storage }}
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: docshare
+  labels: {{- include "docshare.labels" . | nindent 4 }}
+spec:
+  limits:
+    - type: Container
+      defaultRequest: { cpu: 50m, memory: 64Mi }
+      default: { cpu: 200m, memory: 256Mi }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: team
+  labels: {{- include "docshare.labels" . | nindent 4 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: team-edit
+  labels: {{- include "docshare.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+  - kind: ServiceAccount
+    name: team
+    namespace: {{ .Release.Namespace }}

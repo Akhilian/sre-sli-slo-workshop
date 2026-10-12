@@ -22,7 +22,7 @@ Prometheus SHALL stocker ses données sur un PVC de 10 Gi avec une rétention de
 - **THEN** l'historique et les burn rates calculés avant le redémarrage sont conservés
 
 ### Requirement: Grafana accessible aux équipes
-Grafana SHALL être exposé par un Service `LoadBalancer` limité par `loadBalancerSourceRanges`, avec un accès anonyme en lecture seule, et charger les dashboards depuis les ConfigMaps portant le label `grafana_dashboard`.
+Grafana SHALL être exposé par un Service `LoadBalancer` sur le port 3000, limité par `loadBalancerSourceRanges` hors local, avec un accès anonyme en lecture seule, et charger les dashboards depuis les ConfigMaps portant le label `grafana_dashboard`.
 
 #### Scenario: Accès depuis la salle
 - **WHEN** un participant ouvre l'adresse du LoadBalancer depuis une IP autorisée
@@ -33,8 +33,12 @@ Grafana SHALL être exposé par un Service `LoadBalancer` limité par `loadBalan
 - **THEN** la connexion échoue
 
 ### Requirement: Pas d'alertes parasites
-La configuration SHALL désactiver la collecte des composants du plan de contrôle inaccessibles sur un cluster managé (etcd, kube-scheduler, kube-controller-manager, kube-proxy) pour GKE et EKS.
+La configuration SHALL désactiver la collecte des composants du plan de contrôle inaccessibles sur GKE, EKS et k3s (etcd, kube-scheduler, kube-controller-manager, kube-proxy), les règles d'alerte sans objet en l'absence d'Alertmanager (règles Alertmanager, `Watchdog`, `InfoInhibitor`, `PrometheusNotConnectedToAlertmanagers`, erreurs d'envoi vers Alertmanager) et, en local, la surveillance des systèmes de fichiers `virtiofs` montés depuis la machine hôte.
 
 #### Scenario: Page des alertes propre
 - **WHEN** le cluster vient d'être installé et qu'aucune panne n'est active
-- **THEN** aucune alerte `TargetDown` ni autre alerte de l'infrastructure n'est active
+- **THEN** la série `ALERTS` est vide, y compris au-delà de 10 min (délai de `PrometheusNotConnectedToAlertmanagers`)
+
+#### Scenario: Disque de la machine hôte presque plein en local
+- **WHEN** le disque du Mac qui héberge colima a moins de 15 % d'espace libre
+- **THEN** aucune alerte `NodeFilesystemSpaceFillingUp` n'est déclenchée

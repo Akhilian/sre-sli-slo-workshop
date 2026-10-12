@@ -2,7 +2,7 @@
 
 Système fictif de partage de documents, support d'un workshop SLI / SLO de 2 h. Les participants partent d'un SLI fonctionnel, l'implémentent en SLO avec Sloth, puis regardent le budget d'erreur brûler pendant de vraies pannes.
 
-> État actuel : seule l'application existe. Le déploiement Kubernetes, les SLO, les dashboards et le trafic k6 arrivent dans les changes OpenSpec suivants (`openspec list`). Ce README sera complété au fur et à mesure.
+> État actuel : l'application et son déploiement Kubernetes existent. Les SLO, les dashboards et le trafic k6 arrivent dans les changes OpenSpec suivants (`openspec list`). Ce README sera complété au fur et à mesure.
 
 ## Architecture
 
@@ -65,6 +65,62 @@ docker rm -f api worker notifier redis postgres && docker network rm docshare
 | `PORT` | api | `8000` | port HTTP de l'API (métriques comprises) |
 | `METRICS_PORT` | worker, notifier | `9100` | port des métriques, utilisable aussi comme sonde |
 | `WORKER_CONCURRENCY` | worker | `4` | jobs traités en parallèle (capacité ≈ 2 jobs/s) |
+
+## Déployer sur Kubernetes
+
+Un cluster partagé, un namespace par équipe (`team-<nom>`) avec sa pile DocShare complète, et un monitoring commun dans `monitoring` (kube-prometheus-stack : Prometheus, Grafana, sans Alertmanager).
+
+### Prérequis
+
+Sur le poste de l'animateur : `kubectl` et `helm`. Les participants n'ont besoin que de `kubectl`.
+
+| Cible | Création du cluster de référence | Prérequis |
+| --- | --- | --- |
+| Local | `colima start --kubernetes --cpu 6 --memory 10 --disk 60` | aucun ; l'image se construit localement (`docker build -t docshare:dev .`), le k3s de colima l'utilise sans registre |
+| GKE | `gcloud container clusters create docshare --zone europe-west1-b --machine-type e2-standard-4 --num-nodes 3` | cluster **Standard** (Autopilot refuse node-exporter) |
+| EKS | `eksctl create cluster --name docshare --region eu-west-3 --node-type m6i.xlarge --nodes 3` puis `eksctl create addon --cluster docshare --name aws-ebs-csi-driver` | add-on EBS CSI et classe de stockage par défaut (`gp3`) |
+
+Sur GKE et EKS, l'image vient de `ghcr.io` : remplacez `OWNER` dans `values/<cible>/docshare.yaml` par le compte qui publie l'image.
+
+Dimensionnement (ressources demandées) : ~0,6 vCPU et ~1 Gi par équipe, ~1,5 vCPU et ~3 Gi pour le monitoring, soit ~4 vCPU et ~7 Gi pour 4 équipes. En local, 4 vCPU suffisent pour 2 équipes ; prévoir 6 vCPU pour 4.
+
+### Installation
+
+```bash
+# Local (contexte kubectl « colima »)
+docker build -t docshare:dev .
+scripts/setup.sh local a b
+
+# GKE ou EKS : l'accès à Grafana est restreint aux plages indiquées (IP de la salle)
+GRAFANA_SOURCE_RANGES=203.0.113.10/32 scripts/setup.sh gke a b c d
+```
+
+Le script affiche le contexte kubectl et demande confirmation hors du k3s local (`-y` pour ne pas demander, `KUBE_CONTEXT=<contexte>` pour en choisir un autre que le contexte courant). Il est idempotent : le relancer met à jour sans recréer. Il installe ou met à jour le monitoring, puis pour chaque équipe :
+- le namespace `team-<nom>`, un quota et des valeurs par défaut de ressources ;
+- la pile DocShare (api, worker à 1 réplique sans autoscaling, notifier, Redis, Postgres) et sa collecte de métriques ;
+- un ServiceAccount aux droits `edit` limités au namespace, et son kubeconfig dans `out/kubeconfigs/<nom>.yaml` (jeton valable 8 h, `TOKEN_DURATION` pour changer).
+
+À la fin, il affiche l'adresse de Grafana (port 3000, lecture anonyme ; le mot de passe admin est dans le secret `kps-grafana` du namespace `monitoring`).
+
+### Côté équipe
+
+```bash
+export KUBECONFIG=out/kubeconfigs/a.yaml
+kubectl get pods
+kubectl port-forward svc/api 8000:80
+# l'API de l'équipe répond sur localhost:8000 (voir « Utiliser l'API » et « Pannes »)
+```
+
+Une équipe ne voit que son namespace : `kubectl get pods -n team-b` ou `-n monitoring` est refusé.
+
+### Suppression
+
+```bash
+scripts/teardown.sh b        # supprime l'équipe b et son kubeconfig
+scripts/teardown.sh --all    # supprime toutes les équipes et le monitoring
+```
+
+Pour repartir avec un budget d'erreur vierge, recréez l'équipe sous un autre nom : l'historique de Prometheus est partagé et garde les séries de l'ancien namespace.
 
 ## Utiliser l'API
 
@@ -154,5 +210,6 @@ Une panne à la fois. Après `worker_slow`, la file met du temps à se vider (en
 ## Développement
 
 - Code : `app/` (`main.py` aiguille vers `api.py`, `worker.py` ou `notifier.py` ; `db.py`, `jobqueue.py` et `faults.py` sont partagés).
+- Déploiement : `charts/docshare/` (pile d'une équipe), `monitoring/values.yaml` (kube-prometheus-stack), `values/<cible>/` (différences par cible), `scripts/setup.sh` et `scripts/teardown.sh`. Les scripts tournent avec le bash 3.2 de macOS.
 - Image : `.github/workflows/image.yml` publie à chaque push sur `main` une image amd64 + arm64 sur `ghcr.io/<owner>/docshare`, taguée par SHA et `latest`.
 - Spécifications et plan de travail : `openspec/` (`openspec list`, `openspec show <change>`).

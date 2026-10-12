@@ -1,6 +1,6 @@
 ## Context
 
-L'application (change `add-docshare-app`) existe sous forme d'image publiée. Il faut la déployer pour 1 à 4 équipes sur un cluster partagé dont le fournisseur varie selon les sessions : GKE le plus souvent, parfois EKS, k3d pour le développement et les répétitions. L'animateur prépare le cluster ; les participants n'ont que `kubectl` et un kubeconfig.
+L'application (change `add-docshare-app`) existe sous forme d'image publiée. Il faut la déployer pour 1 à 4 équipes sur un cluster partagé dont le fournisseur varie selon les sessions : GKE le plus souvent, parfois EKS, un k3s local (celui de colima) pour le développement et les répétitions. L'animateur prépare le cluster ; les participants n'ont que `kubectl` et un kubeconfig.
 
 ## Goals / Non-Goals
 
@@ -10,7 +10,7 @@ L'application (change `add-docshare-app`) existe sous forme d'image publiée. Il
 - Même chart sur les trois cibles.
 
 **Non-Goals:**
-- Création des clusters (pas de Terraform ; commandes `gcloud`, `eksctl`, `k3d` documentées).
+- Création des clusters (pas de Terraform ; commandes `gcloud`, `eksctl`, `colima` documentées).
 - Haute disponibilité de Redis, Postgres ou Prometheus.
 - Sloth, SLO et dashboards (change `add-slo-and-dashboards`), k6 (change `add-traffic-and-runbook`).
 - Authentification fine de Grafana (lecture anonyme suffit).
@@ -36,7 +36,16 @@ Alternative écartée : Ingress pour Grafana. Contrôleur différent par cible, 
 
 **Quotas.** Calés sur la pile d'une équipe (~0.6 vCPU, ~1 Gi de requêtes, Job k6 compris) avec 50 % de marge. Requêtes et limites définies sur chaque conteneur du chart.
 
-**Script de setup.** Bash + `kubectl` + `helm`, vérifications préalables (outils présents, contexte courant affiché, classe de stockage par défaut existante, confirmation si le contexte n'est pas k3d).
+**k3s local plutôt que k3d.** Le k3s de colima utilise le runtime Docker de la VM : une image construite avec `docker build` est directement utilisable par le cluster (`pullPolicy: Never` dans `values-local.yaml`), sans registre ni import. Un seul nœud, ce qui suffit pour le développement.
+Alternative écartée : k3d. Plusieurs nœuds et clusters jetables, mais un outil de plus à installer pour les animateurs, pour un Kubernetes identique.
+
+**Valeurs par cible : `values/<cible>/{monitoring,docshare}.yaml`.** Deux charts distincts reçoivent chacun leur fichier ; un fichier unique par cible obligerait à mélanger les clés des deux charts.
+
+**Alertes de l'infrastructure.** Sans Alertmanager, plusieurs règles livrées par kube-prometheus-stack sonnent pour rien : `Watchdog` (en permanence, par conception), `PrometheusNotConnectedToAlertmanagers` (après 10 min), les règles Alertmanager. Elles sont désactivées (`defaultRules.disabled`, `defaultRules.rules.alertmanager: false`). Le scrape du plan de contrôle est désactivé sur toutes les cibles, k3s compris. En local, colima monte le disque du Mac dans la VM (`virtiofs`) : il est exclu de node-exporter pour qu'un disque de Mac presque plein ne déclenche pas `NodeFilesystemSpaceFillingUp` en pleine démo.
+
+**Grafana sur le port 3000.** Évite tout conflit avec un contrôleur d'Ingress qui occuperait le port 80 du nœud (servicelb de k3s).
+
+**Script de setup.** Bash compatible 3.2 (macOS) + `kubectl` + `helm`, contexte passé explicitement à chaque commande (`KUBE_CONTEXT`), vérifications préalables (outils présents, contexte courant affiché, classe de stockage par défaut existante, confirmation si le contexte n'est pas `colima`).
 
 ## Risks / Trade-offs
 

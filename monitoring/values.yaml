@@ -1,0 +1,68 @@
+# kube-prometheus-stack, partagé par toutes les équipes (namespace monitoring).
+# Version du chart figée dans scripts/setup.sh.
+
+# Pas d'Alertmanager : la page /alerts de Prometheus et la série ALERTS suffisent.
+alertmanager:
+  enabled: false
+
+# Règles d'alerte livrées par le chart qui sonneraient sans raison dans ce contexte.
+defaultRules:
+  rules:
+    alertmanager: false
+  disabled:
+    Watchdog: true                              # sonne en permanence, par conception
+    InfoInhibitor: true
+    PrometheusNotConnectedToAlertmanagers: true # pas d'Alertmanager, volontairement
+    PrometheusErrorSendingAlertsToAnyAlertmanager: true
+    PrometheusErrorSendingAlertsToSomeAlertmanagers: true
+
+# Plan de contrôle inaccessible sur GKE, EKS et k3s : sans ces lignes, des
+# alertes TargetDown permanentes brouilleraient la page /alerts pendant la démo.
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeProxy:
+  enabled: false
+
+prometheus:
+  prometheusSpec:
+    # Collecte et règles de tous les namespaces, sans exiger le label de la release.
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+    scrapeConfigSelectorNilUsesHelmValues: false
+    # Fenêtres de 5 min réactives en une à deux minutes.
+    scrapeInterval: 5s
+    evaluationInterval: 15s
+    retention: 2d
+    # Un redémarrage de Prometheus ne doit pas effacer les burn rates en pleine séance.
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: [ReadWriteOnce]
+          resources:
+            requests:
+              storage: 10Gi
+    resources:
+      requests: { cpu: 500m, memory: 1Gi }
+      limits: { memory: 2Gi }
+
+grafana:
+  # Lecture anonyme pour les équipes ; l'animateur garde le compte admin.
+  grafana.ini:
+    auth.anonymous:
+      enabled: true
+      org_role: Viewer
+  service:
+    type: LoadBalancer
+    port: 3000
+  # Dashboards livrés en ConfigMaps (label grafana_dashboard), dans tous les namespaces.
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      searchNamespace: ALL

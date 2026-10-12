@@ -1,0 +1,15 @@
+# Collecte des trois rôles. Prometheus ajoute le label namespace à chaque série.
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: docshare
+  labels: {{- include "docshare.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchExpressions:
+      - { key: app.kubernetes.io/name, operator: In, values: [api, worker, notifier] }
+  podMetricsEndpoints:
+    - port: http      # api
+      path: /metrics
+    - port: metrics   # worker et notifier
+      path: /metrics

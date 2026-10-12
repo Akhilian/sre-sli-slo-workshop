@@ -1,0 +1,12 @@
+# k3s local (colima) : Grafana exposé par servicelb sur l'IP de la VM, sans restriction.
+grafana:
+  service:
+    loadBalancerSourceRanges: []
+
+# colima monte le disque du Mac dans la VM (virtiofs) : sans cette exclusion,
+# un disque de Mac presque plein déclenche NodeFilesystemSpaceFillingUp en pleine démo.
+# Liste par défaut du chart, plus virtiofs.
+prometheus-node-exporter:
+  extraArgs:
+    - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+    - --collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs|virtiofs)$

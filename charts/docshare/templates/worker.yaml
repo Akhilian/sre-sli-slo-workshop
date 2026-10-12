@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  labels: {{- include "docshare.labels" . | nindent 4 }}
+spec:
+  # Toujours 1 : la capacité fixe fait partie du scénario de panne worker_slow.
+  replicas: 1
+  selector:
+    matchLabels: { app.kubernetes.io/name: worker }
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: worker
+        {{- include "docshare.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: worker
+          image: {{ include "docshare.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - { name: ROLE, value: worker }
+            - { name: WORKER_CONCURRENCY, value: {{ .Values.worker.concurrency | quote }} }
+            {{- include "docshare.env" . | nindent 12 }}
+          ports:
+            - { name: metrics, containerPort: 9100 }
+          livenessProbe:
+            httpGet: { path: /metrics, port: metrics }
+          resources: {{- toYaml .Values.worker.resources | nindent 12 }}

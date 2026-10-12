@@ -1,0 +1,6 @@
+# k3s de colima : il partage le runtime Docker de la VM, l'image construite
+# localement (docker build -t docshare:dev .) est utilisée sans registre.
+image:
+  repository: docshare
+  tag: dev
+  pullPolicy: Never

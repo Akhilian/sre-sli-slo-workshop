@@ -37,10 +37,10 @@ Chaque namespace d'équipe SHALL avoir un `ResourceQuota` et un `LimitRange`, et
 - **THEN** elle peut appeler `POST /admin/faults` sur sa propre pile
 
 ### Requirement: Installation en une commande
-`scripts/setup.sh <cible> team-a [team-b ...]` SHALL installer la pile de monitoring si elle est absente, puis pour chaque équipe créer le namespace, les quotas, les droits, la release Helm, et écrire un kubeconfig dans `out/kubeconfigs/<équipe>.yaml`. Le script MUST être idempotent.
+`scripts/setup.sh [-y] <cible> a [b ...]` SHALL installer la pile de monitoring si elle est absente, puis pour chaque équipe créer le namespace, les quotas, les droits, la release Helm, et écrire un kubeconfig dans `out/kubeconfigs/<équipe>.yaml`. Le script MUST être idempotent, MUST passer explicitement le contexte kubectl à chaque commande, et MUST demander confirmation hors du k3s local sauf avec `-y`. Les scripts MUST fonctionner avec le bash 3.2 de macOS.
 
 #### Scenario: Session de 4 équipes
-- **WHEN** l'animateur lance `scripts/setup.sh gke team-a team-b team-c team-d` sur un cluster vierge
+- **WHEN** l'animateur lance `scripts/setup.sh gke a b c d` sur un cluster vierge
 - **THEN** les 4 piles et le monitoring sont opérationnels et 4 kubeconfigs sont générés, sans autre action manuelle
 
 #### Scenario: Relance
