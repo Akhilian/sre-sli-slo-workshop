@@ -10,6 +10,7 @@ export function createTracker({
   now = Date.now,
   interval = 1000, // une interrogation par seconde
   timeout = 60_000, // comme le FOLLOW_TIMEOUT de k6
+  onChange = () => {}, // appelé à chaque passage à « done » ou « stuck »
 }) {
   const state = reactive({ documents: load(), now: now() })
   const inFlight = new Set()
@@ -36,8 +37,8 @@ export function createTracker({
     }
   }
 
-  function add({ id, title, uploadedAt }) {
-    state.documents.unshift({ id, title, status: 'pending', uploadedAt, doneAt: null, since: now() })
+  function add({ id, title, uploadedAt, size = null }) {
+    state.documents.unshift({ id, title, size, status: 'pending', uploadedAt, doneAt: null, since: now() })
     state.documents.splice(MAX_DOCUMENTS)
     save()
   }
@@ -65,6 +66,7 @@ export function createTracker({
         doc.status = 'done'
         doc.doneAt = now()
         save()
+        onChange(doc)
       }
     } catch {
       // API en erreur : on réessaie à la seconde suivante, jusqu'au délai maximal
@@ -81,6 +83,7 @@ export function createTracker({
       if (state.now - doc.since > timeout) {
         doc.status = 'stuck'
         save()
+        onChange(doc)
       } else {
         checks.push(check(doc))
       }

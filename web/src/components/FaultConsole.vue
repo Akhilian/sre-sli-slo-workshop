@@ -36,13 +36,13 @@ onMounted(refresh)
 </script>
 
 <template>
-  <section class="panel panel-admin">
-    <div class="panel-header">
-      <h2>Pupitre des pannes</h2>
-      <button type="button" class="button-quiet" :disabled="busy" @click="refresh">Actualiser</button>
+  <section class="console" aria-labelledby="console-title">
+    <div class="console-head">
+      <h2 id="console-title">Pupitre des pannes</h2>
+      <button type="button" class="link-button" :disabled="busy" @click="refresh">Actualiser</button>
     </div>
-    <p class="hint">Réservé à l'animateur. Les pannes s'appliquent immédiatement à toute l'équipe.</p>
-    <p v-if="error" class="message-error" role="alert">{{ error }}</p>
+    <p class="console-hint">Réservé à l'animateur : les pannes s'appliquent immédiatement à toute l'équipe. Projetez un onglet sans <code>?admin</code>.</p>
+    <p v-if="error" class="notice notice-error" role="alert">{{ error }}</p>
     <table class="fault-table">
       <thead>
         <tr>
@@ -50,7 +50,7 @@ onMounted(refresh)
           <th>SLI dégradé</th>
           <th>État</th>
           <th>Valeur</th>
-          <th></th>
+          <th><span class="visually-hidden">Actions</span></th>
         </tr>
       </thead>
       <tbody>
@@ -58,8 +58,8 @@ onMounted(refresh)
           <td><code>{{ fault.name }}</code></td>
           <td>{{ fault.sli }}</td>
           <td>
-            <span v-if="active[fault.name]" class="status status-active">Active : {{ active[fault.name] }}</span>
-            <span v-else class="status status-off">Coupée</span>
+            <span v-if="active[fault.name]" class="badge badge-active">Active : {{ active[fault.name] }}</span>
+            <span v-else class="badge badge-off">Coupée</span>
           </td>
           <td>
             <input v-model="drafts[fault.name]" type="number" min="0" step="any" :aria-label="`Valeur de ${fault.name}`" />
@@ -67,7 +67,7 @@ onMounted(refresh)
           </td>
           <td class="fault-actions">
             <button type="button" class="button-primary" :disabled="busy" @click="apply(fault.name)">Appliquer</button>
-            <button type="button" class="button-quiet" :disabled="busy || !active[fault.name]" @click="stop(fault.name)">Couper</button>
+            <button type="button" class="button-secondary" :disabled="busy || !active[fault.name]" @click="stop(fault.name)">Couper</button>
           </td>
         </tr>
       </tbody>

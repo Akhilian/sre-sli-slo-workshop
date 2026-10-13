@@ -63,7 +63,7 @@ describe('api', () => {
 
     expect(error).toBeInstanceOf(ApiError)
     expect(error.status).toBe(500)
-    expect(error.message).toBe('Erreur du serveur (500)')
+    expect(error.message).toBe('Le service n’a pas répondu. Réessayez dans un instant.')
   })
 
   it('reprend le détail d\'une 422', async () => {

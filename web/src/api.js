@@ -35,7 +35,7 @@ export async function request(path, { method = 'GET', body } = {}) {
 
 async function describe(response) {
   if (response.status >= 500) {
-    return `Erreur du serveur (${response.status})`
+    return 'Le service n’a pas répondu. Réessayez dans un instant.'
   }
   try {
     const { detail } = await response.json()
