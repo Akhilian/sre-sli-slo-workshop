@@ -1,7 +1,7 @@
 ## 1. Cluster local
 
 - [x] 1.1 Vérifier le k3s local de colima (stockage `local-path` par défaut, servicelb, images Docker locales visibles par k3s) et documenter la commande `colima start --kubernetes` adaptée à 4 équipes
-- [x] 1.2 Documenter les commandes de création de cluster de référence pour GKE Standard et EKS (avec add-on EBS CSI)
+- [x] 1.2 Documenter les commandes de création de cluster de référence pour EKS (avec add-on EBS CSI ; GKE abandonné ensuite)
 
 ## 2. Chart DocShare
 
@@ -16,7 +16,7 @@
 
 - [x] 3.1 `deploy/monitoring/values.yaml` : sélecteurs ouverts, scrape 5 s, évaluation 15 s, sans Alertmanager, rétention 2 j, PVC 10 Gi
 - [x] 3.2 Grafana : sidecar de dashboards, accès anonyme lecture seule, Service `LoadBalancer` avec `loadBalancerSourceRanges`
-- [x] 3.3 `values-gke.yaml` et `values-eks.yaml` : désactivation de la collecte du plan de contrôle ; `values-local.yaml`
+- [x] 3.3 `values-eks.yaml` (et GKE, abandonné ensuite) : désactivation de la collecte du plan de contrôle ; `values-local.yaml`
 - [x] 3.4 Vérifier sur le k3s local : métriques de l'équipe visibles avec le label `namespace`, aucune alerte active au repos, historique conservé après redémarrage de Prometheus
 
 ## 4. Équipes et scripts

@@ -33,7 +33,7 @@ Grafana SHALL être exposé par un Service `LoadBalancer` sur le port 3000, limi
 - **THEN** la connexion échoue
 
 ### Requirement: Pas d'alertes parasites
-La configuration SHALL désactiver la collecte des composants du plan de contrôle inaccessibles sur GKE, EKS et k3s (etcd, kube-scheduler, kube-controller-manager, kube-proxy), les règles d'alerte sans objet en l'absence d'Alertmanager (règles Alertmanager, `Watchdog`, `InfoInhibitor`, `PrometheusNotConnectedToAlertmanagers`, erreurs d'envoi vers Alertmanager) et, en local, la surveillance des systèmes de fichiers `virtiofs` montés depuis la machine hôte.
+La configuration SHALL désactiver la collecte des composants du plan de contrôle inaccessibles sur EKS et k3s (etcd, kube-scheduler, kube-controller-manager, kube-proxy), les règles d'alerte sans objet en l'absence d'Alertmanager (règles Alertmanager, `Watchdog`, `InfoInhibitor`, `PrometheusNotConnectedToAlertmanagers`, erreurs d'envoi vers Alertmanager) et, en local, la surveillance des systèmes de fichiers `virtiofs` montés depuis la machine hôte.
 
 #### Scenario: Page des alertes propre
 - **WHEN** le cluster vient d'être installé et qu'aucune panne n'est active

@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Chart indépendant du fournisseur
-Le chart et la configuration du monitoring SHALL fonctionner sur GKE Standard, EKS et un k3s local (colima). Les différences MUST être limitées aux fichiers `deploy/environments/<cible>/monitoring.yaml` et `deploy/environments/<cible>/docshare.yaml` (cibles `local`, `gke`, `eks`).
+Le chart et la configuration du monitoring SHALL fonctionner sur EKS et un k3s local (colima). Les différences MUST être limitées aux fichiers `deploy/environments/<cible>/monitoring.yaml` et `deploy/environments/<cible>/docshare.yaml` (cibles `local`, `eks`).
 
 #### Scenario: Même chart, trois cibles
 - **WHEN** `deploy/scripts/setup.sh` est lancé sur chacune des trois cibles avec son fichier de valeurs

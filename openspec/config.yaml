@@ -6,7 +6,7 @@ context: |
   code minimal et lisible, outils open source uniquement.
   Stack : Python (FastAPI + prometheus_client), Redis, Postgres, Helm, kube-prometheus-stack,
   Sloth (contrôleur, CRD PrometheusServiceLevel), Grafana, k6.
-  Cible : Kubernetes (GKE en priorité, EKS et k3s local via colima), un namespace par équipe,
+  Cible : Kubernetes (EKS et k3s local via colima), un namespace par équipe,
   jusqu'à 4 équipes par session, monitoring partagé dans le namespace `monitoring`.
   Langue : tous les artefacts sont rédigés en français. Les titres imposés par le schéma
   (Why, What Changes, ADDED Requirements, Requirement:, Scenario:, WHEN/THEN) et les

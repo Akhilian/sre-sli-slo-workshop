@@ -40,7 +40,7 @@ Chaque namespace d'équipe SHALL avoir un `ResourceQuota` et un `LimitRange`, et
 `deploy/scripts/setup.sh [-y] <cible> a [b ...]` SHALL installer la pile de monitoring si elle est absente, puis pour chaque équipe créer le namespace, les quotas, les droits, la release Helm, et écrire un kubeconfig dans `out/kubeconfigs/<équipe>.yaml`. Le script MUST être idempotent, MUST passer explicitement le contexte kubectl à chaque commande, et MUST demander confirmation hors du k3s local sauf avec `-y`. Les scripts MUST fonctionner avec le bash 3.2 de macOS.
 
 #### Scenario: Session de 4 équipes
-- **WHEN** l'animateur lance `deploy/scripts/setup.sh gke a b c d` sur un cluster vierge
+- **WHEN** l'animateur lance `deploy/scripts/setup.sh eks a b c d` sur un cluster vierge
 - **THEN** les 4 piles et le monitoring sont opérationnels et 4 kubeconfigs sont générés, sans autre action manuelle
 
 #### Scenario: Relance
@@ -51,7 +51,7 @@ Chaque namespace d'équipe SHALL avoir un `ResourceQuota` et un `LimitRange`, et
 Les kubeconfigs d'équipe SHALL utiliser un jeton de ServiceAccount obtenu par `kubectl create token` avec une durée de 8 h, sans plugin d'authentification propre au fournisseur.
 
 #### Scenario: Utilisation sans outil cloud
-- **WHEN** un participant sans `gcloud` ni `aws` utilise son kubeconfig
+- **WHEN** un participant sans `aws` utilise son kubeconfig
 - **THEN** `kubectl get pods` fonctionne dans son namespace
 
 ### Requirement: Suppression

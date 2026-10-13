@@ -15,7 +15,7 @@
 Le README existe déjà pour l'application (change `add-docshare-app`) : ces tâches le complètent, sans réécrire les sections existantes.
 
 
-- [x] 3.1 Prérequis et création du cluster pour GKE Standard, EKS (EBS CSI) et k3s local (colima)
+- [x] 3.1 Prérequis et création du cluster pour EKS (Terraform, EBS CSI) et k3s local (colima) ; GKE abandonné
 - [x] 3.2 Installation, distribution des kubeconfigs, accès à Grafana, délai de 15 min de trafic sain
 - [x] 3.3 Enrichir les fiches de pannes existantes : commandes via `port-forward`, temps de réaction des SLO et alertes, message pédagogique
 - [x] 3.4 Déroulé de la séance de 2 h, remise à zéro, relance du Job k6

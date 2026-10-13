@@ -1,16 +1,16 @@
 ## Context
 
-L'application (change `add-docshare-app`) existe sous forme d'image publiée. Il faut la déployer pour 1 à 4 équipes sur un cluster partagé dont le fournisseur varie selon les sessions : GKE le plus souvent, parfois EKS, un k3s local (celui de colima) pour le développement et les répétitions. L'animateur prépare le cluster ; les participants n'ont que `kubectl` et un kubeconfig.
+L'application (change `add-docshare-app`) existe sous forme d'image publiée. Il faut la déployer pour 1 à 4 équipes sur un cluster partagé sur EKS (seule cible cloud, GKE a été abandonné) ou sur un k3s local (celui de colima) pour le développement et les répétitions. L'animateur prépare le cluster ; les participants n'ont que `kubectl` et un kubeconfig.
 
 ## Goals / Non-Goals
 
 **Goals:**
 - Une commande pour installer monitoring + N équipes, idempotente.
 - Isolation stricte entre équipes (pannes, données, droits), monitoring commun.
-- Même chart sur les trois cibles.
+- Même chart sur les deux cibles.
 
 **Non-Goals:**
-- Création des clusters (pas de Terraform ; commandes `gcloud`, `eksctl`, `colima` documentées).
+- Création des clusters : Terraform pour EKS (`deploy/terraform/eks`, nombre de nœuds déduit du nombre d'équipes), commande `colima` documentée en local.
 - Haute disponibilité de Redis, Postgres ou Prometheus.
 - Sloth, SLO et dashboards (change `add-slo-and-dashboards`), k6 (change `add-traffic-and-runbook`).
 - Authentification fine de Grafana (lecture anonyme suffit).
@@ -29,9 +29,9 @@ Alternative écartée : charts Bitnami. Dépendance lourde, conditions de distri
 Alternative écartée : un seul `PodMonitor` dans `monitoring` avec `namespaceSelector: any`. Fonctionne, mais une équipe supprimée laisse moins de traces si sa collecte vit dans son namespace.
 
 **Droits.** RoleBinding vers le ClusterRole `edit` dans le namespace de l'équipe. Kubeconfig généré par `kubectl create token <sa> --duration=8h` et l'adresse du serveur API extraite du contexte courant de l'animateur. Fonctionne à l'identique sur les trois cibles.
-Alternative écartée : identités cloud (IAM GKE / EKS). Imposerait des comptes cloud aux participants.
+Alternative écartée : identités cloud (IAM EKS). Imposerait des comptes cloud aux participants.
 
-**Accès à Grafana par LoadBalancer.** Les équipes n'ont aucun droit dans `monitoring`, donc pas de `port-forward` possible. Le Service `LoadBalancer` est supporté nativement sur GKE, EKS et k3s (servicelb) ; `loadBalancerSourceRanges` limite l'accès à l'IP de la salle.
+**Accès à Grafana par LoadBalancer.** Les équipes n'ont aucun droit dans `monitoring`, donc pas de `port-forward` possible. Le Service `LoadBalancer` est supporté nativement sur EKS et k3s (servicelb) ; `loadBalancerSourceRanges` limite l'accès à l'IP de la salle.
 Alternative écartée : Ingress pour Grafana. Contrôleur différent par cible, et souvent absent sur un cluster neuf.
 
 **Quotas.** Calés sur la pile d'une équipe (~0.6 vCPU, ~1 Gi de requêtes, Job k6 compris) avec 50 % de marge. Requêtes et limites définies sur chaque conteneur du chart.
@@ -50,9 +50,8 @@ Alternative écartée : k3d. Plusieurs nœuds et clusters jetables, mais un outi
 ## Risks / Trade-offs
 
 - [Kubeconfig à jeton : expiration à 8 h] → suffisant pour une séance ; le script peut les régénérer.
-- [Grafana exposé sur internet] → `loadBalancerSourceRanges` obligatoire hors local ; le script refuse de continuer si la valeur est vide sur GKE / EKS.
+- [Grafana exposé sur internet] → `loadBalancerSourceRanges` obligatoire hors local ; le script refuse de continuer si la valeur est vide sur EKS.
 - [EKS : add-on EBS CSI absent] → détection de l'absence de classe de stockage par défaut avant l'installation.
-- [GKE Autopilot] → non supporté (node-exporter refusé) ; documenté et vérifié par le script si possible.
 - [Prometheus partagé : un namespace supprimé garde son historique] → recréer une équipe sous un nouveau nom pour un budget vierge.
 - [Version de kube-prometheus-stack] → version du chart figée dans le script.
 
