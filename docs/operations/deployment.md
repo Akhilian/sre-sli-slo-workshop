@@ -77,7 +77,7 @@ Sur le poste de l'animateur : `kubectl` et `helm`. Les participants n'ont besoin
 | Cible | Création du cluster de référence | Prérequis |
 | --- | --- | --- |
 | Local | `colima start --kubernetes --cpu 6 --memory 10 --disk 60` | aucun ; l'image se construit localement (`docker build -t docshare:dev .`), le k3s de colima l'utilise sans registre |
-| EKS | Terraform, `deploy/terraform/eks` (voir ci-dessous) | AWS CLI authentifié, `terraform` ≥ 1.6 ; crée VPC, cluster, 3 nœuds `m6i.xlarge`, add-on EBS CSI, classe `gp3` par défaut et AWS Load Balancer Controller |
+| EKS | Terraform, `deploy/terraform/eks` (voir ci-dessous) | AWS CLI authentifié, `terraform` ≥ 1.6 ; crée VPC, cluster, 2 à 3 nœuds `m6i.xlarge` selon le nombre d'équipes, add-on EBS CSI, classe `gp3` par défaut et AWS Load Balancer Controller |
 
 Sur EKS, l'image vient de `ghcr.io` : remplacez `OWNER` dans `deploy/environments/<cible>/docshare.yaml` par le compte qui publie l'image.
 
@@ -90,7 +90,7 @@ terraform apply -var 'api_allowed_cidrs=["203.0.113.10/32"]'   # IP de la salle,
 $(terraform output -raw kubeconfig_command)                    # contexte kubectl de l'animateur
 ```
 
-Variables optionnelles : `region` (`eu-west-3`), `cluster_name` (`docshare`), `kubernetes_version`, `node_instance_type` (`m6i.xlarge`), `node_count` (3). L'état Terraform reste local (`*.tfstate` est ignoré par git). Le cluster coûte tant qu'il existe : `terraform destroy` après la séance, une fois les équipes supprimées (`deploy/scripts/teardown.sh --all`) pour libérer les LoadBalancers créés par Kubernetes, sans quoi la suppression du VPC échoue.
+Variables optionnelles : `region` (`eu-west-3`), `cluster_name` (`docshare`), `kubernetes_version`, `node_instance_type` (`m6i.xlarge`) ; `teams` (4) fixe le nombre de nœuds : `max(2, ⌈(1,5 + 0,6 × équipes) / 3⌉)` soit 2 nœuds jusqu'à 7 équipes (donc 2 pour 4) (3 vCPU utilisables par nœud). L'état Terraform reste local (`*.tfstate` est ignoré par git). Le cluster coûte tant qu'il existe : `terraform destroy` après la séance, une fois les équipes supprimées (`deploy/scripts/teardown.sh --all`) pour libérer les LoadBalancers créés par Kubernetes, sans quoi la suppression du VPC échoue.
 
 Dimensionnement (ressources demandées) : ~0,6 vCPU et ~1 Gi par équipe, ~1,5 vCPU et ~3 Gi pour le monitoring, soit ~4 vCPU et ~7 Gi pour 4 équipes. En local, 4 vCPU suffisent pour 2 équipes ; prévoir 6 vCPU pour 4.
 

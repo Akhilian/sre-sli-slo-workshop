@@ -55,6 +55,12 @@ module "lb_controller_irsa" {
   }
 }
 
+locals {
+  # Requêtes : ~1,5 vCPU pour le monitoring + ~0,6 vCPU par équipe (docs/operations/deployment.md).
+  # On compte 3 vCPU utilisables par nœud de 4 vCPU (le reste va à kube-system), 2 nœuds au minimum.
+  node_count = max(2, ceil((1.5 + 0.6 * var.teams) / 3))
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 21.29"
@@ -84,9 +90,9 @@ module "eks" {
   eks_managed_node_groups = {
     default = {
       instance_types = [var.node_instance_type]
-      min_size       = var.node_count
-      max_size       = var.node_count
-      desired_size   = var.node_count
+      min_size       = local.node_count
+      max_size       = local.node_count
+      desired_size   = local.node_count
     }
   }
 }
