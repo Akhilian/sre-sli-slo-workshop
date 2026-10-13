@@ -75,6 +75,8 @@ def run(role):
     from adapters import redis
     from adapters.postgres import PostgresDocuments
 
+    metrics.expose_only(role)
+
     if role in ("worker", "notifier"):
         # Port de métriques ouvert d'abord : il sert aussi de sonde pendant l'attente des dépendances.
         start_http_server(METRICS_PORT)

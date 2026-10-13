@@ -37,6 +37,21 @@ NOTIFICATION_DELAY = Histogram(
 )
 
 
+# Métriques propres à chaque rôle distribué (spec service-metrics) ; standalone les expose toutes.
+ROLE_METRICS = {
+    "api": (HTTP_REQUESTS, HTTP_DURATION, SEARCH_REQUESTS, SEARCH_RESULTS, SEARCH_FALLBACK),
+    "worker": (JOBS_PROCESSED, QUEUE_DEPTH, PROCESSING_DELAY, NOTIFICATIONS_ENQUEUED),
+    "notifier": (NOTIFICATIONS_SENT, NOTIFICATION_DELAY),
+}
+
+
+def expose_only(role):
+    """Retire du registre les métriques des autres rôles : elles n'afficheraient que des zéros."""
+    for collectors in (c for r, c in ROLE_METRICS.items() if r != role):
+        for collector in collectors:
+            prometheus_client.REGISTRY.unregister(collector)
+
+
 def watch_queue_depth(jobs):
     """`queue_depth` est lue dans la file à chaque scrape : une seule source pour sa taille."""
 

@@ -29,5 +29,5 @@
 
 ## 5. Validation sur les cibles managées
 
-- [ ] 5.1 Installer 4 équipes sur GKE Standard (3 × `e2-standard-4`) et relever la consommation réelle par rapport au dimensionnement
-- [ ] 5.2 Installer sur EKS (au moins une équipe) et vérifier stockage, LoadBalancer de Grafana et absence d'alertes parasites
+- [ ] 5.1 (remise à plus tard — infra GKE) Installer 4 équipes sur GKE Standard (3 × `e2-standard-4`) et relever la consommation réelle par rapport au dimensionnement
+- [ ] 5.2 (remise à plus tard — infra EKS) Installer sur EKS (au moins une équipe) et vérifier stockage, LoadBalancer de Grafana et absence d'alertes parasites

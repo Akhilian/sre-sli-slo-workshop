@@ -60,3 +60,18 @@ def test_pas_de_series_created():
         sample.name + "\n" for family in REGISTRY.collect() for sample in family.samples
     )
     assert "_created" not in exposed
+
+
+def test_chaque_role_n_expose_que_ses_metriques():
+    # Sous-processus : expose_only modifie le registre global.
+    script = (
+        "from prometheus_client import REGISTRY\n"
+        "from adapters import metrics\n"
+        "metrics.expose_only('worker')\n"
+        "names = {f.name for f in REGISTRY.collect()}\n"
+        "assert {'jobs_processed', 'queue_depth', 'notifications_enqueued'} <= names, names\n"
+        "assert not names & {'http_requests', 'search_results_count', 'notifications_sent'}, names\n"
+    )
+    result = subprocess.run([sys.executable, "-c", script], cwd=APP, capture_output=True, text=True)
+
+    assert result.returncode == 0, result.stderr

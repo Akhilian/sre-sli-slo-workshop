@@ -34,6 +34,6 @@
 ## 5. Documentation et vérification
 
 - [x] 5.1 README : lancement en une commande (`docker run -e ROLE=standalone` et `python app/main.py`), pannes en mode standalone ; mettre à jour la section « Développement » du README et renvoyer vers `adapters/faults.py` et `adapters/metrics.py`
-- [ ] 5.2 Lancer l'image en mode standalone avec Docker, rejouer le parcours et une panne à la main
-- [ ] 5.3 Sur le k3s local : relever `/metrics` des trois rôles avant la bascule, redéployer `docshare:dev`, comparer les séries
+- [x] 5.2 Lancer l'image en mode standalone avec Docker, rejouer le parcours et une panne à la main
+- [x] 5.3 Sur le k3s local : relever `/metrics` des trois rôles avant la bascule, redéployer `docshare:dev`, comparer les séries (écart trouvé et corrigé : chaque rôle exposait les métriques des autres ; `metrics.expose_only`)
 - [ ] 5.4 Rejouer le scénario court des cinq pannes et comparer les burn rates au tableau du README
