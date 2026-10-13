@@ -78,7 +78,7 @@ Alternative écartée : appeler l'API directement depuis le navigateur. Il faudr
 
 `templates/web.yaml` : Deployment `web` (1 réplique, `API_URL=http://api`, sondes HTTP sur `/`) et Service `web` (port 80 vers 8080). Valeurs : `web.enabled` (`true` par défaut : l'interface fait partie de la pile nominale d'une équipe ; `false` sert au retour arrière ou à une session sans interface, sans toucher au reste), `web.image` (`ghcr.io/OWNER/docshare-web`, `latest`), ressources `10m/16Mi` demandées et `100m/64Mi` limites. Pas de `PodMonitor`. L'Ingress existant change de backend : `api` vers `web` quand `web.enabled`, et reste sur `api` sinon. Les appels `/api/...` passent alors par nginx, et `/admin/faults` reste accessible comme aujourd'hui.
 
-En local, `values/local/docshare.yaml` utilise `docshare-web:dev` avec `pullPolicy: Never`, comme l'image de l'API. `scripts/setup.sh` refuse `OWNER` dans l'une ou l'autre image.
+En local, `deploy/environments/local/docshare.yaml` utilise `docshare-web:dev` avec `pullPolicy: Never`, comme l'image de l'API. `deploy/scripts/setup.sh` refuse `OWNER` dans l'une ou l'autre image.
 
 ### CI
 

@@ -1,5 +1,5 @@
 # Contrôleur Sloth : transforme les PrometheusServiceLevel des équipes en
-# PrometheusRule, dans leur namespace. Version du chart figée dans scripts/setup.sh.
+# PrometheusRule, dans leur namespace. Version du chart figée dans deploy/scripts/setup.sh.
 
 # Les plugins SLI communs sont clonés depuis GitHub au démarrage : inutiles ici.
 commonPlugins:

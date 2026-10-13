@@ -22,9 +22,9 @@
 
 ## 4. Déploiement
 
-- [ ] 4.1 `charts/docshare/templates/web.yaml` et valeurs `web` (`enabled`, image, ressources, `API_URL`)
-- [ ] 4.2 Ingress vers `web` ; `values/<cible>/docshare.yaml` (image locale `docshare-web:dev`, `ghcr.io/OWNER/docshare-web`)
-- [ ] 4.3 `scripts/setup.sh` : vérification de `OWNER` pour les deux images
+- [ ] 4.1 `deploy/helm/docshare/templates/web.yaml` et valeurs `web` (`enabled`, image, ressources, `API_URL`)
+- [ ] 4.2 Ingress vers `web` ; `deploy/environments/<cible>/docshare.yaml` (image locale `docshare-web:dev`, `ghcr.io/OWNER/docshare-web`)
+- [ ] 4.3 `deploy/scripts/setup.sh` : vérification de `OWNER` pour les deux images
 - [ ] 4.4 CI : jobs `web-test` et `web-build` (amd64 + arm64, SHA et `latest`)
 
 ## 5. Documentation et vérification

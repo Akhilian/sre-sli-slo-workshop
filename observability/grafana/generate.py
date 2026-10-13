@@ -1,4 +1,4 @@
-# Génère les dashboards JSON de ce dossier : python3 grafana/generate.py grafana
+# Génère les dashboards JSON de ce dossier : python3 observability/grafana/generate.py observability/grafana
 # Modifier ce script plutôt que les JSON, pour garder les requêtes cohérentes entre panneaux.
 import json, sys
 OUT = sys.argv[1]

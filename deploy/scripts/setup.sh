@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Installe le monitoring partagé (si absent) puis une pile DocShare par équipe.
 #
-#   scripts/setup.sh [-y] <local|gke|eks> <équipe> [<équipe> ...]
+#   deploy/scripts/setup.sh [-y] <local|gke|eks> <équipe> [<équipe> ...]
 #
 # Variables :
 #   KUBE_CONTEXT           contexte kubectl à utiliser (défaut : contexte courant)
@@ -12,7 +12,12 @@ set -euo pipefail
 
 KPS_VERSION=92.3.0
 SLOTH_VERSION=0.16.0
-ROOT=$(cd "$(dirname "$0")/.." && pwd)
+ROOT=$(cd "$(dirname "$0")/../.." && pwd)
+DEPLOY_ROOT="$ROOT/deploy"
+ENVIRONMENTS_ROOT="$DEPLOY_ROOT/environments"
+MONITORING_ROOT="$DEPLOY_ROOT/monitoring"
+SLO_ROOT="$ROOT/observability/sloth"
+GRAFANA_ROOT="$ROOT/observability/grafana"
 
 usage() { echo "usage : $0 [-y] <local|gke|eks> <équipe> [<équipe> ...]" >&2; exit 1; }
 fail() { echo "erreur : $*" >&2; exit 1; }
@@ -22,7 +27,7 @@ if [[ ${1:-} == -y ]]; then YES=true; shift; fi
 [[ $# -ge 2 ]] || usage
 TARGET=$1; shift
 TEAMS=("$@")
-[[ -d $ROOT/values/$TARGET ]] || fail "cible inconnue : $TARGET (local, gke ou eks)"
+[[ -d $ENVIRONMENTS_ROOT/$TARGET ]] || fail "cible inconnue : $TARGET (local, gke ou eks)"
 
 for tool in kubectl helm; do
   command -v "$tool" >/dev/null || fail "$tool est introuvable"
@@ -56,8 +61,8 @@ if [[ $TARGET != local ]]; then
   SOURCE_RANGES=(--set "grafana.service.loadBalancerSourceRanges={$GRAFANA_SOURCE_RANGES}")
 fi
 
-if [[ $TARGET != local ]] && grep -q OWNER "$ROOT/values/$TARGET/docshare.yaml"; then
-  fail "renseignez le compte ghcr.io de l'image dans values/$TARGET/docshare.yaml"
+if [[ $TARGET != local ]] && grep -q OWNER "$ENVIRONMENTS_ROOT/$TARGET/docshare.yaml"; then
+  fail "renseignez le compte ghcr.io de l'image dans deploy/environments/$TARGET/docshare.yaml"
 fi
 
 # --- Monitoring partagé ------------------------------------------------------
@@ -67,8 +72,8 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 h upgrade --install kps prometheus-community/kube-prometheus-stack \
   --version "$KPS_VERSION" \
   --namespace monitoring --create-namespace \
-  -f "$ROOT/monitoring/values.yaml" \
-  -f "$ROOT/values/$TARGET/monitoring.yaml" \
+  -f "$MONITORING_ROOT/values.yaml" \
+  -f "$ENVIRONMENTS_ROOT/$TARGET/monitoring.yaml" \
   ${SOURCE_RANGES[@]+"${SOURCE_RANGES[@]}"} \
   --wait --timeout 10m >/dev/null
 
@@ -77,13 +82,13 @@ helm repo add sloth https://slok.github.io/sloth --force-update >/dev/null
 h upgrade --install sloth sloth/sloth \
   --version "$SLOTH_VERSION" \
   --namespace monitoring \
-  -f "$ROOT/monitoring/sloth-values.yaml" \
+  -f "$MONITORING_ROOT/sloth-values.yaml" \
   --wait --timeout 5m >/dev/null
-k apply -f "$ROOT/monitoring/rbac.yaml" >/dev/null
+k apply -f "$MONITORING_ROOT/rbac.yaml" >/dev/null
 
 echo "==> Dashboards"
-k create configmap docshare-dashboards --namespace monitoring --from-file="$ROOT/grafana/parcours.json" \
-  --from-file="$ROOT/grafana/burn-rate.json" --dry-run=client -o yaml \
+k create configmap docshare-dashboards --namespace monitoring --from-file="$GRAFANA_ROOT/parcours.json" \
+  --from-file="$GRAFANA_ROOT/burn-rate.json" --dry-run=client -o yaml \
   | k label --local -f - grafana_dashboard=1 -o yaml | k apply -f - >/dev/null
 
 # --- Équipes -----------------------------------------------------------------
@@ -97,13 +102,13 @@ for team in "${TEAMS[@]}"; do
   echo "==> Équipe $team (namespace $ns)"
   k create namespace "$ns" --dry-run=client -o yaml | k apply -f - >/dev/null
   k label namespace "$ns" docshare.workshop/team="$team" --overwrite >/dev/null
-  h upgrade --install docshare "$ROOT/charts/docshare" \
+  h upgrade --install docshare "$DEPLOY_ROOT/helm/docshare" \
     --namespace "$ns" \
-    -f "$ROOT/values/$TARGET/docshare.yaml" \
+    -f "$ENVIRONMENTS_ROOT/$TARGET/docshare.yaml" \
     --set team="$team" \
     --wait --timeout 5m >/dev/null
-  # SLO d'upload fourni ; les autres sont à écrire par l'équipe (sloth/).
-  k apply -n "$ns" -f "$ROOT/sloth/upload-availability.yaml" >/dev/null
+  # SLO d'upload fourni ; les autres sont à écrire par l'équipe (observability/sloth/).
+  k apply -n "$ns" -f "$SLO_ROOT/upload-availability.yaml" >/dev/null
 
   token=$(k create token team --namespace "$ns" --duration "${TOKEN_DURATION:-8h}")
   kubeconfig=$ROOT/out/kubeconfigs/$team.yaml

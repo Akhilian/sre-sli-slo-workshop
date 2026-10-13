@@ -8,7 +8,7 @@
 #   http_request_duration_seconds_count{route="/documents"}            tous les uploads
 # Attention : les bornes s'écrivent en flottant, le="1.0" et non le="1".
 #
-# Appliquer : kubectl apply -f sloth/upload-latency.yaml
+# Appliquer : kubectl apply -f observability/sloth/upload-latency.yaml
 # Vérifier  : kubectl get prometheusservicelevels   (colonne GEN OK)
 apiVersion: sloth.slok.dev/v1
 kind: PrometheusServiceLevel

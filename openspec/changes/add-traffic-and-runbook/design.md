@@ -16,7 +16,7 @@ L'application, le déploiement par équipe, les SLO et les dashboards existent. 
 
 ## Decisions
 
-**Job plutôt que k6-operator.** Un `Job` avec l'image officielle `grafana/k6:1.4.0` et le script monté par ConfigMap ; `backoffLimit` faible, durée de 3 h fixée dans le script. Le Job est nommé `k6-<révision Helm>` : son spec est immuable, et relancer `scripts/setup.sh` le remplace et repart pour 3 h. Le script vit dans `charts/docshare/k6/traffic.js`, car Helm ne lit pas de fichier hors du chart. Pas de CRD supplémentaire à installer sur chaque cible.
+**Job plutôt que k6-operator.** Un `Job` avec l'image officielle `grafana/k6:1.4.0` et le script monté par ConfigMap ; `backoffLimit` faible, durée de 3 h fixée dans le script. Le Job est nommé `k6-<révision Helm>` : son spec est immuable, et relancer `deploy/scripts/setup.sh` le remplace et repart pour 3 h. Le script vit dans `deploy/helm/docshare/k6/traffic.js`, car Helm ne lit pas de fichier hors du chart. Pas de CRD supplémentaire à installer sur chaque cible.
 Alternative écartée : k6-operator. Utile pour le distribué, inutile à 5 requêtes/s.
 
 **Un scénario `constant-arrival-rate`.** Un modèle à VU constants ferait baisser le débit quand la latence monte et fausserait les ratios. Tous les VU sont pré-alloués (débit × (60 s + 20 s)) : mesuré sur le k3s local, k6 abandonnait jusqu'à un tiers des uploads dans la première minute de `worker_slow`, le temps de créer des VU supplémentaires. Coût : ~33 Mi pour 80 VU.

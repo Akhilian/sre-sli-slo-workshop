@@ -1,6 +1,6 @@
 ## 1. Script k6
 
-- [x] 1.1 Écrire `charts/docshare/k6/traffic.js` : petit corpus, jeton unique, parcours upload → suivi du statut → recherche du jeton une fois `done`
+- [x] 1.1 Écrire `deploy/helm/docshare/k6/traffic.js` : petit corpus, jeton unique, parcours upload → suivi du statut → recherche du jeton une fois `done`
 - [x] 1.2 Scénarios `constant-arrival-rate` avec débits paramétrables par variables d'environnement et `preAllocatedVUs` dimensionnés pour 2 s de latence
 - [x] 1.3 Vérifier en local qu'en régime nominal 100 % des recherches renvoient au moins un résultat, et que le débit d'upload tient sous `worker_slow` et `upload_latency`
 

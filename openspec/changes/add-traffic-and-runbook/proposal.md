@@ -21,6 +21,6 @@ Aucune.
 
 ## Impact
 
-- Nouveaux fichiers : `charts/docshare/k6/traffic.js`, template du Job et de la ConfigMap k6 dans `charts/docshare`, `README.md`.
+- Nouveaux fichiers : `deploy/helm/docshare/k6/traffic.js`, template du Job et de la ConfigMap k6 dans `deploy/helm/docshare`, `docs/operations/deployment.md`.
 - Ajuste les quotas du chart pour inclure k6 (déjà prévus dans le dimensionnement).
 - Dépend des trois changes précédents ; c'est ici que sont faites les vérifications chronométrées des pannes et des alertes.

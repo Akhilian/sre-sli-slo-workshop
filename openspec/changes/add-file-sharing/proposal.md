@@ -25,7 +25,7 @@ Aucune.
 
 - Code : `domain/` (modèle `StoredFile`, ports `DocumentRepository`, `Ocr`, `Indexer`), `adapters/postgres.py` (colonnes et migration idempotente), `adapters/memory.py`, `adapters/simulated.py`, `entrypoints/http.py`, tests.
 - Dépendance : `python-multipart`, requise par FastAPI pour les formulaires.
-- k6 : `charts/docshare/k6/traffic.js` (change actif `add-traffic-and-runbook`, dont les exigences restent vraies : le jeton est dans le fichier).
+- k6 : `deploy/helm/docshare/k6/traffic.js` (change actif `add-traffic-and-runbook`, dont les exigences restent vraies : le jeton est dans le fichier).
 - Interface : la zone de dépôt par glisser-déposer et les liens de téléchargement relèvent du change `add-web-ui`, mis à jour en conséquence.
 - Données : une base existante est migrée au démarrage de l'API (colonnes ajoutées, colonne `content` retirée). Les anciens documents restent consultables, sans fichier à télécharger.
 - Documentation : section « Utiliser l'API » du README (`curl -F file=@...`).

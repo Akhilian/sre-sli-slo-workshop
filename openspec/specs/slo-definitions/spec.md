@@ -34,7 +34,7 @@ Prometheus SHALL appliquer `enforcedNamespaceLabel: namespace` : toute règle d'
 - **THEN** les règles fournies par kube-prometheus-stack dans `monitoring` continuent d'être évaluées sur tous les namespaces
 
 ### Requirement: SLO d'upload fourni
-`scripts/setup.sh` SHALL appliquer `sloth/upload-availability.yaml` dans chaque namespace d'équipe : SLO `docshare-upload` / `availability` à l'objectif 99.5, avec `errorQuery` sur les 5xx de `/documents` complétée par `or vector(0)`, `totalQuery` excluant les 4xx, et des alertes page et ticket.
+`deploy/scripts/setup.sh` SHALL appliquer `observability/sloth/upload-availability.yaml` dans chaque namespace d'équipe : SLO `docshare-upload` / `availability` à l'objectif 99.5, avec `errorQuery` sur les 5xx de `/documents` complétée par `or vector(0)`, `totalQuery` excluant les 4xx, et des alertes page et ticket.
 
 #### Scenario: Équipe fraîchement installée
 - **WHEN** une équipe vient d'être installée
@@ -56,9 +56,8 @@ Les SLO SHALL utiliser les fenêtres d'alerte par défaut de Sloth pour une pér
 - **THEN** le burn rate affiché est d'environ 4 et aucune alerte ne se déclenche
 
 ### Requirement: Squelettes et solutions
-`sloth/` SHALL contenir un fichier par parcours : `upload-availability.yaml` complet, et `upload-latency.yaml`, `processing-freshness.yaml`, `search-quality.yaml`, `notification-coverage.yaml` avec requêtes et objectif marqués `TODO`. Chaque squelette MUST rappeler les métriques disponibles, le format flottant des bornes `le` et la commande pour l'appliquer. `sloth/solutions/` MUST contenir une version complète de chaque squelette.
+`observability/sloth/` SHALL contenir un fichier par parcours : `upload-availability.yaml` complet, et `upload-latency.yaml`, `processing-freshness.yaml`, `search-quality.yaml`, `notification-coverage.yaml` avec requêtes et objectif marqués `TODO`. Chaque squelette MUST rappeler les métriques disponibles, le format flottant des bornes `le` et la commande pour l'appliquer. `observability/sloth/solutions/` MUST contenir une version complète de chaque squelette.
 
 #### Scenario: Chaque panne couverte par une solution
 - **WHEN** l'animateur applique toutes les solutions dans un namespace
 - **THEN** chacune des cinq pannes fait monter le burn rate d'un SLO, et d'un seul
-

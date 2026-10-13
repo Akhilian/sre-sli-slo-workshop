@@ -1,5 +1,5 @@
 # kube-prometheus-stack, partagé par toutes les équipes (namespace monitoring).
-# Version du chart figée dans scripts/setup.sh.
+# Version du chart figée dans deploy/scripts/setup.sh.
 
 # Pas d'Alertmanager : la page /alerts de Prometheus et la série ALERTS suffisent.
 alertmanager:

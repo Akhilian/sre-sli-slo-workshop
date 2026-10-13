@@ -1,4 +1,6 @@
-# DocShare : dépôt de démo pour le workshop SLI / SLO
+# Plan initial — DocShare
+
+> Archive de conception initiale, conservée comme historique. Ses chemins, son état « À produire » et ses choix locaux ne décrivent pas nécessairement l'organisation ou l'état actuels du dépôt ; se référer au [README](../../README.md) et à l'[architecture actuelle](../architecture.md).
 
 Objectif : construire le système fictif DocShare, utilisé pendant un workshop de 2 h pour des développeurs sans connaissance SRE. Les participants passent d'un SLI fonctionnel à un SLO implémenté (Sloth), puis voient le budget d'erreur brûler en direct sur de vraies pannes.
 

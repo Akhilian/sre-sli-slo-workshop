@@ -1,10 +1,10 @@
 ## ADDED Requirements
 
 ### Requirement: Chart indépendant du fournisseur
-Le chart et la configuration du monitoring SHALL fonctionner sur GKE Standard, EKS et un k3s local (colima). Les différences MUST être limitées aux fichiers `values/<cible>/monitoring.yaml` et `values/<cible>/docshare.yaml` (cibles `local`, `gke`, `eks`).
+Le chart et la configuration du monitoring SHALL fonctionner sur GKE Standard, EKS et un k3s local (colima). Les différences MUST être limitées aux fichiers `deploy/environments/<cible>/monitoring.yaml` et `deploy/environments/<cible>/docshare.yaml` (cibles `local`, `gke`, `eks`).
 
 #### Scenario: Même chart, trois cibles
-- **WHEN** `scripts/setup.sh` est lancé sur chacune des trois cibles avec son fichier de valeurs
+- **WHEN** `deploy/scripts/setup.sh` est lancé sur chacune des trois cibles avec son fichier de valeurs
 - **THEN** l'installation réussit sans modification des templates
 
 ### Requirement: Stockage par défaut du cluster
@@ -15,7 +15,7 @@ Les PVC SHALL utiliser la classe de stockage par défaut du cluster, sans `stora
 - **THEN** les PVC de Postgres, Redis et Prometheus sont liés
 
 #### Scenario: Prérequis manquant détecté
-- **WHEN** `scripts/setup.sh eks` est lancé sur un cluster sans classe de stockage par défaut
+- **WHEN** `deploy/scripts/setup.sh eks` est lancé sur un cluster sans classe de stockage par défaut
 - **THEN** le script s'arrête avant l'installation avec un message qui nomme le prérequis
 
 ### Requirement: Ingress optionnel

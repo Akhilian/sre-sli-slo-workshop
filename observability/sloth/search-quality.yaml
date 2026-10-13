@@ -10,7 +10,7 @@
 #   search_requests_total{status="ok|fallback"}
 #   search_fallback_total                   recherches en échec masquées par une réponse vide
 #
-# Appliquer : kubectl apply -f sloth/search-quality.yaml
+# Appliquer : kubectl apply -f observability/sloth/search-quality.yaml
 apiVersion: sloth.slok.dev/v1
 kind: PrometheusServiceLevel
 metadata:

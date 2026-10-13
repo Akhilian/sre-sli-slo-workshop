@@ -9,7 +9,7 @@
 #   document_processing_delay_seconds_count             tous les documents traités
 #   queue_depth                                         jobs en attente (est-ce un bon SLI ?)
 #
-# Appliquer : kubectl apply -f sloth/processing-freshness.yaml
+# Appliquer : kubectl apply -f observability/sloth/processing-freshness.yaml
 apiVersion: sloth.slok.dev/v1
 kind: PrometheusServiceLevel
 metadata:

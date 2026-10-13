@@ -8,7 +8,7 @@ data:
   traffic.js: |-
 {{ .Files.Get "k6/traffic.js" | indent 4 }}
 ---
-# Le nom suit la révision Helm : relancer scripts/setup.sh remplace le Job
+# Le nom suit la révision Helm : relancer deploy/scripts/setup.sh remplace le Job
 # (le spec d'un Job est immuable) et repart pour une durée complète.
 apiVersion: batch/v1
 kind: Job

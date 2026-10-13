@@ -8,7 +8,7 @@
 #   notifications_sent_total{status="ok"}    notifications envoyées (rôle notifier)
 #   notification_delay_seconds_*             délai entre la demande et l'envoi
 #
-# Appliquer : kubectl apply -f sloth/notification-coverage.yaml
+# Appliquer : kubectl apply -f observability/sloth/notification-coverage.yaml
 apiVersion: sloth.slok.dev/v1
 kind: PrometheusServiceLevel
 metadata:

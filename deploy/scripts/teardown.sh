@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # Supprime des équipes, ou tout ce que DocShare a installé.
 #
-#   scripts/teardown.sh <équipe> [<équipe> ...]
-#   scripts/teardown.sh --all
+#   deploy/scripts/teardown.sh <équipe> [<équipe> ...]
+#   deploy/scripts/teardown.sh --all
 #
 # Pour repartir avec un budget vierge, recréez l'équipe sous un autre nom :
 # l'historique de Prometheus est partagé et garde les séries de l'ancien namespace.
 set -euo pipefail
 
-ROOT=$(cd "$(dirname "$0")/.." && pwd)
+ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 [[ $# -ge 1 ]] || { echo "usage : $0 <équipe> [...] | --all" >&2; exit 1; }
 
 CONTEXT=${KUBE_CONTEXT:-$(kubectl config current-context)}
@@ -35,7 +35,7 @@ done
 if [[ $1 == --all ]]; then
   helm --kube-context "$CONTEXT" uninstall sloth --namespace monitoring --ignore-not-found
   helm --kube-context "$CONTEXT" uninstall kps --namespace monitoring --ignore-not-found
-  k delete -f "$ROOT/monitoring/rbac.yaml" --ignore-not-found
+  k delete -f "$ROOT/deploy/monitoring/rbac.yaml" --ignore-not-found
   k delete configmap docshare-dashboards --namespace monitoring --ignore-not-found
   k delete namespace monitoring --ignore-not-found --wait=false
   echo "Les CRD de Prometheus Operator et de Sloth sont conservées."

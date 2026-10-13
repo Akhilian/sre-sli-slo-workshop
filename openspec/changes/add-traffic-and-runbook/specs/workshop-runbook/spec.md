@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Préparation documentée
-Le `README.md` SHALL décrire, pour GKE, EKS et k3s local (colima) : la création du cluster de référence et ses prérequis, l'installation par `scripts/setup.sh`, la distribution des kubeconfigs, l'accès à Grafana, et le délai minimal de 15 min de trafic sain avant la séance.
+Le guide `docs/operations/deployment.md` SHALL décrire, pour GKE, EKS et k3s local (colima) : la création du cluster de référence et ses prérequis, l'installation par `deploy/scripts/setup.sh`, la distribution des kubeconfigs, l'accès à Grafana, et le délai minimal de 15 min de trafic sain avant la séance.
 
 #### Scenario: Préparation par un nouvel animateur
 - **WHEN** une personne qui n'a pas écrit le projet suit le README sur un cluster GKE vierge

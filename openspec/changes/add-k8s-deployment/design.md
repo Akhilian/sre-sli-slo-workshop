@@ -39,7 +39,7 @@ Alternative écartée : Ingress pour Grafana. Contrôleur différent par cible, 
 **k3s local plutôt que k3d.** Le k3s de colima utilise le runtime Docker de la VM : une image construite avec `docker build` est directement utilisable par le cluster (`pullPolicy: Never` dans `values-local.yaml`), sans registre ni import. Un seul nœud, ce qui suffit pour le développement.
 Alternative écartée : k3d. Plusieurs nœuds et clusters jetables, mais un outil de plus à installer pour les animateurs, pour un Kubernetes identique.
 
-**Valeurs par cible : `values/<cible>/{monitoring,docshare}.yaml`.** Deux charts distincts reçoivent chacun leur fichier ; un fichier unique par cible obligerait à mélanger les clés des deux charts.
+**Valeurs par cible : `deploy/environments/<cible>/{monitoring,docshare}.yaml`.** Deux charts distincts reçoivent chacun leur fichier ; un fichier unique par cible obligerait à mélanger les clés des deux charts.
 
 **Alertes de l'infrastructure.** Sans Alertmanager, plusieurs règles livrées par kube-prometheus-stack sonnent pour rien : `Watchdog` (en permanence, par conception), `PrometheusNotConnectedToAlertmanagers` (après 10 min), les règles Alertmanager. Elles sont désactivées (`defaultRules.disabled`, `defaultRules.rules.alertmanager: false`). Le scrape du plan de contrôle est désactivé sur toutes les cibles, k3s compris. En local, colima monte le disque du Mac dans la VM (`virtiofs`) : il est exclu de node-exporter pour qu'un disque de Mac presque plein ne déclenche pas `NodeFilesystemSpaceFillingUp` en pleine démo.
 
@@ -58,7 +58,7 @@ Alternative écartée : k3d. Plusieurs nœuds et clusters jetables, mais un outi
 
 ## Migration Plan
 
-Premier déploiement, pas de migration. Retour arrière : `scripts/teardown.sh --all`.
+Premier déploiement, pas de migration. Retour arrière : `deploy/scripts/teardown.sh --all`.
 
 ## Open Questions
 

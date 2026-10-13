@@ -27,8 +27,8 @@ Aucune spec archivée ne change. Le Deployment `web` et l'Ingress s'ajoutent à 
 
 ## Impact
 
-- Nouveaux fichiers : `web/` (application Vue, `Dockerfile`, configuration nginx), `charts/docshare/templates/web.yaml`.
-- Modifiés : `charts/docshare/values.yaml` et `values/<cible>/docshare.yaml` (image et ressources de `web`), `charts/docshare/templates/ingress.yaml`, `scripts/setup.sh` (vérification de `OWNER` pour les deux images), `.github/workflows/image.yml`, README.
+- Nouveaux fichiers : `web/` (application Vue, `Dockerfile`, configuration nginx), `deploy/helm/docshare/templates/web.yaml`.
+- Modifiés : `deploy/helm/docshare/values.yaml` et `deploy/environments/<cible>/docshare.yaml` (image et ressources de `web`), `deploy/helm/docshare/templates/ingress.yaml`, `deploy/scripts/setup.sh` (vérification de `OWNER` pour les deux images), `.github/workflows/image.yml`, documentation.
 - API, métriques, SLO et dashboards : inchangés. Les appels de l'interface passent par l'API et sont mesurés comme n'importe quel trafic.
 - Quota d'équipe : un pod de plus (≈ 10m CPU, 16 Mi demandés), dans la marge actuelle.
 - Outillage : Node.js pour développer l'interface ; l'image se construit sans Node installé sur le poste.

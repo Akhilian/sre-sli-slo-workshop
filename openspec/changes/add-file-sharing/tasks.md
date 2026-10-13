@@ -13,7 +13,7 @@
 ## 3. API et k6
 
 - [x] 3.1 `http.py` : upload multipart, 413 et 422, `GET /documents/{id}/file` ; `python-multipart` dans `requirements.txt`
-- [x] 3.2 `charts/docshare/k6/traffic.js` : upload d'un fichier texte contenant le jeton
+- [x] 3.2 `deploy/helm/docshare/k6/traffic.js` : upload d'un fichier texte contenant le jeton
 
 ## 4. Tests et documentation
 

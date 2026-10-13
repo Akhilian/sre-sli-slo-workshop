@@ -11,7 +11,7 @@ Grafana SHALL permettre aux visiteurs anonymes d'utiliser l'Explore sur la sourc
 - **THEN** il peut exécuter une requête PromQL sur les métriques de son équipe
 
 ### Requirement: Dashboards provisionnés
-Les dashboards SHALL être livrés sous forme de JSON dans `grafana/`, produits par `grafana/generate.py`, empaquetés par `scripts/setup.sh` dans une ConfigMap du namespace `monitoring` avec le label `grafana_dashboard`, et visibles dans Grafana sans configuration manuelle. Chaque dashboard MUST avoir une variable `namespace`.
+Les dashboards SHALL être livrés sous forme de JSON dans `observability/grafana/`, produits par `observability/grafana/generate.py`, empaquetés par `deploy/scripts/setup.sh` dans une ConfigMap du namespace `monitoring` avec le label `grafana_dashboard`, et visibles dans Grafana sans configuration manuelle. Chaque dashboard MUST avoir une variable `namespace`.
 
 #### Scenario: Grafana neuf
 - **WHEN** le monitoring et une équipe viennent d'être installés
@@ -41,4 +41,3 @@ Le budget restant MUST NOT utiliser directement `slo:period_error_budget_remaini
 #### Scenario: Aucune erreur
 - **WHEN** aucune panne n'a eu lieu depuis l'installation
 - **THEN** le budget restant affiché est 100 % et le temps avant épuisement est indéfini ou affiché comme « ∞ »
-
