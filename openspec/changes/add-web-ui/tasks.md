@@ -18,7 +18,7 @@
 
 - [x] 3.1 `web/nginx/default.conf.template` : relais `/api/` sans préfixe vers `${API_URL}`, `client_max_body_size 6m`, repli `index.html`
 - [x] 3.2 `web/Dockerfile` en deux étapes (Node, puis nginx non root sur 8080), `.dockerignore`
-- [ ] 3.3 Construire l'image et la lancer face au mode `standalone` : parcours complet et une panne depuis `?admin`
+- [x] 3.3 Construire l'image et la lancer face au mode `standalone` : parcours complet et une panne depuis `?admin`
 
 ## 4. Déploiement
 
@@ -30,5 +30,5 @@
 ## 5. Documentation et vérification
 
 - [x] 5.1 README : lancer l'interface (`npm run dev`, `docker run`, `port-forward svc/web`), pupitre `?admin`, effet des recherches des participants sur le SLI de qualité
-- [ ] 5.2 Sur le k3s local : installer deux équipes, ouvrir l'interface de chacune par `port-forward`, vérifier l'isolation
-- [ ] 5.3 Sous chacune des cinq pannes, vérifier ce que voit l'utilisateur, et que les angles morts restent masqués (`stale_index`, repli de recherche, `notifier_drop`)
+- [x] 5.2 Sur le k3s local : installer deux équipes, ouvrir l'interface de chacune par `port-forward`, vérifier l'isolation
+- [x] 5.3 Sous chacune des cinq pannes, vérifier ce que voit l'utilisateur, et que les angles morts restent masqués (`stale_index`, repli de recherche, `notifier_drop`)
