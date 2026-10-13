@@ -17,13 +17,13 @@ Le README existe déjà pour l'application (change `add-docshare-app`) : ces tâ
 
 - [x] 3.1 Prérequis et création du cluster pour GKE Standard, EKS (EBS CSI) et k3s local (colima)
 - [x] 3.2 Installation, distribution des kubeconfigs, accès à Grafana, délai de 15 min de trafic sain
-- [ ] 3.3 Enrichir les fiches de pannes existantes : commandes via `port-forward`, temps de réaction des SLO et alertes, message pédagogique
-- [ ] 3.4 Déroulé de la séance de 2 h, remise à zéro, relance du Job k6
+- [x] 3.3 Enrichir les fiches de pannes existantes : commandes via `port-forward`, temps de réaction des SLO et alertes, message pédagogique
+- [x] 3.4 Déroulé de la séance de 2 h, remise à zéro, relance du Job k6
 
 ## 4. Vérification de bout en bout
 
-- [ ] 4.1 Installer deux équipes sur le k3s local avec les solutions SLO appliquées, attendre 15 min de trafic sain
-- [ ] 4.2 Pour chaque panne, l'activer dans `team-a` seulement : vérifier le SLI dégradé, les SLI intacts et l'absence d'effet sur `team-b`, mesurer le temps de réaction
-- [ ] 4.3 `upload_error_rate=0.02` pendant 25 min : burn rate ≈ 4, aucune alerte ; `0.5` : page en moins de 10 min, budget restant entre 0 et 100 %
-- [ ] 4.4 Consigner les temps mesurés dans le README
-- [ ] 4.5 Répétition générale sur GKE avec 4 équipes en suivant uniquement le README
+- [x] 4.1 Installer deux équipes sur le k3s local avec les solutions SLO appliquées, attendre 15 min de trafic sain
+- [x] 4.2 Pour chaque panne, l'activer dans `team-a` seulement : vérifier le SLI dégradé, les SLI intacts et l'absence d'effet sur `team-b`, mesurer le temps de réaction
+- [ ] 4.3 (partiel : 8 min au lieu de 25 pour 0.02, page en 105 s sur historique court — à rejouer) `upload_error_rate=0.02` pendant 25 min : burn rate ≈ 4, aucune alerte ; `0.5` : page en moins de 10 min, budget restant entre 0 et 100 %
+- [x] 4.4 Consigner les temps mesurés dans le README
+- [ ] 4.5 (remise à plus tard — infra GKE) Répétition générale sur GKE avec 4 équipes en suivant uniquement le README

@@ -45,6 +45,7 @@ Le guide de [déploiement et d’exécution](docs/operations/deployment.md) déc
 
 - [Architecture](docs/architecture.md)
 - [Déploiement et exécution](docs/operations/deployment.md)
+- [Déroulé de la séance de 2 h](docs/operations/seance.md)
 - [Observabilité et parcours de démonstration](docs/operations/observability.md)
 - [Développement et tests](docs/operations/development.md)
 - [Cadrage produit](docs/product.md)

@@ -155,3 +155,21 @@ Burn rate sur 5 min de chaque SLO (solutions de `observability/sloth/solutions/`
 La fraîcheur réagit lentement : un document n'est compté en retard qu'une fois traité, plus de 60 s après son upload. Comptez environ 5 min de `worker_slow` pour un effet net (83 % des documents en retard après 4 min).
 
 Une panne à la fois. Après `worker_slow`, la file met du temps à se vider (environ 1 min pour 100 jobs en attente). Attendez que `queue_depth` revienne à 0 avant la panne suivante, sinon le retard hérité fausse ce qu'elle montre.
+
+### Temps de réaction mesurés (k3s local)
+
+Panne activée dans une équipe, trafic k6 nominal, une panne à la fois ; l'autre équipe porte une autre panne. Temps comptés depuis l'activation, échantillonnés toutes les 15 s.
+
+| Panne | Burn rate 5 min > 1 | > 6 | Alerte ticket | Alerte page |
+| --- | --- | --- | --- | --- |
+| `upload_error_rate=0.5` | 15 s | 30 s | — | 105 s |
+| `upload_latency=2` | 15 s | 30 s | 45 s | 75 s |
+| `stale_index=1` | 15 s | 30 s | 15 s | 90 s |
+| `notifier_drop=0.2` | 45 s | 90 s | 90 s | pas de page en 3 min |
+| `worker_slow=10` | 135 s | pas atteint en 4 min (≈ 4,6, file à 181 jobs) | aucune en 4 min | aucune en 4 min |
+
+À lire avec prudence :
+- Les alertes se déclenchent bien plus vite que les « 9 min » du calibrage théorique : l'historique des essais ne dépassait pas 25 min, les fenêtres de 1 h et de 6 h se comportent alors comme des fenêtres courtes. Avec 1 h de trafic sain, comptez plutôt plusieurs minutes pour la page de `upload_error_rate=0.5`.
+- `upload_error_rate=0.02` (burn rate attendu ≈ 4) n'a été tenu que 8 min au lieu de 25 : burn rate entre 0 et 4, sans alerte. À rejouer sur 25 min.
+- Les pannes ont été enchaînées avec 30 s de pause : les alertes longues d'une panne précédente restent actives (`DocshareUploadLatency`, `DocshareSearchQuality`). Laissez les burn rates repasser sous 1 avant la panne suivante.
+- Aucune panne n'a fait monter un SLI d'une autre famille de plus de 1,4 dans l'équipe voisine, hors résidus d'une panne précédente.

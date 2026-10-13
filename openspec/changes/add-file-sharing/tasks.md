@@ -20,4 +20,4 @@
 - [x] 4.1 Mettre à jour les tests existants ; tests d'extraction, de téléchargement, de taille, de fichier non textuel
 - [x] 4.2 README : section « Utiliser l'API » et exemples `curl -F`
 - [x] 4.3 Vérifier en mode `standalone` : upload, recherche, téléchargement, une panne
-- [ ] 4.4 Sur le k3s local : migration d'une base existante et trafic k6 nominal
+- [x] 4.4 Sur le k3s local : migration d'une base existante et trafic k6 nominal
