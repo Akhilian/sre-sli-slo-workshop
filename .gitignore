@@ -1,2 +1,4 @@
 __pycache__/
 out/
+.venv/
+.pytest_cache/

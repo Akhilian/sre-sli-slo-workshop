@@ -3,14 +3,11 @@ import logging
 import os
 import sys
 
-import prometheus_client
-
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 
-ROLES = ("api", "worker", "notifier")
-
-# Pas de séries *_created : elles encombrent /metrics sans servir l'exercice.
-prometheus_client.disable_created_metrics()
+# api, worker et notifier forment le mode distribué (Redis + Postgres) ;
+# standalone exécute les trois dans un seul processus, en mémoire.
+ROLES = ("api", "worker", "notifier", "standalone")
 
 
 def main():
@@ -18,15 +15,8 @@ def main():
     if role not in ROLES:
         sys.exit(f"ROLE doit valoir {', '.join(ROLES)} (reçu : {role!r})")
 
-    if role == "api":
-        import api
-        api.run()
-    elif role == "worker":
-        import worker
-        worker.run()
-    else:
-        import notifier
-        notifier.run()
+    import bootstrap
+    bootstrap.run(role)
 
 
 if __name__ == "__main__":

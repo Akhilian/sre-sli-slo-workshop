@@ -6,7 +6,7 @@ Système fictif de partage de documents, support d'un workshop SLI / SLO de 2 h.
 
 ## Architecture
 
-Une seule image, trois rôles choisis par la variable `ROLE` :
+Une seule image, trois rôles choisis par la variable `ROLE` (plus `standalone`, qui regroupe les trois dans un processus, voir plus bas) :
 
 ```
 client ──POST /documents──▶ api ──LPUSH jobs──▶ Redis ──BRPOP──▶ worker ──LPUSH notifications──▶ Redis ──BRPOP──▶ notifier
@@ -19,7 +19,38 @@ client ──POST /documents──▶ api ──LPUSH jobs──▶ Redis ──
 2. `worker` simule l'OCR (1 à 3 s), indexe le document, le passe en `done` et demande une notification.
 3. `notifier` « envoie » la notification (simulé).
 
+Dans le code, architecture hexagonale (ports et adaptateurs) :
+
+```
+app/
+  domain/        modèles, ports (Protocol) et cas d'usage ; ni FastAPI, ni Redis, ni Postgres, ni métriques
+  adapters/      postgres.py, redis.py, memory.py, simulated.py (OCR, e-mail),
+                 faults.py (les pannes), metrics.py (toutes les métriques)
+  entrypoints/   http.py (FastAPI), worker.py, notifier.py, standalone.py
+  bootstrap.py   câblage : adaptateurs du rôle, pannes posées sur les ports, cas d'usage
+  main.py        ROLE -> bootstrap
+```
+
+Pour savoir ce qui est mesuré, lisez `app/adapters/metrics.py`. Pour savoir comment une panne agit, lisez `app/adapters/faults.py` : chaque panne y est un décorateur posé sur un port, le code métier n'en sait rien.
+
 ## Lancer l'application en local
+
+### En un seul processus (mode standalone)
+
+Sans Redis ni Postgres : l'API, le worker et le notifier tournent dans un seul processus, sur des adaptateurs en mémoire. Pratique pour découvrir l'application ou préparer une démo. Les données et les pannes actives sont perdues à l'arrêt.
+
+```bash
+docker build -t docshare:dev .
+docker run --rm -p 8000:8000 -e ROLE=standalone docshare:dev
+
+# ou sans Docker (Python 3.12)
+pip install -r app/requirements.txt
+ROLE=standalone python app/main.py
+```
+
+Tout fonctionne comme en mode distribué : routes, pannes (`/admin/faults`) et métriques. `GET /metrics` de l'API expose alors les métriques des trois rôles. Le trafic k6 peut viser ce mode (`k6 run -e API_URL=http://localhost:8000 -e DURATION=10m charts/docshare/k6/traffic.js`), mais il n'y a ni Prometheus ni Sloth : lisez `/metrics` directement.
+
+### Pile distribuée avec Docker
 
 Prérequis : Docker.
 
@@ -59,12 +90,12 @@ docker rm -f api worker notifier redis postgres && docker network rm docshare
 
 | Variable | Rôles | Défaut | Rôle |
 | --- | --- | --- | --- |
-| `ROLE` | tous | (obligatoire) | `api`, `worker` ou `notifier` ; toute autre valeur arrête le processus |
-| `REDIS_URL` | tous | `redis://localhost:6379/0` | files de jobs et hash des pannes |
+| `ROLE` | tous | (obligatoire) | `api`, `worker`, `notifier` ou `standalone` ; toute autre valeur arrête le processus |
+| `REDIS_URL` | api, worker, notifier | `redis://localhost:6379/0` | files de jobs et hash des pannes |
 | `DATABASE_URL` | api, worker | `postgresql://docshare:docshare@localhost:5432/docshare` | documents et index |
-| `PORT` | api | `8000` | port HTTP de l'API (métriques comprises) |
+| `PORT` | api, standalone | `8000` | port HTTP de l'API (métriques comprises) |
 | `METRICS_PORT` | worker, notifier | `9100` | port des métriques, utilisable aussi comme sonde |
-| `WORKER_CONCURRENCY` | worker | `4` | jobs traités en parallèle (capacité ≈ 2 jobs/s) |
+| `WORKER_CONCURRENCY` | worker, standalone | `4` | jobs traités en parallèle (capacité ≈ 2 jobs/s) |
 
 ## Déployer sur Kubernetes
 
@@ -235,7 +266,7 @@ Points d'attention pour écrire les requêtes PromQL :
 
 ## Pannes
 
-Les pannes sont stockées dans le hash Redis `faults` et relues à chaque requête ou job : elles s'appliquent immédiatement, sans redémarrage.
+Les pannes sont stockées dans le hash Redis `faults` (en mémoire en mode standalone) et relues à chaque requête ou job : elles s'appliquent immédiatement, sans redémarrage. Leur code est dans `app/adapters/faults.py`.
 
 ```bash
 # Activer
@@ -290,8 +321,9 @@ Une panne à la fois. Après `worker_slow`, la file met du temps à se vider (en
 
 ## Développement
 
-- Code : `app/` (`main.py` aiguille vers `api.py`, `worker.py` ou `notifier.py` ; `db.py`, `jobqueue.py` et `faults.py` sont partagés).
+- Code : `app/`, organisé en ports et adaptateurs (voir « Architecture »). Un nouvel adaptateur implémente un port de `domain/ports.py` et se branche dans `bootstrap.py`.
+- Tests : `pip install -r app/requirements-dev.txt` puis `pytest`, à la racine. Ils tournent sur les adaptateurs en mémoire, sans Redis, Postgres ni cluster, et vérifient notamment que chaque panne ne dégrade que son SLI et que les métriques respectent le contrat des SLO.
 - SLO et dashboards : `sloth/` (SLO et squelettes), `sloth/solutions/`, `grafana/generate.py`, `monitoring/sloth-values.yaml`, `monitoring/rbac.yaml`.
 - Déploiement : `charts/docshare/` (pile d'une équipe), `monitoring/values.yaml` (kube-prometheus-stack), `values/<cible>/` (différences par cible), `scripts/setup.sh` et `scripts/teardown.sh`. Les scripts tournent avec le bash 3.2 de macOS.
-- Image : `.github/workflows/image.yml` publie à chaque push sur `main` une image amd64 + arm64 sur `ghcr.io/<owner>/docshare`, taguée par SHA et `latest`.
+- Image : `.github/workflows/image.yml` lance les tests, puis publie à chaque push sur `main` une image amd64 + arm64 sur `ghcr.io/<owner>/docshare`, taguée par SHA et `latest`.
 - Spécifications et plan de travail : `openspec/` (`openspec list`, `openspec show <change>`).
