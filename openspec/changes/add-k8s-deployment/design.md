@@ -28,7 +28,7 @@ Alternative écartée : charts Bitnami. Dépendance lourde, conditions de distri
 **`PodMonitor` dans le chart d'équipe.** Chaque équipe apporte sa propre collecte ; le label `namespace` est ajouté automatiquement par l'opérateur.
 Alternative écartée : un seul `PodMonitor` dans `monitoring` avec `namespaceSelector: any`. Fonctionne, mais une équipe supprimée laisse moins de traces si sa collecte vit dans son namespace.
 
-**Droits.** RoleBinding vers le ClusterRole `edit` dans le namespace de l'équipe. Kubeconfig généré par `kubectl create token <sa> --duration=8h` et l'adresse du serveur API extraite du contexte courant de l'animateur. Fonctionne à l'identique sur les trois cibles.
+**Droits.** RoleBinding vers le ClusterRole `edit` dans le namespace de l'équipe. Kubeconfig généré par `kubectl create token <sa> --duration=8h` et l'adresse du serveur API extraite du contexte courant de l'animateur. Fonctionne à l'identique sur les deux cibles.
 Alternative écartée : identités cloud (IAM EKS). Imposerait des comptes cloud aux participants.
 
 **Accès à Grafana par LoadBalancer.** Les équipes n'ont aucun droit dans `monitoring`, donc pas de `port-forward` possible. Le Service `LoadBalancer` est supporté nativement sur EKS et k3s (servicelb) ; `loadBalancerSourceRanges` limite l'accès à l'IP de la salle.
