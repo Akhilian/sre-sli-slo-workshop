@@ -8,7 +8,7 @@ locals {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.16"
+  version = "~> 6.7"
 
   name = var.cluster_name
   cidr = "10.0.0.0/16"
@@ -26,10 +26,10 @@ module "vpc" {
 }
 
 module "ebs_csi_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.48"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "~> 6.8"
 
-  role_name             = "${var.cluster_name}-ebs-csi"
+  name                  = "${var.cluster_name}-ebs-csi"
   attach_ebs_csi_policy = true
 
   oidc_providers = {
@@ -41,10 +41,10 @@ module "ebs_csi_irsa" {
 }
 
 module "lb_controller_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.48"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "~> 6.8"
 
-  role_name                              = "${var.cluster_name}-lb-controller"
+  name                                   = "${var.cluster_name}-lb-controller"
   attach_load_balancer_controller_policy = true
 
   oidc_providers = {
@@ -57,27 +57,27 @@ module "lb_controller_irsa" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.31"
+  version = "~> 21.29"
 
-  cluster_name    = var.cluster_name
-  cluster_version = var.kubernetes_version
+  name               = var.cluster_name
+  kubernetes_version = var.kubernetes_version
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  cluster_endpoint_public_access       = true
-  cluster_endpoint_public_access_cidrs = var.api_allowed_cidrs
+  endpoint_public_access       = true
+  endpoint_public_access_cidrs = var.api_allowed_cidrs
 
   # Celui qui lance Terraform administre le cluster ; les équipes passent par
   # les jetons de ServiceAccount créés par deploy/scripts/setup.sh.
   enable_cluster_creator_admin_permissions = true
 
-  cluster_addons = {
+  addons = {
     coredns    = {}
     kube-proxy = {}
     vpc-cni    = {}
     aws-ebs-csi-driver = {
-      service_account_role_arn = module.ebs_csi_irsa.iam_role_arn
+      service_account_role_arn = module.ebs_csi_irsa.arn
     }
   }
 
@@ -132,29 +132,16 @@ resource "helm_release" "lb_controller" {
   name       = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
-  version    = "1.11.0"
+  version    = "3.6.0"
   namespace  = "kube-system"
 
-  set {
-    name  = "clusterName"
-    value = module.eks.cluster_name
-  }
-  set {
-    name  = "region"
-    value = var.region
-  }
-  set {
-    name  = "vpcId"
-    value = module.vpc.vpc_id
-  }
-  set {
-    name  = "serviceAccount.name"
-    value = "aws-load-balancer-controller"
-  }
-  set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = module.lb_controller_irsa.iam_role_arn
-  }
+  set = [
+    { name = "clusterName", value = module.eks.cluster_name },
+    { name = "region", value = var.region },
+    { name = "vpcId", value = module.vpc.vpc_id },
+    { name = "serviceAccount.name", value = "aws-load-balancer-controller" },
+    { name = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn", value = module.lb_controller_irsa.arn },
+  ]
 
   depends_on = [module.eks]
 }

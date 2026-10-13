@@ -13,7 +13,7 @@ variable "cluster_name" {
 variable "kubernetes_version" {
   description = "Version de Kubernetes du plan de contrôle."
   type        = string
-  default     = "1.32"
+  default     = "1.35"
 }
 
 variable "node_instance_type" {
