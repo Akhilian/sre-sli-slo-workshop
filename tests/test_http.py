@@ -13,8 +13,9 @@ def client(standalone):
     return TestClient(create_app(standalone.api))
 
 
-def upload(client, content="contenu doc-1a2b3c4d"):
-    return client.post("/documents", json={"title": "Rapport", "content": content})
+def upload(client, content=b"contenu doc-1a2b3c4d", filename="rapport.txt", title=None):
+    data = {"title": title} if title else None
+    return client.post("/documents", files={"file": (filename, content, "text/plain")}, data=data)
 
 
 def test_upload_202_puis_consultation(client, standalone):
@@ -26,16 +27,45 @@ def test_upload_202_puis_consultation(client, standalone):
     document_id = response.json()["id"]
     body = client.get(f"/documents/{document_id}").json()
     assert body["status"] == "pending"
-    assert set(body) == {"id", "title", "status", "uploaded_at", "processed_at"}
+    assert body["title"] == "rapport.txt"
+    assert (body["filename"], body["content_type"], body["size"]) == ("rapport.txt", "text/plain", 20)
+    assert set(body) == {"id", "title", "filename", "content_type", "size", "status", "uploaded_at", "processed_at"}
     assert standalone.jobs.length() == 1
     assert sample("http_requests_total", route="/documents", status="202") == before + 1
 
 
 def test_upload_invalide_422_sans_document(client, standalone):
-    response = client.post("/documents", json={"title": "Rapport", "content": ""})
-
-    assert response.status_code == 422
+    assert client.post("/documents", data={"title": "Rapport"}).status_code == 422
+    assert upload(client, content=b"").status_code == 422
     assert standalone.jobs.length() == 0
+
+
+def test_fichier_trop_gros_413(standalone):
+    client = TestClient(create_app(standalone.api, max_upload_bytes=10))
+
+    assert upload(client, content=b"x" * 11).status_code == 413
+    assert upload(client, content=b"x" * 10).status_code == 202
+    assert standalone.jobs.length() == 1
+
+
+def test_titre_explicite(client):
+    document_id = upload(client, title="Bilan 2026").json()["id"]
+
+    assert client.get(f"/documents/{document_id}").json()["title"] == "Bilan 2026"
+
+
+def test_telechargement_du_fichier(client):
+    content = "Résumé é à ü".encode()
+    document_id = upload(client, content=content, filename="résumé.txt").json()["id"]
+
+    response = client.get(f"/documents/{document_id}/file")
+
+    assert response.status_code == 200
+    assert response.content == content
+    assert response.headers["content-type"].startswith("text/plain")
+    assert response.headers["content-disposition"] == "attachment; filename*=UTF-8''r%C3%A9sum%C3%A9.txt"
+    assert client.get("/documents/999/file").status_code == 404
+    assert sample("http_requests_total", route="/documents/{id}/file", status="200") >= 1
 
 
 def test_document_inconnu_404(client):

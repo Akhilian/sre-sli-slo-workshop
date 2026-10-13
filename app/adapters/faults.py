@@ -40,16 +40,19 @@ class FaultyDocumentRepository:
         self.sleep = sleep
         self.chance = chance
 
-    def add(self, title, content):
+    def add(self, title, file):
         active = self.faults.current()
         if active.get("upload_latency"):
             self.sleep(active["upload_latency"])
         if self.chance() < active.get("upload_error_rate", 0):
             raise InjectedFault("Erreur interne simulée")
-        return self.inner.add(title, content)
+        return self.inner.add(title, file)
 
     def get(self, document_id):
         return self.inner.get(document_id)
+
+    def get_file(self, document_id):
+        return self.inner.get_file(document_id)
 
     def mark_done(self, document_id):
         self.inner.mark_done(document_id)
@@ -64,12 +67,13 @@ class SlowOcr:
         self.sleep = sleep
         self.clock = clock
 
-    def extract(self, document_id):
+    def extract(self, file):
         start = self.clock()
-        self.inner.extract(document_id)
+        text = self.inner.extract(file)
         factor = self.faults.current().get("worker_slow", 0)
         if factor > 1:
             self.sleep((factor - 1) * (self.clock() - start))
+        return text
 
 
 class StaleIndexer:
@@ -79,10 +83,10 @@ class StaleIndexer:
         self.inner = inner
         self.faults = faults
 
-    def index(self, document_id):
+    def index(self, document_id, text):
         if self.faults.current().get("stale_index"):
             return
-        self.inner.index(document_id)
+        self.inner.index(document_id, text)
 
 
 class LossyQueue:

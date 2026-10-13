@@ -11,18 +11,20 @@ from adapters import faults, metrics
 from adapters.memory import InMemoryDocuments, InMemoryFaultStore, InMemoryQueue
 from adapters.simulated import SimulatedEmailSender, SimulatedOcr
 from domain.models import Notification, ProcessingJob
-from domain.services import GetDocument, ProcessDocument, SearchDocuments, SendNotification, UploadDocument
+from domain.services import DownloadDocument, GetDocument, ProcessDocument, SearchDocuments, SendNotification, UploadDocument
 from entrypoints import http, notifier, standalone, worker
 
 PORT = int(os.environ.get("PORT", "8000"))
 METRICS_PORT = int(os.environ.get("METRICS_PORT", "9100"))
 WORKER_CONCURRENCY = int(os.environ.get("WORKER_CONCURRENCY", "4"))
+MAX_UPLOAD_BYTES = int(os.environ.get("MAX_UPLOAD_BYTES", str(http.MAX_UPLOAD_BYTES)))
 
 
 def api_services(documents, jobs, fault_store):
     return http.ApiServices(
         upload=UploadDocument(faults.FaultyDocumentRepository(documents, fault_store), jobs),
         get_document=GetDocument(documents),
+        download=DownloadDocument(documents),
         search=SearchDocuments(documents),
         faults=fault_store,
     )
@@ -66,7 +68,7 @@ def build_standalone(ocr=None, email=None, concurrency=WORKER_CONCURRENCY):
 
 def run(role):
     if role == "standalone":
-        standalone.run(build_standalone(), PORT)
+        standalone.run(build_standalone(), PORT, MAX_UPLOAD_BYTES)
         return
 
     # Mode distribué : imports ici, pour que le mode standalone n'ait besoin ni de Redis ni de Postgres.
@@ -93,7 +95,7 @@ def run(role):
 
     if role == "api":
         documents.create_schema()
-        http.run(api_services(documents, jobs, fault_store), PORT)
+        http.run(api_services(documents, jobs, fault_store), PORT, MAX_UPLOAD_BYTES)
     else:
         metrics.watch_queue_depth(jobs)
         threads = worker.start(process_document(documents, notifications, fault_store, SimulatedOcr()), jobs, WORKER_CONCURRENCY)

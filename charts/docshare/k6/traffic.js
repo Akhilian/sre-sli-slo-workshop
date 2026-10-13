@@ -45,8 +45,6 @@ const CORPUS = [
   'ordonnance médicale',
 ];
 
-const JSON_HEADERS = { headers: { 'Content-Type': 'application/json' } };
-
 function token() {
   return 'doc-' + Math.random().toString(36).slice(2, 10).padEnd(8, '0');
 }
@@ -54,7 +52,9 @@ function token() {
 export default function () {
   const tok = token();
   const text = CORPUS[Math.floor(Math.random() * CORPUS.length)];
-  const res = http.post(`${API}/documents`, JSON.stringify({ title: text, content: `${text} ${tok}` }), JSON_HEADERS);
+  // Un petit fichier texte qui contient le jeton : l'OCR du worker l'extrait et l'indexe.
+  const file = http.file(`${text} ${tok}`, `${tok}.txt`, 'text/plain');
+  const res = http.post(`${API}/documents`, { file, title: text });
   if (res.status !== 202) {
     return; // upload en erreur (upload_error_rate) : rien à suivre
   }

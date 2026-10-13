@@ -3,6 +3,8 @@ import time
 
 from prometheus_client import REGISTRY
 
+from domain.models import StoredFile
+
 
 def no_sleep(seconds):
     pass
@@ -24,3 +26,7 @@ class FakeClock:
 def sample(name, **labels):
     """Valeur actuelle d'une série Prometheus, 0 si elle n'existe pas encore."""
     return REGISTRY.get_sample_value(name, labels) or 0.0
+
+
+def text_file(content, filename="rapport.txt"):
+    return StoredFile(filename, "text/plain", content.encode())

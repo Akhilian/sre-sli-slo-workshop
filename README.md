@@ -96,6 +96,7 @@ docker rm -f api worker notifier redis postgres && docker network rm docshare
 | `PORT` | api, standalone | `8000` | port HTTP de l'API (métriques comprises) |
 | `METRICS_PORT` | worker, notifier | `9100` | port des métriques, utilisable aussi comme sonde |
 | `WORKER_CONCURRENCY` | worker, standalone | `4` | jobs traités en parallèle (capacité ≈ 2 jobs/s) |
+| `MAX_UPLOAD_BYTES` | api, standalone | `5242880` | taille maximale d'un fichier déposé (5 Mio), au-delà 413 |
 
 ## Déployer sur Kubernetes
 
@@ -218,8 +219,9 @@ Les dashboards sont produits par `grafana/generate.py` (modifier le script, puis
 
 | Endpoint | Rôle |
 | --- | --- |
-| `POST /documents` | upload `{"title", "content"}`, répond 202 avec l'`id` (422 si un champ est vide) |
-| `GET /documents/{id}` | statut (`pending` / `done`) et métadonnées, 404 si inconnu |
+| `POST /documents` | upload d'un fichier en `multipart/form-data` (champ `file`, titre optionnel `title`, par défaut le nom du fichier), répond 202 avec l'`id` ; 422 si le fichier manque ou est vide, 413 au-delà de 5 Mio (`MAX_UPLOAD_BYTES`) |
+| `GET /documents/{id}` | statut (`pending` / `done`) et métadonnées (titre, nom, type et taille du fichier), 404 si inconnu |
+| `GET /documents/{id}/file` | téléchargement du fichier d'origine, 404 si inconnu |
 | `GET /search?q=` | recherche plein texte, 20 résultats au plus |
 | `GET /admin/faults` | pannes actives |
 | `POST /admin/faults` | active ou coupe une panne |
@@ -227,17 +229,23 @@ Les dashboards sont produits par `grafana/generate.py` (modifier le script, puis
 | `GET /metrics` | métriques Prometheus de l'API |
 
 ```bash
-# Upload
-curl -s -X POST localhost:8000/documents -H 'content-type: application/json' \
-  -d '{"title": "Facture", "content": "facture électricité doc-abc12345"}'
+# Upload d'un fichier
+echo "facture électricité doc-abc12345" > facture.txt
+curl -s -F file=@facture.txt localhost:8000/documents
 # {"id":1}
+curl -s -F file=@photo.png -F title="Photo du chantier" localhost:8000/documents
 
 # Statut : pending, puis done après 1 à 3 s
 curl -s localhost:8000/documents/1
 
 # Recherche : le document n'est trouvé qu'une fois traité par le worker
 curl -s 'localhost:8000/search?q=doc-abc12345'
+
+# Téléchargement
+curl -s -OJ localhost:8000/documents/1/file
 ```
+
+Le worker simule un OCR : il lit le texte des fichiers texte (`text/*`, `.txt`, `.md`, `.csv`, `.json`), qui deviennent recherchables par leur contenu. Les autres fichiers (PDF, images...) ne sont recherchables que par leur titre.
 
 Si Postgres ne répond pas pendant une recherche, l'API renvoie quand même 200 avec une liste vide et incrémente `search_fallback_total`. C'est volontaire : un 200 n'est pas forcément un succès.
 

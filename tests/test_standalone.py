@@ -23,7 +23,9 @@ def test_parcours_complet_sans_infrastructure(standalone):
     client = TestClient(create_app(standalone.api))
     sent_before = sample("notifications_sent_total", status="ok")
 
-    document_id = client.post("/documents", json={"title": "Rapport", "content": "doc-1a2b3c4d"}).json()["id"]
+    document_id = client.post(
+        "/documents", files={"file": ("rapport.txt", b"facture doc-1a2b3c4d", "text/plain")}, data={"title": "Rapport"}
+    ).json()["id"]
 
     assert wait_for(lambda: client.get(f"/documents/{document_id}").json()["status"] == "done")
     assert client.get("/search", params={"q": "doc-1a2b3c4d"}).json() == {

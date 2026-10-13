@@ -11,7 +11,12 @@ WORDS = re.compile(r"[\w-]+")
 
 
 def words(text):
-    return {word.lower() for word in WORDS.findall(text)}
+    """Mots en minuscules. Comme Postgres, un mot composé (doc-1a2b) compte aussi pour chacune de ses parties."""
+    found = set()
+    for word in WORDS.findall(text.lower()):
+        found.add(word)
+        found.update(part for part in word.split("-") if part)
+    return found
 
 
 class InMemoryDocuments:
@@ -20,15 +25,16 @@ class InMemoryDocuments:
     def __init__(self):
         self.lock = threading.Lock()
         self.documents = {}  # id -> Document
-        self.contents = {}   # id -> texte à indexer
+        self.files = {}  # id -> StoredFile
         self.index_words = {}  # id -> mots indexés ; absent tant que le document n'est pas indexé
         self.next_id = 1
 
-    def add(self, title, content):
+    def add(self, title, file):
         with self.lock:
-            document = Document(self.next_id, title, "pending", datetime.now(timezone.utc))
+            document = Document(self.next_id, title, file.filename, file.content_type, len(file.data),
+                                "pending", datetime.now(timezone.utc))
             self.documents[document.id] = document
-            self.contents[document.id] = f"{title} {content}"
+            self.files[document.id] = file
             self.next_id += 1
         return document
 
@@ -36,14 +42,18 @@ class InMemoryDocuments:
         with self.lock:
             return self.documents.get(document_id)
 
+    def get_file(self, document_id):
+        with self.lock:
+            return self.files.get(document_id)
+
     def mark_done(self, document_id):
         with self.lock:
             document = self.documents[document_id]
             self.documents[document_id] = replace(document, status="done", processed_at=datetime.now(timezone.utc))
 
-    def index(self, document_id):
+    def index(self, document_id, text):
         with self.lock:
-            self.index_words[document_id] = words(self.contents[document_id])
+            self.index_words[document_id] = words(f"{self.documents[document_id].title} {text}")
 
     def search(self, query, limit):
         wanted = words(query)

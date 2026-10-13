@@ -5,10 +5,11 @@ import pytest
 
 from adapters.faults import FaultyDocumentRepository, InjectedFault, LossyQueue, SlowOcr, StaleIndexer
 from adapters.memory import InMemoryDocuments, InMemoryFaultStore, InMemoryQueue
-from domain.models import Notification, ProcessingJob
+from adapters.simulated import SimulatedOcr
+from domain.models import Notification, ProcessingJob, StoredFile
 from domain.services import ProcessDocument, SearchDocuments, SendNotification, UploadDocument
 from entrypoints import notifier
-from helpers import FakeClock, sample
+from helpers import FakeClock, sample, text_file
 
 TOKEN = "doc-1a2b3c4d"
 
@@ -17,8 +18,9 @@ class OcrTwoSeconds:
     def __init__(self, clock):
         self.clock = clock
 
-    def extract(self, document_id):
+    def extract(self, file):
         self.clock.sleep(2)
+        return file.data.decode()
 
 
 class NoEmail:
@@ -50,7 +52,7 @@ def journey(active):
     for _ in range(2):
         start = clock()
         try:
-            upload.execute("Rapport", TOKEN)
+            upload.execute(text_file(TOKEN))
         except InjectedFault:
             degraded.add("disponibilité")
         if clock() - start > 0.3:
@@ -91,7 +93,7 @@ def test_erreur_d_upload_sans_document_fantome():
     upload = UploadDocument(FaultyDocumentRepository(documents, store), jobs)
 
     with pytest.raises(InjectedFault):
-        upload.execute("Rapport", TOKEN)
+        upload.execute(text_file(TOKEN))
 
     assert documents.get(1) is None
     assert jobs.length() == 0
@@ -101,7 +103,7 @@ def test_index_perime_document_done_mais_introuvable():
     store = InMemoryFaultStore()
     store.set("stale_index", 1)
     documents, notifications = InMemoryDocuments(), InMemoryQueue()
-    document = documents.add("Rapport", TOKEN)
+    document = documents.add("Rapport", text_file(TOKEN))
 
     ProcessDocument(OcrTwoSeconds(FakeClock()), StaleIndexer(documents, store), documents, notifications).execute(
         ProcessingJob(document.id, document.uploaded_at.timestamp()))
@@ -131,8 +133,17 @@ def test_panne_coupee_a_chaud():
 
     store.set("upload_error_rate", 1)
     with pytest.raises(InjectedFault):
-        upload.execute("Rapport", TOKEN)
+        upload.execute(text_file(TOKEN))
     store.set("upload_error_rate", 0)
 
-    assert upload.execute("Rapport", TOKEN).id == 1
+    assert upload.execute(text_file(TOKEN)).id == 1
     assert store.current() == {}
+
+
+def test_ocr_ne_lit_que_les_fichiers_texte():
+    image = StoredFile("photo.png", "image/png", b"\x89PNG\x00doc-1a2b3c4d")
+    text = StoredFile("notes.bin", "text/plain", b"doc-1a2b3c4d\x00fin")
+    ocr = SimulatedOcr(sleep=lambda seconds: None)
+
+    assert ocr.extract(image) == ""
+    assert ocr.extract(text) == "doc-1a2b3c4dfin"

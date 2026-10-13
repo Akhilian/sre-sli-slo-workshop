@@ -3,9 +3,10 @@ import logging
 import time
 from dataclasses import asdict, dataclass
 from typing import Annotated
+from urllib.parse import quote
 
 import uvicorn
-from fastapi import Depends, FastAPI, HTTPException, Query, Request, Response
+from fastapi import Depends, FastAPI, Form, HTTPException, Query, Request, Response, UploadFile
 from fastapi.responses import JSONResponse
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from pydantic import BaseModel, Field
@@ -13,17 +14,21 @@ from pydantic import BaseModel, Field
 from adapters import faults
 from adapters.metrics import HTTP_DURATION, HTTP_REQUESTS, SEARCH_FALLBACK, SEARCH_REQUESTS, SEARCH_RESULTS
 from domain.errors import DocumentNotFound, SearchUnavailable
-from domain.services import GetDocument, SearchDocuments, UploadDocument
+from domain.models import StoredFile
+from domain.services import DownloadDocument, GetDocument, SearchDocuments, UploadDocument
 
 log = logging.getLogger("api")
 
 NOT_INSTRUMENTED = {"/metrics", "/healthz", "/admin/faults"}
+
+MAX_UPLOAD_BYTES = 5 * 1024 * 1024
 
 
 @dataclass
 class ApiServices:
     upload: UploadDocument
     get_document: GetDocument
+    download: DownloadDocument
     search: SearchDocuments
     faults: faults.FaultStore
 
@@ -64,17 +69,12 @@ class MetricsMiddleware:
                 HTTP_DURATION.labels(route.path).observe(time.perf_counter() - start)
 
 
-class DocumentIn(BaseModel):
-    title: str = Field(min_length=1)
-    content: str = Field(min_length=1)
-
-
 class FaultIn(BaseModel):
     name: str
     value: float = Field(ge=0)
 
 
-def create_app(services: ApiServices) -> FastAPI:
+def create_app(services: ApiServices, max_upload_bytes: int = MAX_UPLOAD_BYTES) -> FastAPI:
     app = FastAPI(title="DocShare")
     app.state.services = services
     app.add_middleware(MetricsMiddleware)
@@ -86,8 +86,14 @@ def create_app(services: ApiServices) -> FastAPI:
     # --- Parcours upload -------------------------------------------------------
 
     @app.post("/documents", status_code=202)
-    def upload(doc: DocumentIn, services: Services):
-        document = services.upload.execute(doc.title, doc.content)
+    def upload(services: Services, file: UploadFile, title: Annotated[str | None, Form()] = None):
+        data = file.file.read(max_upload_bytes + 1)
+        if len(data) > max_upload_bytes:
+            raise HTTPException(status_code=413, detail=f"Fichier trop volumineux ({max_upload_bytes // 1024 // 1024} Mio au plus)")
+        if not data:
+            raise HTTPException(status_code=422, detail="Fichier vide")
+        stored = StoredFile(file.filename or "document", file.content_type or "application/octet-stream", data)
+        document = services.upload.execute(stored, title)
         return {"id": document.id}
 
     @app.get("/documents/{id}")
@@ -96,6 +102,16 @@ def create_app(services: ApiServices) -> FastAPI:
             return asdict(services.get_document.execute(id))
         except DocumentNotFound:
             raise HTTPException(status_code=404, detail="Document inconnu")
+
+    @app.get("/documents/{id}/file")
+    def download(id: int, services: Services):
+        try:
+            file = services.download.execute(id)
+        except DocumentNotFound:
+            raise HTTPException(status_code=404, detail="Fichier inconnu")
+        # attachment : le navigateur télécharge le fichier au lieu de l'afficher.
+        disposition = f"attachment; filename*=UTF-8''{quote(file.filename)}"
+        return Response(file.data, media_type=file.content_type, headers={"Content-Disposition": disposition})
 
     # --- Parcours recherche ----------------------------------------------------
 
@@ -141,6 +157,6 @@ def create_app(services: ApiServices) -> FastAPI:
     return app
 
 
-def run(services: ApiServices, port: int):
+def run(services: ApiServices, port: int, max_upload_bytes: int = MAX_UPLOAD_BYTES):
     # Un seul processus uvicorn : prometheus_client n'a pas besoin du mode multiprocess.
-    uvicorn.run(create_app(services), host="0.0.0.0", port=port, workers=1)
+    uvicorn.run(create_app(services, max_upload_bytes), host="0.0.0.0", port=port, workers=1)
