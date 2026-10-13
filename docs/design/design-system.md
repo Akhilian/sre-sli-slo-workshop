@@ -1,332 +1,372 @@
 ---
 name: DocShare
-description: Gestionnaire de fichiers crédible dont chaque ligne raconte le trajet du fichier, comme un suivi de colis.
+description: Gestionnaire de fichiers en spécimen de fonte variable, où la graisse du nom dit où en est le fichier.
 colors:
-  navy: "#14213d"
-  navy-soft: "#24345a"
-  saffron: "#f5b700"
-  saffron-hover: "#ffc72c"
-  saffron-edge: "#d29c00"
-  ground: "#eef1f5"
-  surface: "#ffffff"
-  surface-sunk: "#f6f8fb"
-  line: "#d3d9e3"
-  line-strong: "#aab4c4"
-  ink: "#141c2e"
-  muted: "#4b566b"
-  progress: "#1d5bd0"
-  progress-bg: "#e5edfc"
-  ok: "#10704d"
-  ok-bg: "#def3e9"
-  alert: "#bd2318"
-  alert-bg: "#fdebe9"
-  idle: "#c3cad6"
+  paper: "#fbfbfa"
+  paper-sunk: "#f2f2ef"
+  ink: "#0e0e0e"
+  grey: "#5f5f5f"
+  ultra: "#3a2bff"
+  ultra-deep: "#2a1ed6"
+  verm: "#e5361c"
+  verm-text: "#c42a12"
+  white: "#ffffff"
 typography:
   display:
-    fontFamily: "'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible', system-ui, sans-serif"
-    fontSize: "1.75rem"
-    fontWeight: 700
-    lineHeight: 1.2
-    letterSpacing: "-0.01em"
+    fontFamily: "'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif"
+    fontSize: "clamp(4rem, 9vw, 8.25rem)"
+    fontWeight: 800
+    lineHeight: 0.8
+    letterSpacing: "-0.04em"
+    fontVariation: "'opsz' 96"
+  display-results:
+    fontFamily: "'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif"
+    fontSize: "clamp(3rem, 6vw, 5.5rem)"
+    fontWeight: 800
+    lineHeight: 0.8
+    letterSpacing: "-0.04em"
+    fontVariation: "'opsz' 96"
+  display-drop:
+    fontFamily: "'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif"
+    fontSize: "clamp(4rem, 11vw, 10rem)"
+    fontWeight: 800
+    lineHeight: 0.85
+    letterSpacing: "-0.04em"
+    fontVariation: "'opsz' 96"
   headline:
-    fontFamily: "'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible', system-ui, sans-serif"
-    fontSize: "1.5rem"
-    fontWeight: 700
-    lineHeight: 1.5
+    fontFamily: "'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif"
+    fontSize: "clamp(2.75rem, 6vw, 5.25rem)"
+    fontWeight: 300
+    lineHeight: 0.9
+    letterSpacing: "-0.04em"
+    fontVariation: "'wdth' 85"
   title:
-    fontFamily: "'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible', system-ui, sans-serif"
-    fontSize: "1.25rem"
-    fontWeight: 700
-    lineHeight: 1.5
+    fontFamily: "'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif"
+    fontSize: "1.75rem"
+    fontWeight: 750
+    letterSpacing: "-0.03em"
+  brand:
+    fontFamily: "'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif"
+    fontSize: "1.5rem"
+    fontWeight: 800
+    letterSpacing: "-0.02em"
+    fontVariation: "'wdth' 75"
+  name-pending:
+    fontFamily: "'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif"
+    fontSize: "1.3125rem"
+    fontWeight: 300
+    letterSpacing: "-0.015em"
+    fontVariation: "'wdth' 85"
+  name-done:
+    fontFamily: "'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif"
+    fontSize: "1.3125rem"
+    fontWeight: 750
+    letterSpacing: "-0.015em"
+    fontVariation: "'wdth' 100"
+  name-stuck:
+    fontFamily: "'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif"
+    fontSize: "1.3125rem"
+    fontWeight: 500
+    letterSpacing: "-0.015em"
+    fontVariation: "'wdth' 92"
   body:
-    fontFamily: "'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible', system-ui, sans-serif"
-    fontSize: "1rem"
+    fontFamily: "'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif"
+    fontSize: "1.0625rem"
     fontWeight: 400
-    lineHeight: 1.5
-  body-strong:
-    fontFamily: "'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible', system-ui, sans-serif"
-    fontSize: "1rem"
-    fontWeight: 600
-    lineHeight: 1.5
-  label:
-    fontFamily: "'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible', system-ui, sans-serif"
-    fontSize: "0.9rem"
-    fontWeight: 700
-    lineHeight: 1.5
-  mono:
-    fontFamily: "ui-monospace, 'SF Mono', Menlo, monospace"
-    fontSize: "0.875em"
+    lineHeight: 1.45
+  control:
+    fontFamily: "'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif"
+    fontSize: "1.0625rem"
+    fontWeight: 650
+    letterSpacing: "-0.01em"
+  data:
+    fontFamily: "'Martian Mono Variable', 'Martian Mono', ui-monospace, monospace"
+    fontSize: "0.875rem"
+    fontWeight: 350
+    letterSpacing: "-0.02em"
+    fontFeature: "'tnum' 1"
+    fontVariation: "'wdth' 87.5"
+  data-label:
+    fontFamily: "'Martian Mono Variable', 'Martian Mono', ui-monospace, monospace"
+    fontSize: "0.8125rem"
+    fontWeight: 350
+    letterSpacing: "-0.02em"
+    fontFeature: "'tnum' 1"
+    fontVariation: "'wdth' 87.5"
 rounded:
-  sm: "4px"
-  md: "8px"
-  lg: "12px"
-  overlay: "1.25rem"
-  pill: "999px"
+  none: "0px"
 spacing:
-  xs: "0.5rem"
-  sm: "0.75rem"
-  md: "1.1rem"
-  lg: "1.5rem"
-  xl: "2.5rem"
-  step: "1.5rem"
-  step-gap: "3.6rem"
-  page: "76rem"
+  cell-gap: "4px"
+  cell: "14px"
+  gutter: "2.5rem"
+  gutter-compact: "1rem"
+  row: "3.75rem"
+  topbar: "3.5rem"
+  control: "2.75rem"
+  control-compact: "2.25rem"
+  control-row: "2rem"
+  section: "3rem"
 components:
   topbar:
-    backgroundColor: "{colors.navy}"
-    textColor: "{colors.surface}"
-    padding: "0.75rem 1.5rem"
+    backgroundColor: "{colors.paper}"
+    textColor: "{colors.ink}"
+    height: "{spacing.topbar}"
+    padding: "0 2.5rem"
   search-input:
-    backgroundColor: "{colors.surface}"
+    backgroundColor: "{colors.white}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.md}"
-    height: "2.75rem"
-    padding: "0 2.75rem 0 2.9rem"
+    rounded: "{rounded.none}"
+    height: "{spacing.control-compact}"
+    padding: "0 2.5rem 0 2.4rem"
   button-primary:
-    backgroundColor: "{colors.saffron}"
-    textColor: "{colors.navy}"
-    rounded: "{rounded.md}"
-    height: "2.75rem"
-    padding: "0 1.15rem"
+    backgroundColor: "{colors.ultra}"
+    textColor: "{colors.white}"
+    typography: "{typography.control}"
+    rounded: "{rounded.none}"
+    height: "{spacing.control}"
+    padding: "0 1.25rem"
   button-primary-hover:
-    backgroundColor: "{colors.saffron-hover}"
-    textColor: "{colors.navy}"
+    backgroundColor: "{colors.ultra-deep}"
+    textColor: "{colors.white}"
   button-secondary:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.navy}"
-    rounded: "{rounded.md}"
-    height: "2.75rem"
-    padding: "0 1.15rem"
-  button-secondary-hover:
-    backgroundColor: "{colors.surface-sunk}"
-  button-ghost:
-    textColor: "{colors.navy}"
-    rounded: "{rounded.md}"
-    height: "2.4rem"
-    padding: "0 0.8rem"
-  button-ghost-hover:
-    backgroundColor: "{colors.surface-sunk}"
-  file-table:
-    backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.lg}"
-    padding: "0.95rem 1.1rem"
+    typography: "{typography.control}"
+    rounded: "{rounded.none}"
+    height: "{spacing.control}"
+    padding: "0 1.25rem"
+  button-secondary-hover:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.paper}"
+  button-download:
+    textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+    height: "{spacing.control-row}"
+    padding: "0 0.75rem"
+  button-download-hover:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.paper}"
+  icon-button:
+    size: "2rem"
+    rounded: "{rounded.none}"
+  icon-button-hover:
+    backgroundColor: "{colors.paper-sunk}"
   file-table-head:
-    backgroundColor: "{colors.surface-sunk}"
-    textColor: "{colors.muted}"
-    typography: "{typography.label}"
-    padding: "0.7rem 1.1rem"
-  file-table-row-stuck:
-    backgroundColor: "{colors.alert-bg}"
-  track-step-idle:
-    backgroundColor: "{colors.surface}"
-    rounded: "{rounded.pill}"
-    size: "{spacing.step}"
-  track-step-pending:
-    backgroundColor: "{colors.progress}"
-    textColor: "{colors.surface}"
-    rounded: "{rounded.pill}"
-    size: "{spacing.step}"
-  track-step-done:
-    backgroundColor: "{colors.ok}"
-    textColor: "{colors.surface}"
-    rounded: "{rounded.pill}"
-    size: "{spacing.step}"
-  track-step-stuck:
-    backgroundColor: "{colors.alert}"
-    textColor: "{colors.surface}"
-    rounded: "{rounded.pill}"
-    size: "{spacing.step}"
+    textColor: "{colors.grey}"
+    typography: "{typography.data-label}"
+    height: "2.25rem"
+    padding: "0 1rem"
+  file-table-row:
+    height: "{spacing.row}"
+    padding: "0 1rem"
+  file-table-row-hover:
+    backgroundColor: "{colors.paper-sunk}"
+  file-name-pending:
+    textColor: "{colors.ultra}"
+    typography: "{typography.name-pending}"
+  file-name-done:
+    textColor: "{colors.ink}"
+    typography: "{typography.name-done}"
+  file-name-stuck:
+    textColor: "{colors.verm-text}"
+    typography: "{typography.name-stuck}"
+  track-cell-todo:
+    size: "{spacing.cell}"
+    rounded: "{rounded.none}"
+  track-cell-passed:
+    backgroundColor: "{colors.ink}"
+    size: "{spacing.cell}"
+    rounded: "{rounded.none}"
+  track-cell-current:
+    backgroundColor: "{colors.ultra}"
+    size: "{spacing.cell}"
+    rounded: "{rounded.none}"
+  track-cell-stuck:
+    backgroundColor: "{colors.verm}"
+    size: "{spacing.cell}"
+    rounded: "{rounded.none}"
   tray:
-    backgroundColor: "{colors.surface}"
-    rounded: "{rounded.lg}"
+    backgroundColor: "{colors.paper}"
+    rounded: "{rounded.none}"
     width: "24rem"
   tray-head:
-    backgroundColor: "{colors.navy}"
-    textColor: "{colors.surface}"
-    padding: "0.55rem 0.6rem 0.55rem 1.1rem"
-  tray-head-failed:
-    backgroundColor: "{colors.alert}"
-    textColor: "{colors.surface}"
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.white}"
+    height: "2.5rem"
+    padding: "0 0.3rem 0 0.9rem"
+  drop-overlay:
+    backgroundColor: "{colors.ultra}"
+    textColor: "{colors.white}"
+    typography: "{typography.display-drop}"
+    padding: "{spacing.gutter}"
   notice-error:
-    backgroundColor: "{colors.alert-bg}"
-    textColor: "{colors.alert}"
-    rounded: "{rounded.md}"
-    padding: "0.9rem 1.1rem"
-  badge-active:
-    backgroundColor: "{colors.alert}"
-    textColor: "{colors.surface}"
-    rounded: "{rounded.pill}"
-    padding: "0.1rem 0.55rem"
+    textColor: "{colors.verm-text}"
+    rounded: "{rounded.none}"
+    padding: "0.9rem 1rem"
   badge-off:
-    backgroundColor: "{colors.surface-sunk}"
-    textColor: "{colors.muted}"
-    rounded: "{rounded.pill}"
-    padding: "0.1rem 0.55rem"
+    textColor: "{colors.grey}"
+    typography: "{typography.data-label}"
+    rounded: "{rounded.none}"
+    padding: "0.1rem 0.5rem"
 ---
 
 # Design System: DocShare
 
 ## Overview
 
-**Creative North Star: "Le suivi de colis"**
+**Creative North Star: "Le spécimen"**
 
-DocShare se présente comme un vrai gestionnaire de fichiers, au niveau de finition de Drive ou de La Suite Fichiers, sans en emprunter l'identité. La structure est celle du canon : une barre du haut bleu nuit qui porte le nom et une recherche large, un fond gris froid, un tableau blanc à lignes généreuses, une action principale safran. Ce qui lui est propre tient dans une seule pièce : chaque ligne montre le trajet du fichier en trois étapes (Envoyé, Traitement, Disponible), comme un suivi de livraison. Pendant une panne, le trajet cale visiblement sur l'étape de traitement.
+DocShare se lit comme une planche de spécimen de fonte variable posée sur un gestionnaire de fichiers. La structure reste celle du canon (barre fine, titre de vue, tableau, panneau d'envois en bas à droite), mais l'identité ne vient ni d'une couleur de marque ni d'une carte : elle vient de la typographie. Le nom d'un fichier change de graisse, de largeur et de couleur selon son état : fin, étroit et outremer quand il est en route, plein et noir quand il est disponible, barré de vermillon quand il cale. Un titre de vue à l'échelle d'une affiche (jusqu'à 132 px) installe ce registre dès le premier écran.
 
-Le système est pensé pour être lu à distance : base typographique à 17 px, Atkinson Hyperlegible Next, contrastes francs, trois couleurs d'état qui ne servent qu'à dire l'état. Il est volontairement dense mais aéré, plat, et clair uniquement : l'écran est vu dans une salle éclairée et au vidéoprojecteur. La profondeur est réservée à ce qui flotte au-dessus du travail (panneau des envois, voile de dépôt).
+Le monde est fait de papier blanc cassé, d'encre presque noire et de filets d'encre de 1 px, sans rayon et sans ombre. Deux voix typographiques se partagent strictement le travail : Bricolage Grotesque pour tout ce qui se lit et se manipule, Martian Mono pour les seules données (tailles, dates, états, légendes). Les changements d'état sont des bascules nettes, sans demi-teinte : les cases du trajet clignotent en deux temps, les squelettes aussi. Le système est clair seul, dense, pensé pour la salle éclairée et le vidéoprojecteur.
 
 **Key Characteristics:**
-- Barre bleu nuit pleine largeur, collante, avec la recherche au centre.
-- Une seule action safran par vue, texte bleu nuit.
-- Trois états codés couleur et forme : bleu en cours, vert disponible, rouge bloqué ou en échec.
-- Le trajet en trois pastilles reliées, signature de chaque ligne.
-- Surfaces plates bordées d'un filet ; seule l'interface flottante porte une ombre.
-- Icônes Lucide à trait unique, jamais de glyphes typographiques.
+- La graisse, la largeur et la couleur du nom portent l'état du fichier.
+- Rayon 0 partout ; des filets d'encre de 1 px comme seule structure.
+- Un seul accent, l'outremer, pour l'action principale et ce qui est en mouvement ; le vermillon pour ce qui cale.
+- Titre de vue en display 800 très serré, interlignage 0.8.
+- Martian Mono étroite et tabulaire pour les données, jamais pour la prose ni les commandes.
+- Aplats sans ombre, sauf le panneau des envois qui flotte.
+- Bascules nettes (`steps(2)`) plutôt que fondus.
 
 ## Colors
 
-Une palette de bureau froide (bleu nuit, gris bleutés) traversée par un seul accent chaud, le safran, et par trois couleurs d'état strictement sémantiques.
+Un noir et blanc d'imprimeur, traversé par un outremer électrique et, pour la seule panne, un vermillon.
 
 ### Primary
-- **Bleu nuit** (`navy`) : barre du haut, en-tête du panneau des envois, texte des boutons, fond de la marque dans le favicon. C'est la couleur de la structure, pas de l'action.
-- **Bleu nuit adouci** (`navy-soft`) : icônes de type de fichier et icône des états vides, un cran sous le bleu nuit pour ne pas concurrencer le texte.
+- **Outremer** (`ultra`) : l'action principale de la vue (« Déposer des fichiers »), tout ce qui est en route (nom en traitement, case courante du trajet, texte d'état, compte « en traitement » de la synthèse), l'anneau de focus, la bordure de la recherche au focus, la sélection de texte, `accent-color`, le voile de dépôt plein cadre et la lettre du favicon.
+- **Outremer profond** (`ultra-deep`) : survol du bouton principal, rien d'autre.
 
 ### Secondary
-- **Safran** (`saffron`) : l'action principale (« Déposer des fichiers »), le pictogramme de la marque, le cadre pointillé et l'icône du voile de dépôt, l'anneau de focus et la bordure de focus de la recherche sur fond bleu nuit, la sélection de texte (à 45 %).
-- **Safran clair** (`saffron-hover`) : survol du bouton principal.
-- **Arête safran** (`saffron-edge`) : filet d'1 px qui détoure le bouton principal sur fond clair.
-
-### Tertiary (états)
-- **Bleu traitement** (`progress`, fond `progress-bg`) : fichier en cours, étapes franchies d'un trajet en cours, synthèse « en traitement », anneau de focus par défaut et `accent-color`.
-- **Vert disponible** (`ok`, fond `ok-bg`) : trajet complet, synthèse « disponibles », envoi réussi.
-- **Rouge bloqué** (`alert`, fond `alert-bg`) : trajet calé, ligne bloquée teintée, envoi en échec, en-tête du panneau en échec, panne active au pupitre, message d'erreur.
-- **Gris en attente** (`idle`) : pastilles et segments du trajet pas encore atteints.
+- **Vermillon** (`verm`) : la couleur de la panne en aplat ou en trait : case bloquée du trajet, trait qui barre un nom bloqué ou un envoi échoué, filet de l'avis d'erreur.
+- **Vermillon texte** (`verm-text`) : la même panne quand elle s'écrit : nom bloqué, texte « Bloqué en traitement », compte « bloqués », nom et icône d'un envoi échoué, texte de l'avis d'erreur. Le vermillon plein (`verm`) n'atteint pas 4.5:1 sur le papier ; le texte passe toujours par `verm-text`.
 
 ### Neutral
-- **Fond de page** (`ground`) : gris froid clair derrière tout le contenu.
-- **Surface** (`surface`) : tableau, panneau des envois, état vide, pupitre, champ de recherche.
-- **Surface enfoncée** (`surface-sunk`) : en-tête du tableau, survol de ligne et de bouton fantôme, badge inactif.
-- **Filet** (`line`) : bordures de tableau et séparateurs de lignes. **Filet appuyé** (`line-strong`) : pointillé de l'état vide, champs du pupitre.
-- **Encre** (`ink`) : texte courant. **Texte atténué** (`muted`) : en-têtes de colonnes, métadonnées (taille, date), textes d'aide, placeholder.
+- **Papier** (`paper`) : fond de page, de la barre, du panneau des envois ; aussi la barre blanche qui raye la case bloquée.
+- **Papier enfoncé** (`paper-sunk`) : survol de ligne, survol de bouton-icône, lignes squelettes.
+- **Encre** (`ink`) : texte, filets (`--rule` est un alias de l'encre), cases franchies du trajet, en-tête inversé du panneau, survol plein des boutons secondaires.
+- **Gris** (`grey`) : en-têtes de colonnes, pied de tableau, textes d'aide, placeholder, lien de retour, unités et badge inactif.
+- **Blanc** (`white`) : fond des champs (recherche, pupitre), texte sur outremer et sur encre.
 
 ### Named Rules
-**La règle du safran unique.** Le safran signale l'action principale de la vue, et une seule à la fois ; ailleurs il ne sert qu'à la marque, au dépôt et au focus sur fond bleu nuit. Les actions secondaires sont blanches bordées de bleu nuit ou fantômes.
+**La règle de l'outremer unique.** Une seule commande outremer par vue. Ailleurs, l'outremer ne dit qu'une chose : « en mouvement » (fichier en traitement, envoi en cours, focus, dépôt). Au pupitre, « Appliquer » est rétrogradé en bouton à filet pour ne pas concurrencer l'action de la vue.
 
-**La règle des états dédiés.** Bleu, vert et rouge ne servent qu'à dire l'état d'un fichier, d'un envoi ou d'une panne. Jamais en décoration, jamais en couleur de section. Chaque état est aussi porté par une forme (coche, triangle d'alerte, point pulsé) et un libellé, pour rester lisible en niveaux de gris et au projecteur.
+**La règle du vermillon qui cale.** Le vermillon ne sert qu'à la panne et à l'échec. Il est toujours doublé d'une forme (trait qui barre, case rayée, triangle d'alerte) et d'un libellé, pour rester lisible en niveaux de gris et au projecteur.
 
 ## Typography
 
-**Display Font:** Atkinson Hyperlegible Next (variable, auto-hébergée via `@fontsource-variable`), repli Atkinson Hyperlegible puis `system-ui`
+**Display Font:** Bricolage Grotesque Variable (auto-hébergée, axes `opsz`, `wdth`, `wght`), repli `system-ui`
 **Body Font:** la même
-**Label/Mono Font:** pile monospace système (`ui-monospace`, SF Mono, Menlo) pour le seul `code`
+**Label/Mono Font:** Martian Mono Variable (auto-hébergée, axes `wdth`, `wght`), repli `ui-monospace`
 
-**Character:** une seule famille, conçue pour la lisibilité basse vision : formes de lettres très distinctes, chiffres sans ambiguïté, idéale pour un écran projeté. La hiérarchie vient de la taille et de la graisse, pas d'un contraste de familles.
+**Character:** une grotesque à axes larges, capable du très gras serré comme du maigre étroit, mise en scène comme un spécimen ; face à elle une mono étroite et légère qui tient les chiffres en colonnes. Le contraste vient des axes de la fonte, pas d'une palette.
 
 ### Hierarchy
-- **Display** (700, `display`) : titre de vue (« Mes fichiers », « Résultats pour… »). Interlettrage légèrement resserré.
-- **Headline** (700, `headline`) : message du voile de dépôt plein écran.
-- **Title** (700, `title`) : titre de l'état vide, titre du pupitre. La marque dans la barre se situe juste au-dessus (1.3rem, 700).
-- **Body** (400, `body`) : texte courant, métadonnées. La racine est à 106,25 % (17 px). Longueur de ligne des textes d'aide limitée à 34rem.
-- **Body strong** (600) : noms de fichiers, synthèse des états, boutons fantômes et liens-boutons, libellés d'état. Les boutons pleins et les libellés du trajet passent à 700.
-- **Label** (700, `label`) : en-têtes de colonnes et légende du trajet, en `muted`, casse normale. Le pied de tableau, les erreurs et les aides utilisent la même taille (0.9rem) en 400.
+- **Display** (800, `display`, interlignage 0.8, `opsz` 96) : titre de vue « Mes fichiers ». 3.75rem sous 48rem. Variante `display-results` pour « « requête » » en recherche, coupable n'importe où ; variante `display-drop` pour « Lâchez pour déposer. » plein cadre.
+- **Headline** (300, `headline`, largeur 85 %, outremer) : titre d'état vide qui invite au dépôt ; il prend la voix du fichier en route. En état vide « calme » (recherche sans résultat), il passe en 750, largeur 100 %, encre.
+- **Title** (750, `title`) : titre du pupitre. La marque « DocShare » (`brand`, 800, largeur 75 %) se tient dans la barre.
+- **Nom de fichier** (`name-pending` / `name-done` / `name-stuck`, 1.3125rem) : la signature, voir Components. Le build pilote la largeur par `font-stretch` (85 %, 100 %, 92 %).
+- **Body** (400, `body`, 1.0625rem soit 17 px, interlignage 1.45) : texte courant. Textes d'aide à 0.9375rem, plafonnés à 38rem.
+- **Commandes** (650, `control`) : boutons ; « Télécharger » à 0.875rem. Les liens-boutons sont en 600, 0.9375rem.
+- **Données** (Martian Mono 350, largeur 87.5 %, `tabular-nums`) : `data` (0.875rem) pour synthèse, tailles, dates, états du trajet ; `data-label` (0.8125rem) pour en-têtes de colonnes, pied de tableau, légendes, badges, détail du panneau.
 
 ### Named Rules
-**La règle des chiffres alignés.** Tout ce qui se compte ou se compare (synthèse, durées du trajet, tailles, dates) est en chiffres tabulaires (`font-variant-numeric: tabular-nums`), aligné à droite dans le tableau.
+**La règle des deux voix.** Martian Mono pour les données uniquement (taille, date, état, compte, légende, nom de panne) ; jamais pour la prose ni pour une commande. Tout le reste est en Bricolage Grotesque.
 
-**La règle de la casse normale.** Aucun texte en capitales ni espacé : les en-têtes et légendes restent en casse de phrase, en graisse 700 et couleur atténuée.
+**La règle du poids qui avance.** L'état d'un fichier s'exprime d'abord par les axes de la fonte : maigre et étroit en route, gras et plein une fois disponible. La transition entre les deux dure 300 ms sur la courbe `ease`.
+
+**La règle de la casse normale.** Aucun texte en capitales espacées, aucun surtitre : en-têtes et légendes restent en casse de phrase, en mono grise.
 
 ## Layout
 
-Une colonne de travail centrée, plafonnée à `page` (76rem), sous une barre collante pleine largeur. La barre est une grille à trois colonnes (marque à gauche, recherche jusqu'à 44rem au centre, colonne vide symétrique à droite). La zone de travail a une marge de 1.5rem et sépare ses blocs de 2.5rem ; l'en-tête de vue aligne titre et synthèse à gauche, action safran à droite, sur une même ligne de base basse.
+Pleine largeur, sans colonne centrée : tout s'aligne sur une gouttière (`gutter`, 2.5rem ; 1rem sous 48rem) et les filets courent d'un bord à l'autre. La barre du haut, collante et haute de 3.5rem, est une grille à trois colonnes : marque à gauche, recherche jusqu'à 40rem au centre, colonne vide symétrique. Les blocs de la zone de travail sont séparés de 3rem (`section`).
 
-Le tableau des fichiers est le cœur : le nom prend toute la place restante, les colonnes Trajet, Taille, Déposé et Action se limitent à leur contenu. Cellules à 0.95rem × 1.1rem, en-têtes à 0.7rem × 1.1rem. Le trajet utilise ses propres mesures : pastille `step` (1.5rem), segment `step-gap` (3.6rem) ; la légende de l'en-tête est une grille calée sur le pas du trajet pour centrer chaque libellé au-dessus de sa pastille.
+L'en-tête de vue est une grille à deux colonnes calée en bas : titre display à gauche, bouton outremer à droite posé sur la ligne de base (0.4rem au-dessus), synthèse mono sur toute la largeur dessous, filet d'encre pour finir. Le tableau suit immédiatement, sans marge latérale : le nom prend toute la place, les colonnes Trajet, Taille, Déposé et Action se limitent à leur contenu ; lignes de 3.75rem (`row`), en-têtes de 2.25rem, 1rem de remplissage, gouttière en première et dernière cellule.
 
-Le panneau des envois est fixé en bas à droite (1.5rem du bord, largeur min(24rem, 100vw − 2rem)) ; la zone de travail réserve sa hauteur en marge basse via `--tray-space`. Le pupitre `?admin` se place sous la vue, jamais par-dessus.
+Le panneau des envois est fixé à une gouttière du bord droit et à 2rem du bas, largeur min(24rem, 100vw − 2rem) ; la page réserve sa hauteur via `--tray-space`. Le pupitre `?admin` se place sous la vue, encadré, à une gouttière des bords.
 
-**Sous 48rem :** la barre passe sur une colonne (marque puis recherche), la marge tombe à 1rem, le bouton principal prend toute la largeur. Le tableau devient une liste de cartes-lignes : en-tête masqué, nom puis trajet sur toute la largeur, taille et date masquées, « Télécharger » seulement pour les fichiers disponibles. La légende passe en une phrase au-dessus de la liste et le trajet se resserre (pastilles 1.25rem, segments 1rem).
+**Sous 48rem :** la barre passe sur une colonne, le titre tombe à 3.75rem, le bouton principal prend toute la largeur. Le tableau devient une pile de lignes en grille (nom puis trajet sur toute la largeur, taille et date en gris en dessous), en-têtes masqués, « Télécharger » seulement pour les fichiers disponibles. Le pupitre empile ses cellules.
 
 ## Elevation & Depth
 
-Système plat par défaut. Les surfaces posées sur la page (tableau, état vide, pupitre) se distinguent du fond par le blanc et un filet de 1 px, pas par une ombre. La profondeur est réservée à ce qui flotte au-dessus du travail.
+Système plat. Rien ne se distingue par une ombre ou une teinte de surface : la structure est faite de filets d'encre de 1 px et d'aplats. Les seules surfaces inversées (en-tête du panneau en encre, voile de dépôt en outremer) sont des aplats, pas des élévations. Une seule ombre existe, sous le panneau des envois, parce qu'il flotte au-dessus du tableau.
 
 ### Shadow Vocabulary
-- **Flottant** (`box-shadow: 0 10px 28px -6px rgb(20 33 61 / 0.28), 0 2px 6px rgb(20 33 61 / 0.12)`) : panneau des envois, seul élément ancré au-dessus du contenu.
-- **Appui** (`box-shadow: 0 1px 2px rgb(20 33 61 / 0.18)`) : sous le bouton safran au repos, retiré à l'appui.
-- **Voile** (fond `rgb(20 33 61 / 0.78)`) : voile de dépôt plein écran, teinté bleu nuit plutôt qu'ombré.
+- **Flottant** (`box-shadow: 0 12px 32px -8px rgb(14 14 14 / 0.3)`) : panneau des envois uniquement.
 
 ### Named Rules
-**La règle du flottant seul.** Seul ce qui flotte (panneau, voile) porte une ombre ou un voile. Une surface posée dans le flux reste plate et bordée. Les ombres sont teintées bleu nuit, jamais noires.
+**La règle du flottant seul.** Seul le panneau des envois porte une ombre. Toute autre surface reste à plat, cernée ou séparée par un filet d'encre.
 
 ## Shapes
 
-Angles doucement arrondis et constants : 8 px (`md`) pour tout ce qui se manipule (boutons, champ de recherche, avis, champs), 12 px (`lg`) pour les conteneurs (tableau, panneau, état vide, pupitre), 1.25rem pour le cadre du voile de dépôt. Le cercle est réservé aux pastilles du trajet, aux points de synthèse et aux boutons-icônes ; la pilule aux badges du pupitre. Les bordures sont des filets fins (1 à 2 px) ; le pointillé n'existe que pour une cible de dépôt (2 px `line-strong` dans l'état vide, 3 px safran dans le voile). La marque est une feuille au coin plié, safran, portant une flèche montante bleu nuit.
+Rayon 0 partout, imposé à la racine (`* { border-radius: 0 }`) : boutons, champs, panneau, badges, cases du trajet, focus. Les bordures sont des filets d'encre pleins de 1 px ; le filet est la seule ligne du système, sans pointillé ni double trait. Le focus est un contour outremer de 2 px décalé de 2 px ; la recherche au focus double son filet en outremer à l'intérieur. La seule diagonale du système est la rayure de papier à −45° qui barre une case bloquée, écho du trait vermillon qui barre le nom. Le favicon reprend le langage : un carré de papier cerné d'encre portant un D outremer.
 
 ## Components
 
 ### Buttons
-Francs et calmes : grande cible (2.75rem), graisse 700, transitions de couleur de 150 ms.
-- **Shape:** arrondi doux (8 px), icône Lucide à gauche, espacée de 0.55rem.
-- **Primary:** fond safran, texte bleu nuit, filet `saffron-edge`, ombre d'appui ; survol safran clair, ombre retirée à l'appui. Désactivé à 45 % d'opacité.
-- **Secondary:** fond blanc, bordure bleu nuit de 1.5 px, texte bleu nuit ; survol `surface-sunk`. Sert d'action dans l'état vide (« Choisir sur mon ordinateur »).
-- **Ghost:** plus bas (2.4rem), sans fond, graisse 600 ; au survol un fond `surface-sunk` et un filet apparaissent. Action de ligne (« Télécharger »).
-- **Lien-bouton:** texte bleu nuit souligné de 1 px, 2 px au survol ; actions discrètes (« Vérifier à nouveau », « Effacer l'historique »).
-- **Bouton-icône:** cercle de 2.25rem, sans fond ; voile bleu nuit à 8 % au survol, blanc à 12 % sur fond bleu nuit.
-- **Focus:** anneau de 3 px `progress` décalé de 2 px partout ; safran sur fond bleu nuit.
+Carrés, francs, à aplat ou à filet ; transitions de couleur de 120 ms linéaires, sans effet de relief.
+- **Shape:** angles vifs (0), icône Lucide à gauche espacée de 0.6rem, graisse 650.
+- **Primary:** aplat outremer, texte blanc, 2.75rem de haut, 0 1.25rem ; survol outremer profond. Désactivé à 40 % d'opacité.
+- **Secondary:** transparent, filet d'encre, texte encre ; au survol il s'inverse (aplat encre, texte papier). Sert à « Choisir sur mon ordinateur » et « Couper ».
+- **Télécharger:** même inversion au survol, plus bas (2rem), 0.875rem ; action de ligne.
+- **Lien-bouton:** texte souligné de 1 px (2 px au survol), 600 ; « Vérifier à nouveau », « Effacer l'historique », « Actualiser ». Le retour depuis une recherche est un lien-bouton gris sans soulignement, qui passe à l'encre au survol.
+- **Bouton-icône:** carré de 2rem sans fond ; papier enfoncé au survol, blanc à 14 % sur l'en-tête encre.
+- **Focus:** contour outremer de 2 px décalé de 2 px partout ; blanc sur l'en-tête encre.
 
 ### Chips
-- **Badges du pupitre :** pilule 0.9rem / 700. Panne active : rouge plein, texte blanc. Inactive : `surface-sunk`, texte atténué, filet.
-- **Synthèse des états :** point coloré de 0.7rem suivi du compte, dans la couleur de l'état, graisse 600.
+- **Badges du pupitre :** rectangle à angles vifs, mono `data-label`. Inactive (« Coupée ») : texte et filet gris. Active : le build pose un texte blanc sur aplat vermillon, couple à 4,3:1, sous le seuil AA pour ce corps ; c'est un défaut à corriger, pas un modèle à reproduire.
 
 ### Cards / Containers
-- **Corner Style:** 12 px.
-- **Background:** blanc sur fond `ground`.
-- **Shadow Strategy:** aucune (voir Elevation & Depth), sauf le panneau des envois.
-- **Border:** filet `line` de 1 px.
-- **Internal Padding:** 1.1rem latéral dans le tableau, 1.25rem au pupitre, 3.5rem × 1.5rem pour l'état vide.
+- **Corner Style:** 0.
+- **Background:** papier, comme la page ; aucune carte ne se détache par la couleur.
+- **Shadow Strategy:** aucune, sauf le panneau des envois (voir Elevation & Depth).
+- **Border:** filet d'encre de 1 px (pupitre, panneau, avis d'erreur) ou filets de séparation seuls (tableau, en-tête de vue, état vide).
+- **Internal Padding:** gouttière en latéral pour ce qui touche le bord, 1rem à l'intérieur du pupitre.
 
 ### Inputs / Fields
-- **Recherche :** champ blanc de 2.75rem dans la barre bleu nuit, arrondi 8 px, loupe atténuée à gauche, bouton d'effacement à droite ; bordure transparente de 2 px qui devient safran au focus (pas d'anneau).
-- **Champs du pupitre :** 2.4rem, filet `line-strong`, arrondi 8 px, unité atténuée à 0.85rem à côté.
+- **Recherche :** fond blanc, filet d'encre, 2.25rem de haut, loupe Lucide à gauche, bouton d'effacement à droite ; au focus le filet passe à l'outremer et se double à l'intérieur (`inset 0 0 0 1px`), sans contour externe.
+- **Champs du pupitre :** blanc, filet d'encre, 2.25rem × 6rem, valeur en mono, unité en mono grise à côté.
 
 ### Navigation
-- **Barre du haut :** bleu nuit plein, collante, texte blanc. Marque (pictogramme safran 30 px + « DocShare » 1.3rem / 700) à gauche, recherche au centre. Pas d'autre navigation ; le retour depuis une recherche est un lien-bouton atténué avec flèche.
+- **Barre du haut :** papier, filet d'encre en bas, collante. Marque typographique seule (pas de pictogramme) à gauche, recherche au centre. Aucune autre navigation ; le retour depuis une recherche est un lien-bouton gris avec flèche.
 
-### Trajet d'un fichier (signature)
-Trois pastilles de 1.5rem (Envoyé, Traitement, Disponible) reliées par des segments de 3 px, suivies d'un libellé d'état en 700 dans la couleur de l'état.
-- **Attente :** pastille blanche, bordure `idle` de 2 px, segment `idle`.
-- **En cours :** étape franchie pleine bleue avec coche ; l'étape de traitement a un anneau bleu et un point central qui pulse (1.4 s) ; libellé « En traitement · durée ».
-- **Disponible :** tout le trajet vert, coches blanches ; libellé « Disponible en durée ».
-- **Bloqué :** le trajet se colore en rouge jusqu'à l'étape de traitement, qui porte un triangle d'alerte ; la dernière reste en attente ; la ligne entière prend le fond `alert-bg` ; un lien « Vérifier à nouveau » suit le libellé.
-- **Mouvement :** les segments se remplissent de gauche à droite (500 ms) et les pastilles changent de couleur (300 ms), courbe `ease` (`cubic-bezier(0.16, 1, 0.3, 1)`).
+### Nom de fichier (signature)
+Le nom en 1.3125rem dit l'état par les axes de la fonte et la couleur ; la coupure garde l'extension visible.
+- **En traitement :** 300, largeur 85 %, outremer. Non cliquable.
+- **Disponible :** 750, largeur 100 %, encre ; lien de téléchargement, souligné de 1 px au survol.
+- **Bloqué :** 500, largeur 92 %, vermillon texte, barré d'un trait vermillon de 2 px.
+- **Mouvement :** graisse, largeur et couleur glissent en 300 ms sur `cubic-bezier(0.16, 1, 0.3, 1)`.
+
+### Trajet d'un fichier
+Trois cases carrées de 14 px espacées de 4 px (Envoyé, Traitement, Disponible), suivies de l'état en mono. Case à venir : vide, filet d'encre. Franchie : aplat encre. Courante : aplat outremer qui clignote en deux temps avec le papier (1.6 s, `steps(2)`). Bloquée : aplat vermillon rayé d'une barre de papier à −45°, suivie d'un lien « Vérifier à nouveau ». La légende de colonne « Envoyé · Traitement · Disponible » nomme les cases.
 
 ### Panneau des envois
-Carte flottante en bas à droite : en-tête bleu nuit (rouge quand des envois ont échoué et qu'aucun n'est en cours) avec titre, détail atténué et boutons replier / fermer ; liste plafonnée à 16rem. Chaque envoi : icône d'état (spinner bleu, coche verte, triangle rouge), nom tronqué, erreur en rouge 0.9rem, boutons Réessayer et Retirer. Entrée en glissant de 1rem vers le haut (250 ms).
+Rectangle papier cerné d'encre, ombre « flottant », en bas à droite. En-tête inversé (aplat encre, texte blanc) avec titre en 650, détail en mono maigre, boutons replier et fermer. Liste plafonnée à 15rem, entrées séparées par un filet : icône d'état (spinner outremer, triangle vermillon texte), nom en 600, erreur grise ; un envoi échoué a son nom barré de vermillon et porte Réessayer et Retirer.
 
 ### Voile de dépôt
-Glisser un fichier n'importe où affiche un voile bleu nuit à 78 % sur tout l'écran, avec un cadre pointillé safran de 3 px, une icône de nuage safran et un message blanc 1.5rem / 700.
+Le seul moment plein cadre : glisser un fichier n'importe où couvre l'écran d'un aplat outremer, avec « Lâchez pour déposer. » en `display-drop` blanc calé en bas à gauche et une ligne d'aide en dessous.
 
 ### États vides et chargement
-- **Vide (dépôt) :** carte blanche à pointillé `line-strong`, icône nuage 48 px en `navy-soft`, titre, texte d'aide atténué, bouton secondaire.
-- **Vide (calme) :** même carte avec un filet plein, sans invitation au dépôt (recherche sans résultat).
-- **Chargement :** lignes squelettes de 3.4rem avec un reflet horizontal (1.2 s).
-- **Avis d'erreur :** bandeau `alert-bg`, texte rouge 600, arrondi 8 px.
+- **Vide (dépôt) :** pas de carte ni d'icône : une ligne `headline` outremer, le bouton secondaire à droite, un texte d'aide gris, une légende mono, un filet d'encre.
+- **Vide (calme) :** même grille, titre en 750 encre, sans bouton.
+- **Chargement :** lignes squelettes de 3.75rem en papier enfoncé, qui basculent en deux temps avec le papier (1.2 s, `steps(2)`).
+- **Avis d'erreur :** filet vermillon de 1 px, texte vermillon texte en 600, sans fond.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** garder une seule action safran par vue, texte bleu nuit.
-- **Do** exprimer chaque état par la couleur, une forme (coche, triangle, point pulsé) et un libellé.
-- **Do** montrer la progression d'un fichier avec le trajet en trois étapes, et laisser un échec caler visiblement le trajet.
-- **Do** garder les surfaces posées plates (blanc + filet `line` de 1 px, arrondi 12 px) et réserver l'ombre « flottant » à ce qui flotte.
-- **Do** utiliser les icônes Lucide à trait unique (14 à 20 px dans l'interface, 48 px pour les états vides).
-- **Do** mettre en chiffres tabulaires toute quantité, durée, taille ou date.
+- **Do** exprimer l'état d'un fichier par la graisse, la largeur et la couleur de son nom, doublées des cases du trajet et d'un libellé mono.
+- **Do** garder une seule commande outremer par vue ; l'outremer dit sinon « en mouvement ».
+- **Do** construire avec des filets d'encre de 1 px et des aplats, à rayon 0.
+- **Do** écrire le vermillon en `verm-text` dès qu'il porte du texte ; garder `verm` pour les traits et les aplats.
+- **Do** mettre toute donnée (taille, date, compte, état, légende) en Martian Mono tabulaire, étroite, en 350.
+- **Do** préférer les bascules nettes (`steps(2)`) aux fondus pour les états qui clignotent.
 - **Do** respecter `prefers-reduced-motion` : animations et transitions coupées.
 
 ### Don't:
-- **Don't** utiliser bleu, vert ou rouge hors de leur sens d'état.
+- **Don't** arrondir un angle, ni ajouter de carte, de pastille ou de rembourrage SaaS confortable.
+- **Don't** poser d'ombre ailleurs que sous le panneau des envois.
+- **Don't** utiliser Martian Mono pour la prose ou les commandes, ni une sans-serif générique à la place de Bricolage Grotesque.
+- **Don't** utiliser le vermillon hors de la panne et de l'échec, ni l'outremer en décoration.
+- **Don't** utiliser de texte en capitales espacées, de surtitres au-dessus des titres, ni de glyphes typographiques en guise d'icônes.
 - **Don't** ajouter de thème sombre : le monde est clair seul, pour la salle éclairée et le projecteur.
 - **Don't** emprunter les logos, couleurs, la police Marianne ou le DSFR des produits de référence.
-- **Don't** empiler des panneaux blancs ou des pastilles décoratives : un tableau, des lignes, un trajet.
-- **Don't** utiliser de texte en capitales espacées, de surtitres au-dessus des titres, ni de glyphes typographiques en guise d'icônes.
-- **Don't** utiliser le pointillé ailleurs que sur une cible de dépôt.
-- **Don't** descendre la base sous 17 px ni un texte secondaire sous 0.85rem.

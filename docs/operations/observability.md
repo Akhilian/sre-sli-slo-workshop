@@ -170,6 +170,13 @@ Panne activée dans une équipe, trafic k6 nominal, une panne à la fois ; l'aut
 
 À lire avec prudence :
 - Les alertes se déclenchent bien plus vite que les « 9 min » du calibrage théorique : l'historique des essais ne dépassait pas 25 min, les fenêtres de 1 h et de 6 h se comportent alors comme des fenêtres courtes. Avec 1 h de trafic sain, comptez plutôt plusieurs minutes pour la page de `upload_error_rate=0.5`.
-- `upload_error_rate=0.02` (burn rate attendu ≈ 4) n'a été tenu que 8 min au lieu de 25 : burn rate entre 0 et 4, sans alerte. À rejouer sur 25 min.
+- `upload_error_rate=0.02` (burn rate attendu ≈ 4) n'a été tenu que 8 min en réel ; la preuve complète est faite par rejeu (ci-dessous).
 - Les pannes ont été enchaînées avec 30 s de pause : les alertes longues d'une panne précédente restent actives (`DocshareUploadLatency`, `DocshareSearchQuality`). Laissez les burn rates repasser sous 1 avant la panne suivante.
 - Aucune panne n'a fait monter un SLI d'une autre famille de plus de 1,4 dans l'équipe voisine, hors résidus d'une panne précédente.
+
+### Preuve rapide par rejeu des règles (`promtool test rules`)
+
+Les règles générées par Sloth (`PrometheusRule` de `docshare-upload-availability`) sont rejouées sur des séries synthétiques (1 upload/s, pas de 30 s), en quelques secondes :
+- 3 jours de trafic sain puis `0.02` pendant 25 min : burn rate 5 min = 4,0 à +10 min et +25 min, **aucune alerte**.
+- 1 h de trafic sain puis `0.5` : la **page** (`severity=page`) est active 5 min après le début de la panne (< 10 min).
+- Avec seulement 1 h 25 d'historique, le ticket 3j/6h (burn 1) s'allume à 4 : artefact d'historique court, absent avec 3 jours d'historique sain.
