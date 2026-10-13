@@ -16,7 +16,7 @@ defaultRules:
     PrometheusErrorSendingAlertsToAnyAlertmanager: true
     PrometheusErrorSendingAlertsToSomeAlertmanagers: true
 
-# Plan de contrôle inaccessible sur GKE, EKS et k3s : sans ces lignes, des
+# Plan de contrôle inaccessible sur EKS et k3s : sans ces lignes, des
 # alertes TargetDown permanentes brouilleraient la page /alerts pendant la démo.
 kubeEtcd:
   enabled: false

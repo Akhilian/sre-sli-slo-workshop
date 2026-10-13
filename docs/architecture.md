@@ -37,4 +37,4 @@ Pour savoir ce qui est mesuré, lisez `app/adapters/metrics.py`. Pour savoir com
 
 ## Déploiement et observabilité
 
-`deploy/helm/docshare/` contient le chart d'une équipe, y compris son Job k6. `deploy/environments/{local,gke,eks}/` porte les valeurs spécifiques aux cibles ; `deploy/scripts/` installe et supprime les piles. Les définitions SLO et solutions d'atelier, ainsi que les dashboards et leur générateur, sont regroupés sous `observability/`.
+`deploy/helm/docshare/` contient le chart d'une équipe, y compris son Job k6. `deploy/environments/{local,eks}/` porte les valeurs spécifiques aux cibles ; `deploy/scripts/` installe et supprime les piles. Les définitions SLO et solutions d'atelier, ainsi que les dashboards et leur générateur, sont regroupés sous `observability/`.

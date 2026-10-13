@@ -1,5 +1,0 @@
-# Grafana est exposé sur internet : l'accès est limité aux plages passées par
-# deploy/scripts/setup.sh (variable GRAFANA_SOURCE_RANGES, obligatoire pour cette cible).
-grafana:
-  service:
-    loadBalancerSourceRanges: []

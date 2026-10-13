@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Installe le monitoring partagé (si absent) puis une pile DocShare par équipe.
 #
-#   deploy/scripts/setup.sh [-y] <local|gke|eks> <équipe> [<équipe> ...]
+#   deploy/scripts/setup.sh [-y] <local|eks> <équipe> [<équipe> ...]
 #
 # Variables :
 #   KUBE_CONTEXT           contexte kubectl à utiliser (défaut : contexte courant)
 #   GRAFANA_SOURCE_RANGES  plages autorisées vers Grafana, séparées par des virgules
-#                          (obligatoire pour gke et eks, ex. 203.0.113.10/32)
+#                          (obligatoire pour eks, ex. 203.0.113.10/32)
 #   TOKEN_DURATION         durée de validité des kubeconfigs d'équipe (défaut : 8h)
 set -euo pipefail
 
@@ -19,7 +19,7 @@ MONITORING_ROOT="$DEPLOY_ROOT/monitoring"
 SLO_ROOT="$ROOT/observability/sloth"
 GRAFANA_ROOT="$ROOT/observability/grafana"
 
-usage() { echo "usage : $0 [-y] <local|gke|eks> <équipe> [<équipe> ...]" >&2; exit 1; }
+usage() { echo "usage : $0 [-y] <local|eks> <équipe> [<équipe> ...]" >&2; exit 1; }
 fail() { echo "erreur : $*" >&2; exit 1; }
 
 YES=false
@@ -27,7 +27,7 @@ if [[ ${1:-} == -y ]]; then YES=true; shift; fi
 [[ $# -ge 2 ]] || usage
 TARGET=$1; shift
 TEAMS=("$@")
-[[ -d $ENVIRONMENTS_ROOT/$TARGET ]] || fail "cible inconnue : $TARGET (local, gke ou eks)"
+[[ -d $ENVIRONMENTS_ROOT/$TARGET ]] || fail "cible inconnue : $TARGET (local ou eks)"
 
 for tool in kubectl helm; do
   command -v "$tool" >/dev/null || fail "$tool est introuvable"
@@ -52,7 +52,7 @@ if [[ $TARGET != local || $CONTEXT != colima ]] && ! $YES; then
 fi
 
 if ! k get storageclass -o jsonpath='{.items[*].metadata.annotations.storageclass\.kubernetes\.io/is-default-class}' | grep -q true; then
-  fail "aucune classe de stockage par défaut. Sur EKS, installez l'add-on EBS CSI et marquez gp3 par défaut."
+  fail "aucune classe de stockage par défaut. Sur EKS, appliquez deploy/terraform/eks (add-on EBS CSI, classe gp3 par défaut)."
 fi
 
 SOURCE_RANGES=()

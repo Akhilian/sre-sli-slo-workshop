@@ -77,10 +77,20 @@ Sur le poste de l'animateur : `kubectl` et `helm`. Les participants n'ont besoin
 | Cible | Création du cluster de référence | Prérequis |
 | --- | --- | --- |
 | Local | `colima start --kubernetes --cpu 6 --memory 10 --disk 60` | aucun ; l'image se construit localement (`docker build -t docshare:dev .`), le k3s de colima l'utilise sans registre |
-| GKE | `gcloud container clusters create docshare --zone europe-west1-b --machine-type e2-standard-4 --num-nodes 3` | cluster **Standard** (Autopilot refuse node-exporter) |
-| EKS | `eksctl create cluster --name docshare --region eu-west-3 --node-type m6i.xlarge --nodes 3` puis `eksctl create addon --cluster docshare --name aws-ebs-csi-driver` | add-on EBS CSI et classe de stockage par défaut (`gp3`) |
+| EKS | Terraform, `deploy/terraform/eks` (voir ci-dessous) | AWS CLI authentifié, `terraform` ≥ 1.6 ; crée VPC, cluster, 3 nœuds `m6i.xlarge`, add-on EBS CSI, classe `gp3` par défaut et AWS Load Balancer Controller |
 
-Sur GKE et EKS, l'image vient de `ghcr.io` : remplacez `OWNER` dans `deploy/environments/<cible>/docshare.yaml` par le compte qui publie l'image.
+Sur EKS, l'image vient de `ghcr.io` : remplacez `OWNER` dans `deploy/environments/<cible>/docshare.yaml` par le compte qui publie l'image.
+
+#### Provisionner EKS avec Terraform
+
+```bash
+cd deploy/terraform/eks
+terraform init
+terraform apply -var 'api_allowed_cidrs=["203.0.113.10/32"]'   # IP de la salle, 0.0.0.0/0 refusé
+$(terraform output -raw kubeconfig_command)                    # contexte kubectl de l'animateur
+```
+
+Variables optionnelles : `region` (`eu-west-3`), `cluster_name` (`docshare`), `kubernetes_version`, `node_instance_type` (`m6i.xlarge`), `node_count` (3). L'état Terraform reste local (`*.tfstate` est ignoré par git). Le cluster coûte tant qu'il existe : `terraform destroy` après la séance, une fois les équipes supprimées (`deploy/scripts/teardown.sh --all`) pour libérer les LoadBalancers créés par Kubernetes, sans quoi la suppression du VPC échoue.
 
 Dimensionnement (ressources demandées) : ~0,6 vCPU et ~1 Gi par équipe, ~1,5 vCPU et ~3 Gi pour le monitoring, soit ~4 vCPU et ~7 Gi pour 4 équipes. En local, 4 vCPU suffisent pour 2 équipes ; prévoir 6 vCPU pour 4.
 
@@ -91,8 +101,8 @@ Dimensionnement (ressources demandées) : ~0,6 vCPU et ~1 Gi par équipe, ~1,5 v
 docker build -t docshare:dev .
 deploy/scripts/setup.sh local a b
 
-# GKE ou EKS : l'accès à Grafana est restreint aux plages indiquées (IP de la salle)
-GRAFANA_SOURCE_RANGES=203.0.113.10/32 deploy/scripts/setup.sh gke a b c d
+# EKS : l'accès à Grafana est restreint aux plages indiquées (IP de la salle)
+GRAFANA_SOURCE_RANGES=203.0.113.10/32 deploy/scripts/setup.sh eks a b c d
 ```
 
 Le script affiche le contexte kubectl et demande confirmation hors du k3s local (`-y` pour ne pas demander, `KUBE_CONTEXT=<contexte>` pour en choisir un autre que le contexte courant). Il est idempotent : le relancer met à jour sans recréer. Il installe ou met à jour le monitoring, puis pour chaque équipe :
