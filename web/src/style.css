@@ -1,0 +1,232 @@
+/* Style volontairement simple. Toutes les valeurs visuelles sont des variables :
+   une passe de design ultérieure les change ici, sans toucher aux composants. */
+
+:root {
+  --color-bg: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-text: #1d2330;
+  --color-muted: #5d6677;
+  --color-border: #d9dde5;
+  --color-accent: #2f5bd3;
+  --color-accent-text: #ffffff;
+  --color-pending: #8a5a00;
+  --color-pending-bg: #fff3d6;
+  --color-done: #1d6b3a;
+  --color-done-bg: #dcf3e4;
+  --color-error: #a3261b;
+  --color-error-bg: #fde4e1;
+  --color-off: #5d6677;
+  --color-off-bg: #eceef2;
+
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-size: 1rem;
+  --font-size-small: 0.875rem;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --radius: 6px;
+  --content-width: 72rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #14171d;
+    --color-surface: #1c2028;
+    --color-text: #e6e8ec;
+    --color-muted: #9aa3b2;
+    --color-border: #313744;
+    --color-accent: #6f93f0;
+    --color-accent-text: #0e1220;
+    --color-pending: #f2c264;
+    --color-pending-bg: #3a2e12;
+    --color-done: #7fd69d;
+    --color-done-bg: #173323;
+    --color-error: #f39a8f;
+    --color-error-bg: #3d1d1a;
+    --color-off: #9aa3b2;
+    --color-off-bg: #262b35;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--font-size);
+  line-height: 1.5;
+}
+
+h1, h2 { margin: 0; line-height: 1.2; }
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.125rem; margin-bottom: var(--space-3); }
+code { font-family: var(--font-mono); font-size: var(--font-size-small); }
+
+/* --- Mise en page ---------------------------------------------------------- */
+
+.app-header,
+.app-main {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+.app-header { padding-top: var(--space-6); }
+.tagline { margin: var(--space-1) 0 0; color: var(--color-muted); }
+
+.app-main {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.span-all { grid-column: 1 / -1; }
+.column { display: grid; gap: var(--space-4); }
+
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  min-width: 0;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.panel-admin { border-color: var(--color-accent); }
+
+/* --- Champs et boutons ------------------------------------------------------------ */
+
+input {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+}
+
+.search-row { display: flex; gap: var(--space-2); }
+
+button {
+  font: inherit;
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+button:disabled { cursor: not-allowed; opacity: 0.5; }
+
+.button-primary {
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  border: 1px solid var(--color-accent);
+}
+
+.button-quiet {
+  background: transparent;
+  color: var(--color-accent);
+  border: 1px solid transparent;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-small);
+}
+
+/* --- Zone de dépôt ---------------------------------------------------------- */
+
+.dropzone {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.dropzone-active { border-color: var(--color-accent); background: var(--color-bg); }
+.dropzone-text { margin: 0; font-weight: 600; }
+.dropzone .hint { margin: 0; }
+.uploads { margin-top: var(--space-3); }
+
+a { color: var(--color-accent); }
+.message-inline-error { color: var(--color-error); font-size: var(--font-size-small); }
+
+/* --- Listes et états -------------------------------------------------------- */
+
+.list { list-style: none; margin: 0; padding: 0; }
+
+.list-item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.list-item:first-child { border-top: none; }
+.list-main { display: flex; gap: var(--space-2); min-width: 0; }
+.list-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.doc-id { color: var(--color-muted); font-family: var(--font-mono); font-size: var(--font-size-small); }
+.doc-title { overflow-wrap: anywhere; }
+.duration, .hint, .unit { color: var(--color-muted); font-size: var(--font-size-small); }
+.hint { margin-top: 0; }
+
+.status {
+  display: inline-block;
+  border-radius: var(--radius);
+  padding: 0 var(--space-2);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+}
+
+.status-pending { color: var(--color-pending); background: var(--color-pending-bg); }
+.status-done { color: var(--color-done); background: var(--color-done-bg); }
+.status-stuck, .status-active { color: var(--color-error); background: var(--color-error-bg); }
+.status-off { color: var(--color-off); background: var(--color-off-bg); }
+
+.message-empty { color: var(--color-muted); margin: 0; }
+
+.message-error {
+  color: var(--color-error);
+  background: var(--color-error-bg);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  margin: var(--space-2) 0 0;
+}
+
+/* --- Pupitre des pannes ----------------------------------------------------- */
+
+.fault-table { width: 100%; border-collapse: collapse; }
+
+.fault-table th,
+.fault-table td {
+  text-align: left;
+  padding: var(--space-2);
+  border-top: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.fault-table th { font-size: var(--font-size-small); color: var(--color-muted); font-weight: 600; }
+.fault-table input { width: 6rem; margin-right: var(--space-2); }
+.fault-actions { display: flex; gap: var(--space-2); }
+
+@media (max-width: 40rem) {
+  .fault-table thead { display: none; }
+  .fault-table tr { display: grid; padding: var(--space-2) 0; border-top: 1px solid var(--color-border); }
+  .fault-table td { border: none; padding: var(--space-1) 0; }
+}
