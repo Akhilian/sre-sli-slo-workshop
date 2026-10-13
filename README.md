@@ -2,7 +2,7 @@
 
 DocShare est un système fictif de partage de documents servant de support à un atelier SLI/SLO de deux heures. Les participants observent l’effet de pannes réelles sur le parcours utilisateur, puis le mesurent avec Prometheus, Sloth et Grafana.
 
-> Le backend, le déploiement Kubernetes, le trafic k6, les SLO et les dashboards sont présents. L’intégration de l’interface au déploiement, le déroulé détaillé de la séance et les temps de réaction mesurés des alertes restent à finaliser ; voir `openspec list`.
+> Le backend, l’interface web, le déploiement Kubernetes, le trafic k6, les SLO et les dashboards sont présents. Le déroulé détaillé de la séance et les temps de réaction mesurés des alertes restent à finaliser ; voir `openspec list`.
 
 ## Démarrage rapide
 
@@ -12,6 +12,22 @@ Pour lancer le backend en mode autonome, sans Redis ni Postgres :
 docker build -t docshare:dev .
 docker run --rm -p 8000:8000 -e ROLE=standalone docshare:dev
 ```
+
+## Interface web
+
+```bash
+# Développement : relais /api vers http://localhost:8000
+cd web && npm install && npm run dev
+
+# Image (nginx non root sur 8080), face au backend standalone
+docker build -t docshare-web:dev web
+docker run --rm -p 8080:8080 -e API_URL=http://host.docker.internal:8000 docshare-web:dev
+
+# Dans le cluster, une interface par équipe
+kubectl -n team-a port-forward svc/web 8080:80
+```
+
+Le pupitre de pannes de l’animateur apparaît avec `?admin` (`http://localhost:8080/?admin`). Les appels de l’interface passent par l’API et sont mesurés comme le reste du trafic : un participant qui enchaîne des recherches sans résultat fait monter le burn rate du SLI de qualité, ce qui est aussi un sujet de débrief. `web.enabled: false` retire l’interface du chart.
 
 Le guide de [déploiement et d’exécution](docs/operations/deployment.md) décrit aussi le lancement sans Docker et les déploiements Kubernetes.
 

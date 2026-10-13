@@ -16,6 +16,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: api
+                name: {{ if .Values.web.enabled }}web{{ else }}api{{ end }}
                 port: { name: http }
 {{- end }}

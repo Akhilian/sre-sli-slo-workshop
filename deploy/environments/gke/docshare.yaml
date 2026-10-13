@@ -3,3 +3,7 @@ image:
   tag: latest
 ingress:
   className: gce
+web:
+  image:
+    repository: ghcr.io/OWNER/docshare-web
+    tag: latest

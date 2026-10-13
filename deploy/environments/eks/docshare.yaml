@@ -4,3 +4,7 @@ image:
 ingress:
   # Nécessite l'AWS Load Balancer Controller.
   className: alb
+web:
+  image:
+    repository: ghcr.io/OWNER/docshare-web
+    tag: latest

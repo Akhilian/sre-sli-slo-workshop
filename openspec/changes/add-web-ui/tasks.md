@@ -16,19 +16,19 @@
 
 ## 3. Image
 
-- [ ] 3.1 `web/nginx/default.conf.template` : relais `/api/` sans préfixe vers `${API_URL}`, `client_max_body_size 6m`, repli `index.html`
-- [ ] 3.2 `web/Dockerfile` en deux étapes (Node, puis nginx non root sur 8080), `.dockerignore`
+- [x] 3.1 `web/nginx/default.conf.template` : relais `/api/` sans préfixe vers `${API_URL}`, `client_max_body_size 6m`, repli `index.html`
+- [x] 3.2 `web/Dockerfile` en deux étapes (Node, puis nginx non root sur 8080), `.dockerignore`
 - [ ] 3.3 Construire l'image et la lancer face au mode `standalone` : parcours complet et une panne depuis `?admin`
 
 ## 4. Déploiement
 
-- [ ] 4.1 `deploy/helm/docshare/templates/web.yaml` et valeurs `web` (`enabled`, image, ressources, `API_URL`)
-- [ ] 4.2 Ingress vers `web` ; `deploy/environments/<cible>/docshare.yaml` (image locale `docshare-web:dev`, `ghcr.io/OWNER/docshare-web`)
-- [ ] 4.3 `deploy/scripts/setup.sh` : vérification de `OWNER` pour les deux images
-- [ ] 4.4 CI : jobs `web-test` et `web-build` (amd64 + arm64, SHA et `latest`)
+- [x] 4.1 `deploy/helm/docshare/templates/web.yaml` et valeurs `web` (`enabled`, image, ressources, `API_URL`)
+- [x] 4.2 Ingress vers `web` ; `deploy/environments/<cible>/docshare.yaml` (image locale `docshare-web:dev`, `ghcr.io/OWNER/docshare-web`)
+- [x] 4.3 `deploy/scripts/setup.sh` : vérification de `OWNER` pour les deux images
+- [x] 4.4 CI : jobs `web-test` et `web-build` (amd64 + arm64, SHA et `latest`)
 
 ## 5. Documentation et vérification
 
-- [ ] 5.1 README : lancer l'interface (`npm run dev`, `docker run`, `port-forward svc/web`), pupitre `?admin`, effet des recherches des participants sur le SLI de qualité
+- [x] 5.1 README : lancer l'interface (`npm run dev`, `docker run`, `port-forward svc/web`), pupitre `?admin`, effet des recherches des participants sur le SLI de qualité
 - [ ] 5.2 Sur le k3s local : installer deux équipes, ouvrir l'interface de chacune par `port-forward`, vérifier l'isolation
 - [ ] 5.3 Sous chacune des cinq pannes, vérifier ce que voit l'utilisateur, et que les angles morts restent masqués (`stale_index`, repli de recherche, `notifier_drop`)

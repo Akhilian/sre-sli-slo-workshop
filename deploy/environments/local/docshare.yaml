@@ -4,3 +4,8 @@ image:
   repository: docshare
   tag: dev
   pullPolicy: Never
+web:
+  image:
+    repository: docshare-web
+    tag: dev
+    pullPolicy: Never

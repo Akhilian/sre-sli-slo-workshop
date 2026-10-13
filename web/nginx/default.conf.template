@@ -1,0 +1,17 @@
+server {
+  listen 8080;
+  root /usr/share/nginx/html;
+
+  # Taille maximale d'un fichier déposé (l'API en accepte 5 Mo).
+  client_max_body_size 6m;
+
+  # Le "/" final retire le préfixe /api : /api/documents/1 -> ${API_URL}/documents/1
+  location /api/ {
+    proxy_pass ${API_URL}/;
+    proxy_set_header Host $host;
+  }
+
+  location / {
+    try_files $uri /index.html;
+  }
+}

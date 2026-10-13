@@ -13,6 +13,19 @@ api:
     requests: { cpu: 100m, memory: 128Mi }
     limits: { cpu: 500m, memory: 256Mi }
 
+# Interface Vue servie par nginx ; les appels /api/ sont relayés vers l'API.
+# enabled: false retire l'interface sans toucher au reste de la pile.
+web:
+  enabled: true
+  image:
+    repository: ghcr.io/OWNER/docshare-web
+    tag: latest
+    pullPolicy: IfNotPresent
+  apiUrl: http://api
+  resources:
+    requests: { cpu: 10m, memory: 16Mi }
+    limits: { cpu: 100m, memory: 64Mi }
+
 worker:
   # Capacité fixe : 1 réplique × 4 threads ≈ 2 jobs/s. Pas d'autoscaling,
   # sinon worker_slow serait absorbé et la fraîcheur ne bougerait plus.
