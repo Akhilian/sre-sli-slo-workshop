@@ -79,9 +79,10 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
 
   addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
+    coredns = {}
+    # Sans CNI avant les nœuds, ils restent NotReady et le node group bloque jusqu'au timeout.
+    kube-proxy = { before_compute = true }
+    vpc-cni    = { before_compute = true }
     aws-ebs-csi-driver = {
       service_account_role_arn = module.ebs_csi_irsa.arn
     }
