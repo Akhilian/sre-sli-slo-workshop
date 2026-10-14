@@ -37,6 +37,8 @@ variable "api_allowed_cidrs" {
   description = "Plages autorisées vers l'API Kubernetes (IP de la salle, ex. [\"203.0.113.10/32\"]). Les participants utilisent leur kubeconfig depuis ces adresses."
   type        = list(string)
 
+  default = ["89.101.193.13/32"]
+
   validation {
     condition     = length(var.api_allowed_cidrs) > 0 && !contains(var.api_allowed_cidrs, "0.0.0.0/0")
     error_message = "Indiquez au moins une plage précise, 0.0.0.0/0 est refusé."

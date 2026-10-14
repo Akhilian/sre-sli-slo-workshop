@@ -91,9 +91,11 @@ module "eks" {
   eks_managed_node_groups = {
     default = {
       instance_types = [var.node_instance_type]
-      min_size       = local.node_count
-      max_size       = local.node_count
-      desired_size   = local.node_count
+      # Échec rapide si les nœuds ne rejoignent pas le cluster (60 min par défaut).
+      timeouts     = { create = "15m" }
+      min_size     = local.node_count
+      max_size     = local.node_count
+      desired_size = local.node_count
     }
   }
 }
