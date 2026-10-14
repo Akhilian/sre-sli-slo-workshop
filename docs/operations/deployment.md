@@ -79,7 +79,7 @@ Sur le poste de l'animateur : `kubectl` et `helm`. Les participants n'ont besoin
 | Local | `colima start --kubernetes --cpu 6 --memory 10 --disk 60` | aucun ; l'image se construit localement (`docker build -t docshare:dev .`), le k3s de colima l'utilise sans registre |
 | EKS | Terraform, `deploy/terraform/eks` (voir ci-dessous) | AWS CLI authentifié, `terraform` ≥ 1.6 ; crée VPC, cluster, 2 à 3 nœuds `m6i.xlarge` selon le nombre d'équipes, add-on EBS CSI, classe `gp3` par défaut et AWS Load Balancer Controller |
 
-Sur EKS, l'image vient de `ghcr.io` : remplacez `OWNER` dans `deploy/environments/<cible>/docshare.yaml` par le compte qui publie l'image.
+Sur EKS, les images viennent de Docker Hub (`akhilian/docshare` et `akhilian/docshare-web`, dépôts publics pour que le cluster les tire sans identifiants). La CI les publie avec le secret GitHub `DOCKERHUB_TOKEN` (jeton d'accès Docker Hub en écriture) ; pour un autre compte, changez `DOCKERHUB_USER` dans `.github/workflows/image.yml` et `deploy/environments/eks/docshare.yaml`.
 
 #### Provisionner EKS avec Terraform
 

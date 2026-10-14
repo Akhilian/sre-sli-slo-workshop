@@ -40,7 +40,7 @@ L'interface SHALL pouvoir tourner hors cluster, face à une API locale (mode `st
 - **THEN** le parcours dépôt, suivi et recherche fonctionne dans le navigateur
 
 ### Requirement: Publication par la CI
-La CI SHALL vérifier le build de l'interface et publier `ghcr.io/<owner>/docshare-web`, taguée par SHA et `latest`, pour `linux/amd64` et `linux/arm64`, à chaque push sur `main` qui modifie `web/`.
+La CI SHALL vérifier le build de l'interface et publier `akhilian/docshare-web` sur Docker Hub, taguée par SHA et `latest`, pour `linux/amd64` et `linux/arm64`, à chaque push sur `main` qui modifie `web/`.
 
 #### Scenario: Build cassé
 - **WHEN** `npm run build` ou les tests de `web/` échouent

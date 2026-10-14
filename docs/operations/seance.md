@@ -6,7 +6,7 @@ Guide de l'animateur : préparation, enchaînement des cinq séquences, pannes e
 
 | Quand | Action |
 | --- | --- |
-| La veille ou le matin | Créer le cluster (`deployment.md`, « Prérequis »), renseigner `OWNER` dans `deploy/environments/<cible>/docshare.yaml` pour EKS. |
+| La veille ou le matin | Créer le cluster (`deployment.md`, « Prérequis »), vérifier que les images `akhilian/docshare` et `akhilian/docshare-web` sont publiées sur Docker Hub. |
 | Au moins 15 min avant | `deploy/scripts/setup.sh <cible> a b c d` (`GRAFANA_SOURCE_RANGES=<IP de la salle>/32` sur EKS). Les fenêtres d'une heure des alertes ont besoin d'un historique sain. |
 | Avant l'arrivée des équipes | Vérifier `kubectl get pods -A`, ouvrir Grafana, distribuer `out/kubeconfigs/<équipe>.yaml`, tester `port-forward svc/web` d'une équipe. |
 

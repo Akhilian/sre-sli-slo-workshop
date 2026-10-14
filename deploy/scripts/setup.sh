@@ -61,10 +61,6 @@ if [[ $TARGET != local ]]; then
   SOURCE_RANGES=(--set "grafana.service.loadBalancerSourceRanges={$GRAFANA_SOURCE_RANGES}")
 fi
 
-if [[ $TARGET != local ]] && grep -q OWNER "$ENVIRONMENTS_ROOT/$TARGET/docshare.yaml"; then
-  fail "renseignez le compte ghcr.io de l'image dans deploy/environments/$TARGET/docshare.yaml"
-fi
-
 # --- Monitoring partagé ------------------------------------------------------
 
 echo "==> Monitoring (kube-prometheus-stack $KPS_VERSION)"

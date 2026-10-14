@@ -11,9 +11,9 @@ Le projet SHALL produire une seule image Docker pour les trois rôles, construit
 - **THEN** elle démarre sans émulation
 
 ### Requirement: Publication sur un registre public
-L'image SHALL être publiée sur `ghcr.io` par un workflow GitHub Actions, pour être tirée depuis GKE, EKS ou k3d sans registre propre au fournisseur.
+L'image SHALL être publiée sur Docker Hub (`akhilian/docshare`) par un workflow GitHub Actions, pour être tirée depuis EKS ou k3d sans registre propre au fournisseur.
 
 #### Scenario: Publication sur la branche principale
 - **WHEN** un commit modifiant `app/` ou le `Dockerfile` arrive sur `main`
-- **THEN** une image taguée par le SHA du commit et `latest` est disponible sur `ghcr.io`
+- **THEN** une image taguée par le SHA du commit et `latest` est disponible sur Docker Hub
 

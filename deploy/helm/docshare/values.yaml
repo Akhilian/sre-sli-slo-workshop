@@ -2,8 +2,8 @@
 team: ""
 
 image:
-  # Image publiée par .github/workflows/image.yml (remplacer OWNER).
-  repository: ghcr.io/OWNER/docshare
+  # Image publiée par .github/workflows/image.yml.
+  repository: akhilian/docshare
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -18,7 +18,7 @@ api:
 web:
   enabled: true
   image:
-    repository: ghcr.io/OWNER/docshare-web
+    repository: akhilian/docshare-web
     tag: latest
     pullPolicy: IfNotPresent
   apiUrl: http://api
