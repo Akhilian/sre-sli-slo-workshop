@@ -1,5 +1,5 @@
 <script setup>
-import { ArrowLeft, Download, SearchX } from 'lucide-vue-next'
+import { ArrowLeft, Download } from 'lucide-vue-next'
 import { fileUrl } from '../api.js'
 import FileName from './FileName.vue'
 
@@ -14,23 +14,23 @@ defineEmits(['back'])
 <template>
   <section class="files" aria-labelledby="results-title" :aria-busy="results === null && !error">
     <div class="page-head">
-      <div>
-        <button type="button" class="link-button back" @click="$emit('back')">
-          <ArrowLeft :size="18" aria-hidden="true" />Mes fichiers
-        </button>
-        <h1 id="results-title">Résultats pour « {{ query }} »</h1>
-        <p v-if="results" class="summary">{{ results.length }} {{ results.length > 1 ? 'fichiers' : 'fichier' }}</p>
-      </div>
+      <button type="button" class="link-button back" @click="$emit('back')">
+        <ArrowLeft :size="16" aria-hidden="true" />Mes fichiers
+      </button>
+      <h1 id="results-title" class="h1-results">« {{ query }} »</h1>
+      <p class="summary">
+        <span v-if="results">{{ results.length }} {{ results.length > 1 ? 'fichiers trouvés' : 'fichier trouvé' }}</span>
+        <span v-else-if="!error">Recherche…</span>
+      </p>
     </div>
 
-    <p v-if="error" class="notice notice-error" role="alert">{{ error }}</p>
+    <p v-if="error" class="notice-error" role="alert">{{ error }}</p>
 
-    <div v-else-if="results === null" class="file-table skeleton" aria-hidden="true">
+    <div v-else-if="results === null" class="skeleton" aria-hidden="true">
       <div v-for="n in 3" :key="n" class="skeleton-row"></div>
     </div>
 
     <div v-else-if="!results.length" class="empty-drop empty-quiet">
-      <SearchX class="empty-icon" :size="44" :stroke-width="1.5" aria-hidden="true" />
       <p class="empty-title">Aucun résultat</p>
       <p class="empty-text">Essayez un autre mot du nom ou du contenu du fichier.</p>
     </div>
@@ -43,11 +43,11 @@ defineEmits(['back'])
         </tr>
       </thead>
       <tbody>
-        <tr v-for="doc in results" :key="doc.id">
+        <tr v-for="doc in results" :key="doc.id" class="row-done">
           <td class="cell-name"><FileName :id="doc.id" :title="doc.title" /></td>
-          <td class="col-num">
-            <a class="button-ghost" :href="fileUrl(doc.id)" download>
-              <Download :size="18" aria-hidden="true" />Télécharger<span class="visually-hidden"> {{ doc.title }}</span>
+          <td class="col-action">
+            <a class="button-download" :href="fileUrl(doc.id)" download>
+              <Download :size="16" aria-hidden="true" />Télécharger<span class="visually-hidden"> {{ doc.title }}</span>
             </a>
           </td>
         </tr>

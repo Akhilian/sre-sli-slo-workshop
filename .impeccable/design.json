@@ -1,262 +1,215 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-13T00:00:00Z",
+  "generatedAt": "2026-10-13T12:00:00Z",
   "title": "Design System: DocShare",
   "extensions": {
     "colorMeta": {
-      "navy": {
+      "ultra": {
         "role": "primary",
-        "displayName": "Bleu nuit",
-        "canonical": "oklch(25.2% 0.056 264)",
+        "displayName": "Outremer",
+        "canonical": "oklch(49.3% 0.287 272)",
         "tonalRamp": [
-          "#020922",
-          "#16233f",
-          "#303f5e",
-          "#4d5d7e",
-          "#6f80a3",
-          "#93a5c9",
-          "#b8cbf0",
-          "#e7effe"
+          "#06003d",
+          "#180087",
+          "#2b00d3",
+          "#3824fa",
+          "#4d56ff",
+          "#6d89ff",
+          "#a2bdff",
+          "#e4eeff"
         ]
       },
-      "saffron": {
+      "ultra-deep": {
+        "role": "primary",
+        "displayName": "Outremer profond",
+        "canonical": "oklch(42.5% 0.255 270)"
+      },
+      "verm": {
         "role": "secondary",
-        "displayName": "Safran",
-        "canonical": "oklch(81.4% 0.167 84)",
+        "displayName": "Vermillon",
+        "canonical": "oklch(60.4% 0.214 31)",
         "tonalRamp": [
-          "#110a00",
-          "#302101",
-          "#523c06",
-          "#755916",
-          "#a27905",
-          "#cc9c2a",
-          "#febf1e",
-          "#feedcb"
+          "#2e0000",
+          "#690000",
+          "#910000",
+          "#b80000",
+          "#e03015",
+          "#ff5a40",
+          "#ff9e88",
+          "#ffe5de"
         ]
       },
-      "ground": {
+      "verm-text": {
+        "role": "secondary",
+        "displayName": "Vermillon texte",
+        "canonical": "oklch(53.5% 0.193 32)"
+      },
+      "paper": {
         "role": "neutral",
-        "displayName": "Fond de page",
-        "canonical": "oklch(95.7% 0.006 255)",
+        "displayName": "Papier",
+        "canonical": "oklch(98.8% 0.001 106)",
         "tonalRamp": [
-          "#090b0e",
-          "#222427",
-          "#3e4043",
-          "#5b5e61",
-          "#7e8084",
-          "#a2a5a8",
-          "#c8cbcf",
-          "#eceff3"
+          "#0b0b0b",
+          "#242423",
+          "#40403f",
+          "#5e5e5d",
+          "#7d7d7c",
+          "#9e9e9d",
+          "#c4c4c3",
+          "#eeeeed"
+        ]
+      },
+      "paper-sunk": {
+        "role": "neutral",
+        "displayName": "Papier enfoncé",
+        "canonical": "oklch(96% 0.004 106)",
+        "tonalRamp": [
+          "#0b0b09",
+          "#242422",
+          "#40403d",
+          "#5e5e5b",
+          "#7d7d7b",
+          "#9e9e9c",
+          "#c4c4c1",
+          "#efefec"
         ]
       },
       "ink": {
         "role": "neutral",
         "displayName": "Encre",
-        "canonical": "oklch(22.8% 0.037 265)",
+        "canonical": "oklch(16.4% 0 0)",
         "tonalRamp": [
-          "#050a1b",
-          "#1b2436",
-          "#364054",
-          "#535e73",
-          "#758097",
-          "#99a5bd",
-          "#bfcbe4",
-          "#e7effe"
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c4c4c4",
+          "#eeeeee"
         ]
       },
-      "muted": {
+      "grey": {
         "role": "neutral",
-        "displayName": "Texte atténué",
-        "canonical": "oklch(45.2% 0.037 263)",
+        "displayName": "Gris",
+        "canonical": "oklch(48.5% 0 0)",
         "tonalRamp": [
-          "#040a1b",
-          "#1a2436",
-          "#354054",
-          "#535e73",
-          "#758197",
-          "#99a5bd",
-          "#becbe4",
-          "#e7effe"
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c4c4c4",
+          "#eeeeee"
         ]
       },
-      "line": {
+      "white": {
         "role": "neutral",
-        "displayName": "Filet",
-        "canonical": "oklch(88.4% 0.015 261)",
-        "tonalRamp": [
-          "#080b12",
-          "#20242c",
-          "#3b4048",
-          "#595e66",
-          "#7b818a",
-          "#9fa5ae",
-          "#c5cbd5",
-          "#e9eff9"
-        ]
-      },
-      "progress": {
-        "role": "tertiary",
-        "displayName": "Bleu traitement",
-        "canonical": "oklch(50.6% 0.192 262)",
-        "tonalRamp": [
-          "#000827",
-          "#011d59",
-          "#063790",
-          "#1453c7",
-          "#3a79f0",
-          "#73a3fc",
-          "#b0ccfc",
-          "#e6efff"
-        ]
-      },
-      "ok": {
-        "role": "tertiary",
-        "displayName": "Vert disponible",
-        "canonical": "oklch(48.4% 0.101 162)",
-        "tonalRamp": [
-          "#000f07",
-          "#032c1c",
-          "#0e4c34",
-          "#0d6f4c",
-          "#3e936e",
-          "#65b891",
-          "#8bdfb7",
-          "#c3ffe0"
-        ]
-      },
-      "alert": {
-        "role": "tertiary",
-        "displayName": "Rouge bloqué",
-        "canonical": "oklch(51.7% 0.190 29)",
-        "tonalRamp": [
-          "#1e0000",
-          "#4a0402",
-          "#781009",
-          "#b00e06",
-          "#db4334",
-          "#fe7462",
-          "#fcb7ac",
-          "#fee9e6"
-        ]
-      },
-      "navy-soft": {
-        "role": "primary",
-        "displayName": "Bleu nuit adouci"
-      },
-      "saffron-hover": {
-        "role": "secondary",
-        "displayName": "Safran clair"
-      },
-      "saffron-edge": {
-        "role": "secondary",
-        "displayName": "Arête safran"
-      },
-      "surface": {
-        "role": "neutral",
-        "displayName": "Surface"
-      },
-      "surface-sunk": {
-        "role": "neutral",
-        "displayName": "Surface enfoncée"
-      },
-      "line-strong": {
-        "role": "neutral",
-        "displayName": "Filet appuyé"
-      },
-      "progress-bg": {
-        "role": "tertiary",
-        "displayName": "Fond traitement"
-      },
-      "ok-bg": {
-        "role": "tertiary",
-        "displayName": "Fond disponible"
-      },
-      "alert-bg": {
-        "role": "tertiary",
-        "displayName": "Fond bloqué"
-      },
-      "idle": {
-        "role": "tertiary",
-        "displayName": "Gris en attente"
+        "displayName": "Blanc"
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "Titre de vue (Mes fichiers, Résultats pour…)."
+        "purpose": "Titre de vue « Mes fichiers »."
+      },
+      "display-results": {
+        "displayName": "Display résultats",
+        "purpose": "Requête en titre de la vue de recherche."
+      },
+      "display-drop": {
+        "displayName": "Display dépôt",
+        "purpose": "« Lâchez pour déposer. » sur le voile plein cadre."
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Message du voile de dépôt."
+        "purpose": "Titre d'état vide, maigre, étroit, outremer."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Titre d'état vide et du pupitre."
+        "purpose": "Titre du pupitre."
+      },
+      "brand": {
+        "displayName": "Marque",
+        "purpose": "Mot-symbole DocShare dans la barre."
+      },
+      "name-pending": {
+        "displayName": "Nom en traitement",
+        "purpose": "Signature : fichier en route."
+      },
+      "name-done": {
+        "displayName": "Nom disponible",
+        "purpose": "Signature : fichier disponible."
+      },
+      "name-stuck": {
+        "displayName": "Nom bloqué",
+        "purpose": "Signature : fichier bloqué, barré de vermillon."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Texte courant ; racine à 17 px."
+        "purpose": "Texte courant, base 17 px."
       },
-      "body-strong": {
-        "displayName": "Body strong",
-        "purpose": "Noms de fichiers, synthèse, boutons fantômes."
+      "control": {
+        "displayName": "Commande",
+        "purpose": "Libellés de boutons."
       },
-      "label": {
-        "displayName": "Label",
-        "purpose": "En-têtes de colonnes et légende du trajet, en casse normale."
+      "data": {
+        "displayName": "Données",
+        "purpose": "Synthèse, tailles, dates, états du trajet."
       },
-      "mono": {
-        "displayName": "Mono",
-        "purpose": "Code uniquement."
+      "data-label": {
+        "displayName": "Légende de données",
+        "purpose": "En-têtes de colonnes, pied de tableau, légendes, badges."
       }
     },
     "shadows": [
       {
-        "name": "floating",
-        "value": "0 10px 28px -6px rgb(20 33 61 / 0.28), 0 2px 6px rgb(20 33 61 / 0.12)",
+        "name": "flottant",
+        "value": "0 12px 32px -8px rgb(14 14 14 / 0.3)",
         "purpose": "Panneau des envois, seule surface flottante."
       },
       {
-        "name": "press",
-        "value": "0 1px 2px rgb(20 33 61 / 0.18)",
-        "purpose": "Sous le bouton safran au repos, retirée à l'appui."
-      },
-      {
-        "name": "scrim",
-        "value": "rgb(20 33 61 / 0.78)",
-        "purpose": "Voile de dépôt plein écran (couleur de fond, pas une ombre)."
-      },
-      {
         "name": "focus-ring",
-        "value": "outline: 3px solid var(--progress); outline-offset: 2px",
-        "purpose": "Focus clavier ; safran sur fond bleu nuit."
+        "value": "outline: 2px solid var(--ultra); outline-offset: 2px",
+        "purpose": "Focus clavier partout ; blanc sur l'en-tête encre du panneau."
+      },
+      {
+        "name": "search-focus",
+        "value": "border-color: var(--ultra); box-shadow: inset 0 0 0 1px var(--ultra)",
+        "purpose": "Filet doublé outremer de la recherche au focus, sans contour externe."
       }
     ],
     "motion": [
       {
         "name": "ease",
         "value": "cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "Remplissage du trajet et entrée du panneau."
+        "purpose": "Courbe du nom qui change de graisse, largeur et couleur (300 ms)."
+      },
+      {
+        "name": "name-shift",
+        "value": "300ms var(--ease)",
+        "purpose": "Transition de font-weight, font-stretch et color du nom de fichier."
       },
       {
         "name": "control",
-        "value": "150ms ease",
-        "purpose": "Couleurs des boutons."
+        "value": "120ms linear",
+        "purpose": "Couleurs de fond et de texte des boutons."
       },
       {
-        "name": "step",
-        "value": "300ms ease (couleur) / 500ms ease (segment)",
-        "purpose": "Changement d'étape du trajet."
+        "name": "blink",
+        "value": "1.6s steps(2, jump-none) infinite",
+        "purpose": "Case courante du trajet : outremer / papier, sans demi-teinte."
       },
       {
-        "name": "pulse",
-        "value": "1.4s ease-in-out infinite",
-        "purpose": "Point de l'étape en traitement."
+        "name": "dim",
+        "value": "1.2s steps(2, jump-none) infinite",
+        "purpose": "Lignes squelettes : papier enfoncé / papier."
       },
       {
-        "name": "tray-in",
-        "value": "250ms, translateY(1rem) → 0",
-        "purpose": "Apparition du panneau des envois."
+        "name": "spin",
+        "value": "0.9s linear infinite",
+        "purpose": "Spinner d'envoi en cours."
       },
       {
         "name": "reduced-motion",
@@ -276,122 +229,128 @@
       "name": "Barre du haut",
       "kind": "nav",
       "refersTo": "topbar",
-      "description": "Barre bleu nuit collante : marque à gauche, recherche large au centre.",
-      "html": "<header class=\"ds-topbar\"><a class=\"ds-brand\" href=\"#\"><svg class=\"ds-brand-mark\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M6 2.5h8.5L19 7v13a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 20V4a1.5 1.5 0 0 1 1-1.5Z\"/><path class=\"f\" d=\"M14.5 2.5V7H19\"/><path class=\"a\" d=\"M12 17.5v-6m0 0-2.75 2.75M12 11.5l2.75 2.75\"/></svg><span>DocShare</span></a><form class=\"ds-search\" role=\"search\"><svg class=\"ds-search-icon\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><input type=\"search\" placeholder=\"Rechercher dans DocShare\" aria-label=\"Rechercher dans DocShare\"></form></header>",
-      "css": ".ds-topbar{display:grid;grid-template-columns:minmax(10rem,1fr) minmax(0,44rem) minmax(0,1fr);align-items:center;gap:1.5rem;padding:.75rem 1.5rem;background:var(--navy,#14213d);color:#fff;font-family:var(--font,system-ui)} .ds-brand{display:inline-flex;align-items:center;gap:.6rem;font-size:1.3rem;font-weight:700;letter-spacing:-.01em;color:inherit;text-decoration:none} .ds-brand-mark{width:30px;height:30px;fill:var(--saffron,#f5b700)} .ds-brand-mark .f{fill:none;stroke:var(--navy,#14213d);stroke-width:1.4;stroke-linejoin:round} .ds-brand-mark .a{fill:none;stroke:var(--navy,#14213d);stroke-width:2;stroke-linecap:round;stroke-linejoin:round} .ds-brand:focus-visible{outline:3px solid var(--saffron,#f5b700);outline-offset:2px;border-radius:4px} .ds-search{position:relative;display:flex;align-items:center} .ds-search-icon{position:absolute;left:.9rem;color:var(--muted,#4b566b);pointer-events:none} .ds-search input{width:100%;height:2.75rem;padding:0 2.75rem 0 2.9rem;font:inherit;color:var(--ink,#141c2e);background:#fff;border:2px solid transparent;border-radius:var(--radius,8px)} .ds-search input::placeholder{color:var(--muted,#4b566b)} .ds-search input:focus{outline:none;border-color:var(--saffron,#f5b700)}"
+      "description": "Barre papier collante à filet d'encre : mot-symbole étroit et gras, recherche carrée au centre.",
+      "html": "<header class=\"ds-topbar\"><a class=\"ds-brand\" href=\"#\">DocShare</a><form class=\"ds-search\" role=\"search\"><svg class=\"ds-search-icon\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><input type=\"search\" placeholder=\"Rechercher dans DocShare\" aria-label=\"Rechercher dans DocShare\"></form><span></span></header>",
+      "css": ".ds-topbar{display:grid;grid-template-columns:minmax(10rem,1fr) minmax(0,40rem) minmax(0,1fr);align-items:center;gap:1.5rem;height:3.5rem;padding:0 2.5rem;background:var(--paper,#fbfbfa);color:var(--ink,#0e0e0e);border-bottom:1px solid var(--ink,#0e0e0e);font-family:var(--sans,'Bricolage Grotesque Variable',system-ui,sans-serif);} .ds-brand{font-size:1.5rem;font-weight:800;font-stretch:75%;letter-spacing:-.02em;color:inherit;text-decoration:none} .ds-brand:focus-visible{outline:2px solid var(--ultra,#3a2bff);outline-offset:2px;} .ds-search{position:relative;display:flex;align-items:center} .ds-search-icon{position:absolute;left:.75rem;pointer-events:none} .ds-search input{width:100%;height:2.25rem;padding:0 2.5rem 0 2.4rem;font:inherit;font-size:1rem;color:var(--ink,#0e0e0e);background:#fff;border:1px solid var(--ink,#0e0e0e);border-radius:0} .ds-search input::placeholder{color:var(--grey,#5f5f5f)} .ds-search input:focus{outline:none;border-color:var(--ultra,#3a2bff);box-shadow:inset 0 0 0 1px var(--ultra,#3a2bff)}"
     },
     {
       "name": "Bouton principal",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "L'unique action safran de la vue.",
-      "html": "<button class=\"ds-btn-primary\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><polyline points=\"17 8 12 3 7 8\"/><line x1=\"12\" x2=\"12\" y1=\"3\" y2=\"15\"/></svg>Déposer des fichiers</button>",
-      "css": ".ds-btn-primary{display:inline-flex;align-items:center;gap:.55rem;min-height:2.75rem;padding:0 1.15rem;border-radius:var(--radius,8px);font:700 1rem/1.5 var(--font,system-ui);background:var(--saffron,#f5b700);color:var(--navy,#14213d);border:1px solid var(--saffron-edge,#d29c00);box-shadow:0 1px 2px rgb(20 33 61 / .18);cursor:pointer;transition:background-color 150ms ease,box-shadow 150ms ease} .ds-btn-primary:hover{background:var(--saffron-hover,#ffc72c)} .ds-btn-primary:active{box-shadow:none} .ds-btn-primary:focus-visible{outline:3px solid var(--progress,#1d5bd0);outline-offset:2px}"
+      "description": "L'unique commande outremer de la vue.",
+      "html": "<button class=\"ds-btn-primary\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 3v12\"/><path d=\"m17 8-5-5-5 5\"/><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/></svg>Déposer des fichiers</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;white-space:nowrap;text-decoration:none;font-weight:650;letter-spacing:-.01em;font-size:1.0625rem;border-radius:0;cursor:pointer;transition:background-color 120ms linear,color 120ms linear;font-family:var(--sans,'Bricolage Grotesque Variable',system-ui,sans-serif);height:2.75rem;padding:0 1.25rem;background:var(--ultra,#3a2bff);color:#fff;border:1px solid var(--ultra,#3a2bff)} .ds-btn-primary:hover{background:var(--ultra-deep,#2a1ed6);border-color:var(--ultra-deep,#2a1ed6)} .ds-btn-primary:focus-visible{outline:2px solid var(--ultra,#3a2bff);outline-offset:2px;} .ds-btn-primary:disabled{opacity:.4;cursor:not-allowed}"
     },
     {
       "name": "Bouton secondaire",
       "kind": "button",
       "refersTo": "button-secondary",
-      "description": "Action alternative : blanc bordé de bleu nuit.",
+      "description": "Filet d'encre ; s'inverse en aplat encre au survol.",
       "html": "<button class=\"ds-btn-secondary\">Choisir sur mon ordinateur</button>",
-      "css": ".ds-btn-secondary{display:inline-flex;align-items:center;gap:.55rem;min-height:2.75rem;padding:0 1.15rem;border-radius:var(--radius,8px);font:700 1rem/1.5 var(--font,system-ui);background:var(--surface,#fff);color:var(--navy,#14213d);border:1.5px solid var(--navy,#14213d);cursor:pointer;transition:background-color 150ms ease} .ds-btn-secondary:hover{background:var(--surface-sunk,#f6f8fb)} .ds-btn-secondary:focus-visible{outline:3px solid var(--progress,#1d5bd0);outline-offset:2px}"
+      "css": ".ds-btn-secondary{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;white-space:nowrap;text-decoration:none;font-weight:650;letter-spacing:-.01em;font-size:1.0625rem;border-radius:0;cursor:pointer;transition:background-color 120ms linear,color 120ms linear;font-family:var(--sans,'Bricolage Grotesque Variable',system-ui,sans-serif);height:2.75rem;padding:0 1.25rem;background:transparent;color:var(--ink,#0e0e0e);border:1px solid var(--ink,#0e0e0e)} .ds-btn-secondary:hover{background:var(--ink,#0e0e0e);color:var(--paper,#fbfbfa)} .ds-btn-secondary:focus-visible{outline:2px solid var(--ultra,#3a2bff);outline-offset:2px;} .ds-btn-secondary:disabled{opacity:.4;cursor:not-allowed}"
     },
     {
-      "name": "Bouton fantôme",
+      "name": "Télécharger",
       "kind": "button",
-      "refersTo": "button-ghost",
-      "description": "Action de ligne, sans fond au repos.",
-      "html": "<a class=\"ds-btn-ghost\" href=\"#\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><polyline points=\"7 10 12 15 17 10\"/><line x1=\"12\" x2=\"12\" y1=\"15\" y2=\"3\"/></svg>Télécharger</a>",
-      "css": ".ds-btn-ghost{display:inline-flex;align-items:center;gap:.55rem;min-height:2.4rem;padding:0 .8rem;border-radius:var(--radius,8px);font:600 1rem/1.5 var(--font,system-ui);color:var(--navy,#14213d);border:1px solid transparent;text-decoration:none;transition:background-color 150ms ease,border-color 150ms ease} .ds-btn-ghost:hover{background:var(--surface-sunk,#f6f8fb);border-color:var(--line,#d3d9e3)} .ds-btn-ghost:focus-visible{outline:3px solid var(--progress,#1d5bd0);outline-offset:2px}"
+      "refersTo": "button-download",
+      "description": "Action de ligne, plus basse, même inversion au survol.",
+      "html": "<a class=\"ds-btn-download\" href=\"#\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 15V3\"/><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><path d=\"m7 10 5 5 5-5\"/></svg>Télécharger</a>",
+      "css": ".ds-btn-download{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;white-space:nowrap;text-decoration:none;font-weight:650;letter-spacing:-.01em;font-size:1.0625rem;border-radius:0;cursor:pointer;transition:background-color 120ms linear,color 120ms linear;font-family:var(--sans,'Bricolage Grotesque Variable',system-ui,sans-serif);height:2rem;padding:0 .75rem;font-size:.875rem;background:transparent;color:var(--ink,#0e0e0e);border:1px solid var(--ink,#0e0e0e)} .ds-btn-download:hover{background:var(--ink,#0e0e0e);color:var(--paper,#fbfbfa)} .ds-btn-download:focus-visible{outline:2px solid var(--ultra,#3a2bff);outline-offset:2px;}"
     },
     {
-      "name": "Trajet d'un fichier",
+      "name": "Lien-bouton",
+      "kind": "button",
+      "refersTo": "link-button",
+      "description": "Action discrète soulignée de 1 px, 2 px au survol.",
+      "html": "<button class=\"ds-link\">Vérifier à nouveau</button>",
+      "css": ".ds-link{display:inline-flex;align-items:center;gap:.35rem;padding:0;background:none;border:none;color:var(--ink,#0e0e0e);font-family:var(--sans,'Bricolage Grotesque Variable',system-ui,sans-serif);font-size:.9375rem;font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;cursor:pointer} .ds-link:hover{text-decoration-thickness:2px} .ds-link:focus-visible{outline:2px solid var(--ultra,#3a2bff);outline-offset:2px;}"
+    },
+    {
+      "name": "Ligne de fichier (signature)",
       "kind": "custom",
-      "refersTo": "track-step-pending",
-      "description": "Signature : trois étapes reliées, colorées par l'état (ici en cours, disponible, bloqué).",
-      "html": "<div class=\"ds-track ds-pending\"><ol><li class=\"ds-step d\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 6 9 17l-5-5\"/></svg></li><li class=\"ds-step p\"></li><li class=\"ds-step\"></li></ol><span class=\"ds-label\">En traitement · 2 s</span></div><div class=\"ds-track ds-done\"><ol><li class=\"ds-step\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 6 9 17l-5-5\"/></svg></li><li class=\"ds-step\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 6 9 17l-5-5\"/></svg></li><li class=\"ds-step\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 6 9 17l-5-5\"/></svg></li></ol><span class=\"ds-label\">Disponible en 45 s</span></div><div class=\"ds-track ds-stuck\"><ol><li class=\"ds-step d\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 6 9 17l-5-5\"/></svg></li><li class=\"ds-step p\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3\"/><path d=\"M12 9v4\"/><path d=\"M12 17h.01\"/></svg></li><li class=\"ds-step\"></li></ol><span class=\"ds-label\">Bloqué en traitement</span></div>",
-      "css": ".ds-track{display:flex;align-items:center;gap:1rem;margin:.5rem 0;font-family:var(--font,system-ui);--c:var(--idle,#c3cad6)} .ds-track ol{display:flex;align-items:center;margin:0;padding:0;list-style:none} .ds-step{position:relative;display:grid;place-items:center;width:1.5rem;height:1.5rem;border-radius:50%;border:2px solid var(--idle,#c3cad6);background:#fff;color:#fff;box-sizing:border-box;transition:background-color 300ms cubic-bezier(.16,1,.3,1),border-color 300ms cubic-bezier(.16,1,.3,1)} .ds-step+.ds-step{margin-left:3.6rem} .ds-step+.ds-step::before{content:\"\";position:absolute;right:calc(100% + 2px);width:3.6rem;height:3px;border-radius:2px;background:var(--idle,#c3cad6)} .ds-label{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap} .ds-pending{--c:var(--progress,#1d5bd0)} .ds-pending .d{background:var(--c);border-color:var(--c)} .ds-pending .p{border-color:var(--c)} .ds-pending .p::before{background:var(--c)} .ds-pending .p::after{content:\"\";width:.55rem;height:.55rem;border-radius:50%;background:var(--c);animation:ds-pulse 1.4s ease-in-out infinite} .ds-done{--c:var(--ok,#10704d)} .ds-done .ds-step{background:var(--c);border-color:var(--c)} .ds-done .ds-step+.ds-step::before{background:var(--c)} .ds-stuck{--c:var(--alert,#bd2318)} .ds-stuck .d,.ds-stuck .p{background:var(--c);border-color:var(--c)} .ds-stuck .p::before{background:var(--c)} .ds-track .ds-label{color:var(--c)} @keyframes ds-pulse{0%,100%{transform:scale(.7);opacity:.55}50%{transform:scale(1);opacity:1}}"
-    },
-    {
-      "name": "Tableau des fichiers",
-      "kind": "card",
-      "refersTo": "file-table",
-      "description": "Conteneur principal : blanc, filet, en-têtes atténués, lignes généreuses ; ligne bloquée teintée.",
-      "html": "<table class=\"ds-table\"><thead><tr><th>Nom</th><th class=\"n\">Taille</th><th class=\"n\">Déposé</th></tr></thead><tbody><tr><td class=\"name\">facture-electricite.txt</td><td class=\"n m\">22 o</td><td class=\"n m\">il y a 1 minute</td></tr><tr class=\"stuck\"><td class=\"name\">devis-travaux.txt</td><td class=\"n m\">14 o</td><td class=\"n m\">à l’instant</td></tr></tbody></table>",
-      "css": ".ds-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface,#fff);border:1px solid var(--line,#d3d9e3);border-radius:var(--radius-lg,12px);overflow:hidden;font-family:var(--font,system-ui);color:var(--ink,#141c2e)} .ds-table th{padding:.7rem 1.1rem;text-align:left;font-size:.9rem;font-weight:700;color:var(--muted,#4b566b);background:var(--surface-sunk,#f6f8fb);border-bottom:1px solid var(--line,#d3d9e3)} .ds-table td{padding:.95rem 1.1rem;border-bottom:1px solid var(--line,#d3d9e3)} .ds-table tbody tr:last-child td{border-bottom:none} .ds-table tbody tr:hover{background:var(--surface-sunk,#f6f8fb)} .ds-table tr.stuck{background:var(--alert-bg,#fdebe9)} .ds-table .n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums} .ds-table .m{color:var(--muted,#4b566b)} .ds-table .name{font-weight:600}"
+      "refersTo": "file-name-pending",
+      "description": "Tableau en filets : la graisse, la largeur et la couleur du nom disent l'état ; trois cases carrées doublent le message.",
+      "html": "<table class=\"ds-table\"><thead><tr><th>Nom</th><th>Envoyé · Traitement · Disponible</th><th class=\"n\">Taille</th></tr></thead><tbody><tr class=\"pending\"><td class=\"nm\">devis-travaux-cuisine.txt</td><td><span class=\"trk\"><i class=\"c p\"></i><i class=\"c cur\"></i><i class=\"c\"></i><span class=\"tx\">En traitement depuis 2 s</span></span></td><td class=\"n d\">14 o</td></tr><tr class=\"stuck\"><td class=\"nm\">facture-electricite.txt</td><td><span class=\"trk\"><i class=\"c p\"></i><i class=\"c st\"></i><i class=\"c\"></i><span class=\"tx\">Bloqué en traitement</span></span></td><td class=\"n d\">22 o</td></tr><tr class=\"done\"><td class=\"nm\">budget-2026.csv</td><td><span class=\"trk\"><i class=\"c p\"></i><i class=\"c p\"></i><i class=\"c p\"></i><span class=\"tx\">Disponible</span></span></td><td class=\"n d\">38 o</td></tr></tbody></table>",
+      "css": ".ds-table{width:100%;border-collapse:collapse;background:var(--paper,#fbfbfa);color:var(--ink,#0e0e0e);font-family:var(--sans,'Bricolage Grotesque Variable',system-ui,sans-serif);} .ds-table th{height:2.25rem;padding:0 1rem;text-align:left;font-family:var(--mono,'Martian Mono Variable',ui-monospace,monospace);font-variant-numeric:tabular-nums;font-weight:350;font-stretch:87.5%;letter-spacing:-.02em;font-size:.8125rem;font-weight:400;color:var(--grey,#5f5f5f);border-bottom:1px solid var(--ink,#0e0e0e)} .ds-table td{height:3.75rem;padding:0 1rem;border-bottom:1px solid var(--ink,#0e0e0e);white-space:nowrap} .ds-table :is(th,td)+:is(th,td){border-left:1px solid var(--ink,#0e0e0e)} .ds-table tbody tr:hover{background:var(--paper-sunk,#f2f2ef)} .ds-table .n{text-align:right} .ds-table .d{font-family:var(--mono,'Martian Mono Variable',ui-monospace,monospace);font-variant-numeric:tabular-nums;font-weight:350;font-stretch:87.5%;letter-spacing:-.02em;font-size:.875rem} .ds-table .nm{font-size:1.3125rem;letter-spacing:-.015em;transition:font-weight 300ms cubic-bezier(.16,1,.3,1),font-stretch 300ms cubic-bezier(.16,1,.3,1),color 300ms cubic-bezier(.16,1,.3,1)} .ds-table .pending .nm{font-weight:300;font-stretch:85%;color:var(--ultra,#3a2bff)} .ds-table .done .nm{font-weight:750;font-stretch:100%} .ds-table .stuck .nm{font-weight:500;font-stretch:92%;color:var(--verm-text,#c42a12);text-decoration:line-through 2px var(--verm,#e5361c)} .ds-table .trk{display:flex;align-items:center;gap:4px} .ds-table .tx{margin-left:.85rem;font-family:var(--mono,'Martian Mono Variable',ui-monospace,monospace);font-variant-numeric:tabular-nums;font-weight:350;font-stretch:87.5%;letter-spacing:-.02em;font-size:.875rem} .ds-table .pending .tx{color:var(--ultra,#3a2bff)} .ds-table .stuck .tx{color:var(--verm-text,#c42a12)} .ds-table .c{position:relative;display:inline-block;width:14px;height:14px;border:1px solid var(--ink,#0e0e0e);overflow:hidden;box-sizing:border-box} .ds-table .c.p{background:var(--ink,#0e0e0e)} .ds-table .c.cur{background:var(--ultra,#3a2bff);border-color:var(--ultra,#3a2bff);animation:ds-blink 1.6s steps(2,jump-none) infinite} .ds-table .c.st{background:var(--verm,#e5361c);border-color:var(--verm,#e5361c)} .ds-table .c.st::after{content:\"\";position:absolute;left:-3px;top:5px;width:18px;height:2px;background:var(--paper,#fbfbfa);transform:rotate(-45deg)} @keyframes ds-blink{50%{background:var(--paper,#fbfbfa)}} @media (prefers-reduced-motion:reduce){.ds-table *{animation:none!important;transition:none!important}}"
     },
     {
       "name": "Panneau des envois",
       "kind": "card",
       "refersTo": "tray",
-      "description": "Seule surface flottante : en-tête bleu nuit (rouge en échec), liste des envois.",
-      "html": "<aside class=\"ds-tray\"><div class=\"ds-tray-head\"><p>1 envoi a échoué <span>· 7 envoyés</span></p></div><ul><li><span class=\"ds-tray-name\">attestation-assurance.txt</span><span class=\"ds-tray-err\">Le service n’a pas répondu. Réessayez dans un instant.</span></li></ul></aside>",
-      "css": ".ds-tray{width:min(24rem,100%);overflow:hidden;background:var(--surface,#fff);border-radius:var(--radius-lg,12px);box-shadow:0 10px 28px -6px rgb(20 33 61 / .28),0 2px 6px rgb(20 33 61 / .12);font-family:var(--font,system-ui)} .ds-tray-head{padding:.55rem .6rem .55rem 1.1rem;background:var(--alert,#bd2318);color:#fff} .ds-tray-head p{margin:0;font-weight:700} .ds-tray-head span{font-weight:400;opacity:.85} .ds-tray ul{margin:0;padding:.35rem 0;list-style:none} .ds-tray li{display:grid;padding:.55rem .6rem .55rem 1.1rem} .ds-tray-name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .ds-tray-err{color:var(--alert,#bd2318);font-size:.9rem}"
+      "description": "Seule surface flottante : rectangle papier cerné d'encre, en-tête encre inversé.",
+      "html": "<aside class=\"ds-tray\"><div class=\"ds-tray-head\"><p>1 envoi a échoué<span> · 7 envoyés</span></p></div><ul><li class=\"failed\"><span class=\"ds-tray-name\">attestation-assurance.txt</span><span class=\"ds-tray-err\">Le service n’a pas répondu. Réessayez dans un instant.</span></li></ul></aside>",
+      "css": ".ds-tray{width:min(24rem,100%);background:var(--paper,#fbfbfa);border:1px solid var(--ink,#0e0e0e);box-shadow:0 12px 32px -8px rgb(14 14 14 / .3);font-family:var(--sans,'Bricolage Grotesque Variable',system-ui,sans-serif);color:var(--ink,#0e0e0e)} .ds-tray-head{display:flex;align-items:center;height:2.5rem;padding:0 .3rem 0 .9rem;background:var(--ink,#0e0e0e);color:#fff} .ds-tray-head p{margin:0;font-weight:650;font-size:.9375rem} .ds-tray-head span{font-family:var(--mono,'Martian Mono Variable',ui-monospace,monospace);font-variant-numeric:tabular-nums;font-weight:350;font-stretch:87.5%;letter-spacing:-.02em;font-weight:300;font-size:.8125rem} .ds-tray ul{margin:0;padding:0;list-style:none} .ds-tray li{display:grid;gap:.15rem;padding:.75rem .3rem .75rem .9rem} .ds-tray li+li{border-top:1px solid var(--ink,#0e0e0e)} .ds-tray-name{font-weight:600;font-size:1.0625rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .failed .ds-tray-name{color:var(--verm-text,#c42a12);text-decoration:line-through 2px var(--verm,#e5361c)} .ds-tray-err{font-size:.875rem;color:var(--grey,#5f5f5f);line-height:1.4}"
     },
     {
-      "name": "Badges du pupitre",
-      "kind": "chip",
-      "refersTo": "badge-active",
-      "description": "État d'une panne : rouge plein si active, sourdine sinon.",
-      "html": "<span class=\"ds-badge on\">Active</span> <span class=\"ds-badge off\">Inactive</span>",
-      "css": ".ds-badge{display:inline-block;padding:.1rem .55rem;border-radius:999px;font:700 .9rem/1.5 var(--font,system-ui)} .ds-badge.on{background:var(--alert,#bd2318);color:#fff} .ds-badge.off{background:var(--surface-sunk,#f6f8fb);color:var(--muted,#4b566b);border:1px solid var(--line,#d3d9e3)}"
+      "name": "Recherche",
+      "kind": "input",
+      "refersTo": "search-input",
+      "description": "Champ carré blanc à filet d'encre ; filet doublé outremer au focus.",
+      "html": "<label class=\"ds-field\"><svg class=\"ds-search-icon\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><input type=\"search\" placeholder=\"Rechercher dans DocShare\" aria-label=\"Rechercher\"></label>",
+      "css": ".ds-field{position:relative;display:flex;align-items:center;width:20rem;font-family:var(--sans,'Bricolage Grotesque Variable',system-ui,sans-serif);} .ds-field .ds-search-icon{position:absolute;left:.75rem;pointer-events:none} .ds-field input{width:100%;height:2.25rem;padding:0 1rem 0 2.4rem;font:inherit;font-size:1rem;color:var(--ink,#0e0e0e);background:#fff;border:1px solid var(--ink,#0e0e0e);border-radius:0} .ds-field input::placeholder{color:var(--grey,#5f5f5f)} .ds-field input:focus{outline:none;border-color:var(--ultra,#3a2bff);box-shadow:inset 0 0 0 1px var(--ultra,#3a2bff)}"
     }
   ],
   "narrative": {
-    "northStar": "Le suivi de colis",
-    "overview": "**Creative North Star: \"Le suivi de colis\"**\n\nDocShare se présente comme un vrai gestionnaire de fichiers, au niveau de finition de Drive ou de La Suite Fichiers, sans en emprunter l'identité. La structure est celle du canon : une barre du haut bleu nuit qui porte le nom et une recherche large, un fond gris froid, un tableau blanc à lignes généreuses, une action principale safran. Ce qui lui est propre tient dans une seule pièce : chaque ligne montre le trajet du fichier en trois étapes (Envoyé, Traitement, Disponible), comme un suivi de livraison. Pendant une panne, le trajet cale visiblement sur l'étape de traitement.\n\nLe système est pensé pour être lu à distance : base typographique à 17 px, Atkinson Hyperlegible Next, contrastes francs, trois couleurs d'état qui ne servent qu'à dire l'état. Il est volontairement dense mais aéré, plat, et clair uniquement : l'écran est vu dans une salle éclairée et au vidéoprojecteur. La profondeur est réservée à ce qui flotte au-dessus du travail (panneau des envois, voile de dépôt).",
+    "northStar": "Le spécimen",
+    "overview": "**Creative North Star: \"Le spécimen\"**\n\nDocShare se lit comme une planche de spécimen de fonte variable posée sur un gestionnaire de fichiers. La structure reste celle du canon (barre fine, titre de vue, tableau, panneau d'envois en bas à droite), mais l'identité ne vient ni d'une couleur de marque ni d'une carte : elle vient de la typographie. Le nom d'un fichier change de graisse, de largeur et de couleur selon son état : fin, étroit et outremer quand il est en route, plein et noir quand il est disponible, barré de vermillon quand il cale. Un titre de vue à l'échelle d'une affiche (jusqu'à 132 px) installe ce registre dès le premier écran.\n\nLe monde est fait de papier blanc cassé, d'encre presque noire et de filets d'encre de 1 px, sans rayon et sans ombre. Deux voix typographiques se partagent strictement le travail : Bricolage Grotesque pour tout ce qui se lit et se manipule, Martian Mono pour les seules données (tailles, dates, états, légendes). Les changements d'état sont des bascules nettes, sans demi-teinte : les cases du trajet clignotent en deux temps, les squelettes aussi. Le système est clair seul, dense, pensé pour la salle éclairée et le vidéoprojecteur.",
     "keyCharacteristics": [
-      "Barre bleu nuit pleine largeur, collante, avec la recherche au centre.",
-      "Une seule action safran par vue, texte bleu nuit.",
-      "Trois états codés couleur et forme : bleu en cours, vert disponible, rouge bloqué ou en échec.",
-      "Le trajet en trois pastilles reliées, signature de chaque ligne.",
-      "Surfaces plates bordées d'un filet ; seule l'interface flottante porte une ombre.",
-      "Icônes Lucide à trait unique, jamais de glyphes typographiques."
+      "La graisse, la largeur et la couleur du nom portent l'état du fichier.",
+      "Rayon 0 partout ; des filets d'encre de 1 px comme seule structure.",
+      "Un seul accent, l'outremer, pour l'action principale et ce qui est en mouvement ; le vermillon pour ce qui cale.",
+      "Titre de vue en display 800 très serré, interlignage 0.8.",
+      "Martian Mono étroite et tabulaire pour les données, jamais pour la prose ni les commandes.",
+      "Aplats sans ombre, sauf le panneau des envois qui flotte.",
+      "Bascules nettes (`steps(2)`) plutôt que fondus."
     ],
     "rules": [
       {
-        "name": "La règle du safran unique",
-        "body": "Le safran signale l'action principale de la vue, et une seule à la fois ; ailleurs il ne sert qu'à la marque, au dépôt et au focus sur fond bleu nuit. Les actions secondaires sont blanches bordées de bleu nuit ou fantômes.",
+        "name": "La règle de l'outremer unique",
+        "body": "Une seule commande outremer par vue. Ailleurs, l'outremer ne dit qu'une chose : « en mouvement » (fichier en traitement, envoi en cours, focus, dépôt). Au pupitre, « Appliquer » est rétrogradé en bouton à filet pour ne pas concurrencer l'action de la vue.",
         "section": "colors"
       },
       {
-        "name": "La règle des états dédiés",
-        "body": "Bleu, vert et rouge ne servent qu'à dire l'état d'un fichier, d'un envoi ou d'une panne. Jamais en décoration, jamais en couleur de section. Chaque état est aussi porté par une forme (coche, triangle d'alerte, point pulsé) et un libellé, pour rester lisible en niveaux de gris et au projecteur.",
+        "name": "La règle du vermillon qui cale",
+        "body": "Le vermillon ne sert qu'à la panne et à l'échec. Il est toujours doublé d'une forme (trait qui barre, case rayée, triangle d'alerte) et d'un libellé, pour rester lisible en niveaux de gris et au projecteur.",
         "section": "colors"
       },
       {
-        "name": "La règle des chiffres alignés",
-        "body": "Tout ce qui se compte ou se compare (synthèse, durées du trajet, tailles, dates) est en chiffres tabulaires (`font-variant-numeric: tabular-nums`), aligné à droite dans le tableau.",
+        "name": "La règle des deux voix",
+        "body": "Martian Mono pour les données uniquement (taille, date, état, compte, légende, nom de panne) ; jamais pour la prose ni pour une commande. Tout le reste est en Bricolage Grotesque.",
+        "section": "typography"
+      },
+      {
+        "name": "La règle du poids qui avance",
+        "body": "L'état d'un fichier s'exprime d'abord par les axes de la fonte : maigre et étroit en route, gras et plein une fois disponible. La transition entre les deux dure 300 ms sur la courbe `ease`.",
         "section": "typography"
       },
       {
         "name": "La règle de la casse normale",
-        "body": "Aucun texte en capitales ni espacé : les en-têtes et légendes restent en casse de phrase, en graisse 700 et couleur atténuée.",
+        "body": "Aucun texte en capitales espacées, aucun surtitre : en-têtes et légendes restent en casse de phrase, en mono grise.",
         "section": "typography"
       },
       {
         "name": "La règle du flottant seul",
-        "body": "Seul ce qui flotte (panneau, voile) porte une ombre ou un voile. Une surface posée dans le flux reste plate et bordée. Les ombres sont teintées bleu nuit, jamais noires.",
+        "body": "Seul le panneau des envois porte une ombre. Toute autre surface reste à plat, cernée ou séparée par un filet d'encre.",
         "section": "elevation"
       }
     ],
     "dos": [
-      "**Do** garder une seule action safran par vue, texte bleu nuit.",
-      "**Do** exprimer chaque état par la couleur, une forme (coche, triangle, point pulsé) et un libellé.",
-      "**Do** montrer la progression d'un fichier avec le trajet en trois étapes, et laisser un échec caler visiblement le trajet.",
-      "**Do** garder les surfaces posées plates (blanc + filet `line` de 1 px, arrondi 12 px) et réserver l'ombre « flottant » à ce qui flotte.",
-      "**Do** utiliser les icônes Lucide à trait unique (14 à 20 px dans l'interface, 48 px pour les états vides).",
-      "**Do** mettre en chiffres tabulaires toute quantité, durée, taille ou date.",
+      "**Do** exprimer l'état d'un fichier par la graisse, la largeur et la couleur de son nom, doublées des cases du trajet et d'un libellé mono.",
+      "**Do** garder une seule commande outremer par vue ; l'outremer dit sinon « en mouvement ».",
+      "**Do** construire avec des filets d'encre de 1 px et des aplats, à rayon 0.",
+      "**Do** écrire le vermillon en `verm-text` dès qu'il porte du texte ; garder `verm` pour les traits et les aplats.",
+      "**Do** mettre toute donnée (taille, date, compte, état, légende) en Martian Mono tabulaire, étroite, en 350.",
+      "**Do** préférer les bascules nettes (`steps(2)`) aux fondus pour les états qui clignotent.",
       "**Do** respecter `prefers-reduced-motion` : animations et transitions coupées."
     ],
     "donts": [
-      "**Don't** utiliser bleu, vert ou rouge hors de leur sens d'état.",
-      "**Don't** ajouter de thème sombre : le monde est clair seul, pour la salle éclairée et le projecteur.",
-      "**Don't** emprunter les logos, couleurs, la police Marianne ou le DSFR des produits de référence.",
-      "**Don't** empiler des panneaux blancs ou des pastilles décoratives : un tableau, des lignes, un trajet.",
+      "**Don't** arrondir un angle, ni ajouter de carte, de pastille ou de rembourrage SaaS confortable.",
+      "**Don't** poser d'ombre ailleurs que sous le panneau des envois.",
+      "**Don't** utiliser Martian Mono pour la prose ou les commandes, ni une sans-serif générique à la place de Bricolage Grotesque.",
+      "**Don't** utiliser le vermillon hors de la panne et de l'échec, ni l'outremer en décoration.",
       "**Don't** utiliser de texte en capitales espacées, de surtitres au-dessus des titres, ni de glyphes typographiques en guise d'icônes.",
-      "**Don't** utiliser le pointillé ailleurs que sur une cible de dépôt.",
-      "**Don't** descendre la base sous 17 px ni un texte secondaire sous 0.85rem."
+      "**Don't** ajouter de thème sombre : le monde est clair seul, pour la salle éclairée et le projecteur.",
+      "**Don't** emprunter les logos, couleurs, la police Marianne ou le DSFR des produits de référence."
     ]
   }
 }

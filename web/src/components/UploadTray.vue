@@ -47,7 +47,7 @@ const detail = computed(() => {
   <aside v-if="items.length" ref="tray" :class="['tray', { 'tray-failed': counts.failed && !counts.sending }]" aria-label="Envois">
     <div class="tray-head">
       <p class="tray-title">{{ title }}<span v-if="detail" class="tray-detail"> · {{ detail }}</span></p>
-      <button type="button" class="icon-button" :aria-expanded="open" :aria-label="open ? 'Réduire' : 'Déplier'" @click="open = !open">
+      <button type="button" class="icon-button" :aria-expanded="open" aria-label="Détail des envois" @click="open = !open">
         <ChevronDown v-if="open" :size="20" aria-hidden="true" />
         <ChevronUp v-else :size="20" aria-hidden="true" />
       </button>
@@ -64,13 +64,13 @@ const detail = computed(() => {
     <ul v-show="open && visible.length" class="tray-list">
       <li v-for="item in visible" :key="item.key" :class="['tray-item', `tray-${item.status}`]">
         <span class="tray-state" aria-hidden="true">
-          <LoaderCircle v-if="item.status === 'sending'" class="spin" :size="20" />
-          <Check v-else-if="item.status === 'sent'" :size="20" :stroke-width="2.5" />
-          <TriangleAlert v-else :size="20" />
+          <LoaderCircle v-if="item.status === 'sending'" class="spin" :size="18" />
+          <Check v-else-if="item.status === 'sent'" :size="18" />
+          <TriangleAlert v-else :size="18" />
         </span>
         <span class="tray-body">
           <span class="tray-name">{{ item.file.name }}</span>
-          <span v-if="item.status === 'failed'" class="tray-error" role="alert">{{ item.error }}</span>
+          <span v-if="item.status === 'failed'" class="tray-error">{{ item.error }}</span>
         </span>
         <template v-if="item.status === 'failed'">
           <button type="button" class="icon-button" :aria-label="`Réessayer ${item.file.name}`" @click="$emit('retry', item)">

@@ -7,18 +7,18 @@ related_targets: ["web/src/style.css","web/src/components"]
 
 # Surface : écran principal DocShare (dépôt, mes fichiers, recherche)
 
-Mode : Operate. Public : participants de l'atelier sur portable, et la salle via le vidéoprojecteur. Tâche : déposer des fichiers, suivre leur trajet, les retrouver et les télécharger. Contraintes : angles morts de PRODUCT.md intacts ; pupitre `?admin` hors périmètre de la refonte, déplacé sous la vue pour ne plus la masquer. Moment mémorable : le trajet de chaque fichier, qui cale visiblement pendant une panne.
+Mode : Operate. Public : participants de l'atelier sur portable, et la salle via le vidéoprojecteur. Tâche : déposer des fichiers, suivre leur trajet, les retrouver et les télécharger. Contraintes : angles morts de PRODUCT.md intacts ; structure validée conservée (barre, Mes fichiers, tableau, trajet, panneau d'envois) ; pupitre `?admin` restylé avec les jetons partagés, sous la liste. Retour utilisateur à l'origine de la refonte : « même padding, même police, même radius, super commun ; aucune identité ». Choix utilisateur sur le statut : ressenti seulement (« Disponible », sans durée finale).
 
 ## Direction contract
 
-THESIS: Un gestionnaire de fichiers crédible, au niveau de Drive ou de La Suite Fichiers, dont chaque ligne raconte le trajet du fichier comme un suivi de colis. Refuse la page de panneaux blancs empilés, pastilles et bleu unique.
+THESIS: La typographie porte l'état : le nom d'un fichier prend du poids à mesure qu'il avance. Refuse les cartes arrondies, le rembourrage SaaS confortable et la sans-serif générique.
 
-OWN-WORLD: Barre du haut bleu nuit (#14213d) portant le nom et la recherche ; fond gris froid clair, tableau blanc à lignes généreuses ; action principale safran (#f5b700) à texte bleu nuit ; états : bleu (en cours), vert (disponible), rouge (bloqué, échec). Atkinson Hyperlegible Next auto-hébergée, icônes Lucide à trait unique. Thème clair seul : salle éclairée et projecteur.
+OWN-WORLD: Papier #fbfbfa, encre #0e0e0e, un seul accent outremer #3a2bff (action principale, étape en cours), vermillon #e5361c (texte #c42a12) pour bloqué et échec, gris #6b6b6b. Rayon 0 partout ; filets d'encre de 1 px comme seule structure ; aplats sans ombre, sauf le panneau flottant. Bricolage Grotesque variable (opsz, wdth, wght) pour tout ; Martian Mono uniquement pour les données (taille, date, état, légende).
 
-STORY: Le participant dépose, voit chaque fichier avancer Envoyé → En traitement → Disponible, le cherche, le télécharge ; pendant une panne, le trajet cale et la synthèse le dit.
+STORY: Le participant dépose, voit le nom s'affiner en outremer puis s'alourdir en noir quand le fichier est disponible ; une panne barre le nom en vermillon ; il cherche et télécharge.
 
-FIRST VIEWPORT: Barre du haut : nom à gauche, champ de recherche large au centre. Sous elle : titre « Mes fichiers », synthèse des états, bouton safran « Déposer des fichiers » à droite. Puis le tableau Nom | Trajet | Taille | Déposé. Panneau d'envois ancré en bas à droite. Glisser un fichier n'importe où affiche un voile de dépôt plein écran.
+FIRST VIEWPORT: Barre fine sans fond, mot-symbole étroit et gras à gauche, recherche carrée au centre. « Mes fichiers » en display ~132 px, synthèse mono dessous, bouton outremer carré aligné sur la ligne de base. Tableau en filets : Nom (graisse = état) | trois cases carrées + état mono | Taille | Déposé | Télécharger. Panneau d'envois carré, en-tête encre inversé, en bas à droite.
 
-FORM: Canon du gestionnaire de fichiers, choisi par l'utilisateur (références Drive, WeTransfer, La Suite Fichiers) ; pas de tirage concept-seed (direction épinglée) ; signature : le suivi en trois étapes par ligne.
+FORM: Spécimen de fonte variable (challenger catalog variable-font-specimen, relance 1 registre « plus audacieux », choisi par l'utilisateur) ; seed key 5d8261d8 ; dons : grille de filets dense (site japonais), aplats sans grain (plan de zoo), bascules nettes sans demi-état (fil vertical). Signature : poids, largeur et couleur du nom selon l'état.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

@@ -1,12 +1,6 @@
-<script setup>
-import { CloudUpload } from 'lucide-vue-next'
-</script>
-
 <template>
   <div class="drop-overlay" aria-hidden="true">
-    <div class="drop-target">
-      <CloudUpload :size="56" :stroke-width="1.5" />
-      <p>Déposez vos fichiers pour les envoyer</p>
-    </div>
+    <p class="drop-title">Lâchez pour déposer.</p>
+    <p class="drop-hint">5 Mio par fichier · plusieurs fichiers à la fois</p>
   </div>
 </template>
