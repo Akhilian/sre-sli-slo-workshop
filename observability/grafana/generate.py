@@ -1,6 +1,7 @@
 # Génère les dashboards JSON de ce dossier : python3 observability/grafana/generate.py observability/grafana
 # Modifier ce script plutôt que les JSON, pour garder les requêtes cohérentes entre panneaux.
 import json, sys
+from urllib.parse import quote
 OUT = sys.argv[1]
 DS = {"type": "prometheus", "uid": "prometheus"}
 NS = 'namespace="$namespace"'
@@ -22,6 +23,17 @@ def ts(title, targets, x, y, w=12, h=8, unit="short", desc="", minv=None, maxv=N
             "gridPos": {"x": x, "y": y, "w": w, "h": h}, "targets": targets,
             "fieldConfig": {"defaults": d, "overrides": []},
             "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}}}
+
+def heatmap(title, expr, x, y, w=12, h=8, unit="short", desc=""):
+    """Histogramme Prometheus brut : un compte par tranche, sans seuil ni ratio."""
+    t = target(expr, "{{le}}", fmt="heatmap")
+    return {"type": "heatmap", "title": title, "description": desc, "datasource": DS,
+            "gridPos": {"x": x, "y": y, "w": w, "h": h}, "targets": [t],
+            "fieldConfig": {"defaults": {}, "overrides": []},
+            "options": {"calculate": False, "cellGap": 1, "yAxis": {"unit": unit},
+                        "color": {"mode": "scheme", "scheme": "Oranges", "steps": 64},
+                        "rowsFrame": {"layout": "auto"}, "tooltip": {"mode": "single", "yHistogram": True},
+                        "legend": {"show": True}}}
 
 def stat(title, expr, x, y, w=6, h=5, unit="short", desc="", decimals=None, no_value="", steps=None):
     d = {"unit": unit, "noValue": no_value}
@@ -58,24 +70,18 @@ p = []
 y = 0
 p.append(row("Upload", y)); y += 1
 p.append(ts("Uploads par statut HTTP", [target(f'sum by (status) ({r(f"http_requests_total{{{UP}}}")})', "{{status}}")], 0, y, unit="reqps"))
-p.append(ts("Part des uploads sous les seuils de durée", [
-    target(f'sum({r(f"http_request_duration_seconds_bucket{{{UP},le=\"0.3\"}}")}) / sum({r(f"http_request_duration_seconds_count{{{UP}}}")})', "< 0,3 s", ref="A"),
-    target(f'sum({r(f"http_request_duration_seconds_bucket{{{UP},le=\"1.0\"}}")}) / sum({r(f"http_request_duration_seconds_count{{{UP}}}")})', "< 1 s", ref="B"),
-], 12, y, unit="percentunit", minv=0, maxv=1)); y += 8
+p.append(heatmap("Durée des uploads", f'sum by (le) ({r(f"http_request_duration_seconds_bucket{{{UP}}}")})', 12, y, unit="s",
+                 desc="Nombre d'uploads par tranche de durée (bornes 0,1 / 0,3 / 1 / 3 s).")); y += 8
 p.append(row("Traitement", y)); y += 1
 p.append(ts("Jobs en attente", [target(f'max(queue_depth{{{NS}}})', "file")], 0, y, w=8,
             desc="Taille de la file. Une file pleine gêne-t-elle l'utilisateur ? Pas toujours : ce n'est pas un SLI."))
-p.append(ts("Part des documents traités sous les seuils de délai", [
-    target(f'sum({r(f"document_processing_delay_seconds_bucket{{{NS},le=\"60.0\"}}", "2m")}) / sum({r(f"document_processing_delay_seconds_count{{{NS}}}", "2m")})', "< 60 s", ref="A"),
-    target(f'sum({r(f"document_processing_delay_seconds_bucket{{{NS},le=\"300.0\"}}", "2m")}) / sum({r(f"document_processing_delay_seconds_count{{{NS}}}", "2m")})', "< 300 s", ref="B"),
-], 8, y, w=8, unit="percentunit", minv=0, maxv=1,
-    desc="Délai entre l'upload et la fin du traitement, mesuré à la fin du job : un document bloqué n'apparaît qu'une fois traité."))
+p.append(heatmap("Délai de traitement des documents", f'sum by (le) ({r(f"document_processing_delay_seconds_bucket{{{NS}}}", "2m")})', 8, y, w=8, unit="s",
+                 desc="Délai entre l'upload et la fin du traitement, mesuré à la fin du job : un document bloqué n'apparaît qu'une fois traité."))
 p.append(ts("Jobs traités par statut", [target(f'sum by (status) ({r(f"jobs_processed_total{{{NS}}}")})', "{{status}}")], 16, y, w=8, unit="ops")); y += 8
 p.append(row("Recherche", y)); y += 1
 p.append(ts("Recherches par statut", [target(f'sum by (status) ({r(f"search_requests_total{{{NS}}}")})', "{{status}}")], 0, y, w=8, unit="reqps"))
-p.append(ts("Part des recherches sans résultat", [
-    target(f'sum({r(f"search_results_count_bucket{{{NS},le=\"0.0\"}}")}) / sum({r(f"search_results_count_count{{{NS}}}")})', "0 résultat")],
-    8, y, w=8, unit="percentunit", minv=0, maxv=1, desc="Les équipes ne cherchent que des documents existants : une recherche vide est anormale."))
+p.append(heatmap("Résultats par recherche", f'sum by (le) ({r(f"search_results_count_bucket{{{NS}}}")})', 8, y, w=8,
+                 desc="Nombre de recherches par tranche de nombre de résultats (bornes 0 / 1 / 5 / 20)."))
 p.append(ts("Recherches en repli", [target(f'sum({r(f"search_fallback_total{{{NS}}}")}) or vector(0)', "replis")], 16, y, w=8, unit="reqps",
             desc="Erreurs Postgres masquées derrière un 200 avec une liste vide.")); y += 8
 p.append(row("Notifications", y)); y += 1
@@ -83,9 +89,9 @@ p.append(ts("Notifications demandées et envoyées", [
     target(f'sum({r(f"notifications_enqueued_total{{{NS}}}")})', "demandées (worker)", ref="A"),
     target(f'sum({r(f"notifications_sent_total{{{NS},status=\"ok\"}}")})', "envoyées (notifier)", ref="B"),
 ], 0, y, unit="ops"))
-p.append(ts("Part des notifications envoyées en moins de 5 s", [
-    target(f'sum({r(f"notification_delay_seconds_bucket{{{NS},le=\"5.0\"}}")}) / sum({r(f"notification_delay_seconds_count{{{NS}}}")})', "< 5 s")],
-    12, y, unit="percentunit", minv=0, maxv=1))
+p.append(heatmap("Délai d'envoi des notifications", f'sum by (le) ({r(f"notification_delay_seconds_bucket{{{NS}}}")})', 12, y, unit="s",
+                 desc="Délai entre la demande et l'envoi (bornes 1 / 5 / 30 / 120 s)."))
+# Pas de ratio « bons / total » ici : construire les SLI est l'exercice des équipes.
 parcours = dashboard("docshare-parcours", "DocShare · Parcours", p, [var_namespace()],
                      "Métriques brutes de chaque parcours, pour l'équipe choisie.")
 
@@ -130,6 +136,89 @@ ns_var = var_namespace(); ns_var["query"]["query"] = ns_var["definition"] = "lab
 burnrate = dashboard("docshare-burn-rate", "DocShare · Burn rate et budget", b, [ns_var, slo_var],
                      "Burn rate, alertes et budget d'erreur d'un SLO de l'équipe choisie.")
 
-for name, d in (("parcours.json", parcours), ("burn-rate.json", burnrate)):
+# --- Démarrage ---------------------------------------------------------------------
+# Page d'accueil de Grafana (préférence posée par deploy/monitoring/grafana-home.py) : prise en main pour des
+# participants qui n'ont jamais utilisé Grafana. Liens vers l'Explore prérempli avec des
+# requêtes brutes : jamais de ratio de SLI, hormis l'exemple d'upload déjà fourni.
+def explore(expr):
+    pane = {"a": {"datasource": DS["uid"], "range": {"from": "now-1h", "to": "now"},
+                  "queries": [{"refId": "A", "expr": expr, "editorMode": "code", "datasource": DS}]}}
+    url = "/explore?schemaVersion=1&orgId=1&panes=" + quote(json.dumps(pane, separators=(",", ":")), safe="")
+    # La variable reste lisible pour que le panneau texte la remplace par l'équipe choisie.
+    return url.replace("%24namespace", "$namespace")
+
+def ex(expr, label="▶ Explore"): return f"[{label}]({explore(expr)})"
+
+T = 'namespace="$namespace"'
+CATALOG = [
+    ("Upload", "http_requests_total", "compteur", "`route`, `status`", "requêtes HTTP de l'API, par route et code de réponse",
+     f'sum by (route, status) (rate(http_requests_total{{{T}}}[5m]))'),
+    ("Upload", "http_request_duration_seconds", "histogramme", "`route`, `le`", "durée des requêtes HTTP (bornes 0,1 / 0,3 / 1 / 3 s)",
+     f'sum by (le) (rate(http_request_duration_seconds_bucket{{{T},route="/documents"}}[5m]))'),
+    ("Traitement", "jobs_processed_total", "compteur", "`status`", "documents traités par le worker",
+     f'sum by (status) (rate(jobs_processed_total{{{T}}}[5m]))'),
+    ("Traitement", "queue_depth", "jauge", "", "documents en attente de traitement",
+     f'max(queue_depth{{{T}}})'),
+    ("Traitement", "document_processing_delay_seconds", "histogramme", "`le`", "délai entre l'upload et la fin du traitement (bornes 10 / 60 / 300 / 900 s)",
+     f'sum by (le) (rate(document_processing_delay_seconds_bucket{{{T}}}[5m]))'),
+    ("Recherche", "search_requests_total", "compteur", "`status`", "recherches reçues par l'API",
+     f'sum by (status) (rate(search_requests_total{{{T}}}[5m]))'),
+    ("Recherche", "search_results_count", "histogramme", "`le`", "nombre de résultats renvoyés (bornes 0 / 1 / 5 / 20)",
+     f'sum by (le) (rate(search_results_count_bucket{{{T}}}[5m]))'),
+    ("Recherche", "search_fallback_total", "compteur", "", "recherches servies en mode dégradé",
+     f'sum(rate(search_fallback_total{{{T}}}[5m]))'),
+    ("Notifications", "notifications_enqueued_total", "compteur", "", "notifications demandées par le worker",
+     f'sum(rate(notifications_enqueued_total{{{T}}}[5m]))'),
+    ("Notifications", "notifications_sent_total", "compteur", "`status`", "notifications envoyées par le notifier",
+     f'sum by (status) (rate(notifications_sent_total{{{T}}}[5m]))'),
+    ("Notifications", "notification_delay_seconds", "histogramme", "`le`", "délai entre la demande et l'envoi (bornes 1 / 5 / 30 / 120 s)",
+     f'sum by (le) (rate(notification_delay_seconds_bucket{{{T}}}[5m]))'),
+]
+catalog = ("Chaque lien ouvre l'**Explore** sur une requête de départ, déjà filtrée sur votre équipe. "
+           "À vous de la transformer en SLI.\n\n"
+           "| Parcours | Métrique | Type | Labels | Ce qu'elle compte | |\n| --- | --- | --- | --- | --- | --- |\n"
+           + "\n".join(f"| {j} | `{m}` | {k} | {l} | {d} | {ex(q)} |" for j, m, k, l, d, q in CATALOG)
+           + "\n\nUn histogramme se lit à travers trois séries : `<nom>_bucket{le=\"…\"}` (événements **inférieurs ou égaux** à la borne, "
+             "cumulés), `<nom>_count` (tous les événements) et `<nom>_sum` (somme des valeurs).")
+
+UP_ERR = f'sum(rate(http_requests_total{{{T},route="/documents",status=~"5.."}}[5m]))'
+UP_TOT = f'sum(rate(http_requests_total{{{T},route="/documents",status!~"4.."}}[5m]))'
+promql = ("Exemple fil rouge : le SLI de disponibilité de l'upload, déjà installé (`observability/sloth/upload-availability.yaml`).\n\n"
+          f"1. **Choisir une métrique et filtrer** : `http_requests_total{{{T},route=\"/documents\"}}`. "
+          "Les accolades gardent les séries dont les labels correspondent ; `=~` accepte une expression régulière. "
+          f"{ex(f'http_requests_total{{{T},route=\"/documents\"}}')}\n"
+          "2. **Passer d'un compteur à un débit** : un compteur ne fait que monter, `rate(…[5m])` donne des événements par seconde. "
+          f"{ex(f'rate(http_requests_total{{{T},route=\"/documents\"}}[5m])')}\n"
+          "3. **Agréger** : `sum(…)` additionne les pods, `sum by (status) (…)` garde une série par code de réponse. "
+          f"{ex(f'sum by (status) (rate(http_requests_total{{{T},route=\"/documents\"}}[5m]))')}\n"
+          "4. **Diviser** : mauvais événements / événements pris en compte = taux d'erreur. "
+          f"{ex(f'{UP_ERR} / {UP_TOT}')}\n\n"
+          "**Pièges**\n"
+          "- Les bornes d'histogramme s'écrivent en flottant : `le=\"1.0\"`, pas `le=\"1\"`.\n"
+          "- Dans l'Explore, gardez le filtre `namespace` : Prometheus est partagé entre les équipes. "
+          "Dans les fichiers Sloth, au contraire, **pas de filtre namespace** : il est ajouté automatiquement.\n"
+          "- Une requête qui ne renvoie rien n'est pas forcément fausse : un compteur d'erreurs n'existe qu'après la première erreur "
+          "(d'où le `or vector(0)` de l'exemple).")
+
+welcome = ("**Choisissez votre équipe** dans la liste *Équipe*, en haut à gauche : tous les liens de cette page suivent ce choix.\n\n"
+           "Trois façons de regarder les métriques de DocShare, de la plus simple à la plus libre :\n\n"
+           "1. **Observer** : le dashboard [DocShare · Parcours](/d/docshare-parcours?var-namespace=$namespace) montre les métriques brutes "
+           "de chaque parcours (upload, traitement, recherche, notifications).\n"
+           "2. **Parcourir sans écrire de requête** : menu ☰ → **Drilldown** → **Metrics**. Ajoutez le filtre `namespace = $namespace`, "
+           "puis cherchez `http_`, `jobs_`, `document_`, `search_` ou `notification`. Chaque carte est une métrique ; "
+           "**Select** la détaille par label.\n"
+           "3. **Écrire une requête** : menu ☰ → **Explore** (ou les liens ▶ ci-dessous). La source est déjà *Prometheus*. "
+           "Le mode **Builder** propose les métriques et les labels dans des listes ; le mode **Code** accepte du PromQL. "
+           "**Shift + Entrée** lance la requête ; la période se règle en haut à droite.\n\n"
+           "Vous êtes en lecture seule : rien de ce que vous faites ici ne peut casser quoi que ce soit.")
+
+dm = [text("Bienvenue dans le Grafana de DocShare", welcome, 0, 0, 24, 9),
+      text("Les métriques de DocShare", catalog, 0, 9, 24, 15),
+      text("PromQL en 4 étapes", promql, 0, 24, 24, 11)]
+demarrage = dashboard("docshare-demarrage", "DocShare · Démarrage", dm, [var_namespace()],
+                      "Prise en main de Grafana et catalogue des métriques de DocShare.")
+demarrage["refresh"] = ""
+
+for name, d in (("parcours.json", parcours), ("burn-rate.json", burnrate), ("demarrage.json", demarrage)):
     with open(f"{OUT}/{name}", "w") as f:
         json.dump(d, f, ensure_ascii=False, indent=2); f.write("\n")

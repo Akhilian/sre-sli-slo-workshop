@@ -94,9 +94,9 @@
       "id": 2
     },
     {
-      "type": "timeseries",
-      "title": "Part des uploads sous les seuils de durée",
-      "description": "",
+      "type": "heatmap",
+      "title": "Durée des uploads",
+      "description": "Nombre d'uploads par tranche de durée (bornes 0,1 / 0,3 / 1 / 3 s).",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -113,39 +113,36 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(rate(http_request_duration_seconds_bucket{route=\"/documents\",namespace=\"$namespace\",le=\"0.3\"}[1m])) / sum(rate(http_request_duration_seconds_count{route=\"/documents\",namespace=\"$namespace\"}[1m]))",
-          "legendFormat": "< 0,3 s",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "sum(rate(http_request_duration_seconds_bucket{route=\"/documents\",namespace=\"$namespace\",le=\"1.0\"}[1m])) / sum(rate(http_request_duration_seconds_count{route=\"/documents\",namespace=\"$namespace\"}[1m]))",
-          "legendFormat": "< 1 s",
-          "refId": "B"
+          "expr": "sum by (le) (rate(http_request_duration_seconds_bucket{route=\"/documents\",namespace=\"$namespace\"}[1m]))",
+          "legendFormat": "{{le}}",
+          "refId": "A",
+          "format": "heatmap"
         }
       ],
       "fieldConfig": {
-        "defaults": {
-          "unit": "percentunit",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 5
-          },
-          "min": 0,
-          "max": 1
-        },
+        "defaults": {},
         "overrides": []
       },
       "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+        "calculate": false,
+        "cellGap": 1,
+        "yAxis": {
+          "unit": "s"
+        },
+        "color": {
+          "mode": "scheme",
+          "scheme": "Oranges",
+          "steps": 64
+        },
+        "rowsFrame": {
+          "layout": "auto"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "single",
+          "yHistogram": true
+        },
+        "legend": {
+          "show": true
         }
       },
       "id": 3
@@ -210,8 +207,8 @@
       "id": 5
     },
     {
-      "type": "timeseries",
-      "title": "Part des documents traités sous les seuils de délai",
+      "type": "heatmap",
+      "title": "Délai de traitement des documents",
       "description": "Délai entre l'upload et la fin du traitement, mesuré à la fin du job : un document bloqué n'apparaît qu'une fois traité.",
       "datasource": {
         "type": "prometheus",
@@ -229,39 +226,36 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(rate(document_processing_delay_seconds_bucket{namespace=\"$namespace\",le=\"60.0\"}[2m])) / sum(rate(document_processing_delay_seconds_count{namespace=\"$namespace\"}[2m]))",
-          "legendFormat": "< 60 s",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "sum(rate(document_processing_delay_seconds_bucket{namespace=\"$namespace\",le=\"300.0\"}[2m])) / sum(rate(document_processing_delay_seconds_count{namespace=\"$namespace\"}[2m]))",
-          "legendFormat": "< 300 s",
-          "refId": "B"
+          "expr": "sum by (le) (rate(document_processing_delay_seconds_bucket{namespace=\"$namespace\"}[2m]))",
+          "legendFormat": "{{le}}",
+          "refId": "A",
+          "format": "heatmap"
         }
       ],
       "fieldConfig": {
-        "defaults": {
-          "unit": "percentunit",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 5
-          },
-          "min": 0,
-          "max": 1
-        },
+        "defaults": {},
         "overrides": []
       },
       "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+        "calculate": false,
+        "cellGap": 1,
+        "yAxis": {
+          "unit": "s"
+        },
+        "color": {
+          "mode": "scheme",
+          "scheme": "Oranges",
+          "steps": 64
+        },
+        "rowsFrame": {
+          "layout": "auto"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "single",
+          "yHistogram": true
+        },
+        "legend": {
+          "show": true
         }
       },
       "id": 6
@@ -372,9 +366,9 @@
       "id": 9
     },
     {
-      "type": "timeseries",
-      "title": "Part des recherches sans résultat",
-      "description": "Les équipes ne cherchent que des documents existants : une recherche vide est anormale.",
+      "type": "heatmap",
+      "title": "Résultats par recherche",
+      "description": "Nombre de recherches par tranche de nombre de résultats (bornes 0 / 1 / 5 / 20).",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -391,30 +385,36 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(rate(search_results_count_bucket{namespace=\"$namespace\",le=\"0.0\"}[1m])) / sum(rate(search_results_count_count{namespace=\"$namespace\"}[1m]))",
-          "legendFormat": "0 résultat",
-          "refId": "A"
+          "expr": "sum by (le) (rate(search_results_count_bucket{namespace=\"$namespace\"}[1m]))",
+          "legendFormat": "{{le}}",
+          "refId": "A",
+          "format": "heatmap"
         }
       ],
       "fieldConfig": {
-        "defaults": {
-          "unit": "percentunit",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 5
-          },
-          "min": 0,
-          "max": 1
-        },
+        "defaults": {},
         "overrides": []
       },
       "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+        "calculate": false,
+        "cellGap": 1,
+        "yAxis": {
+          "unit": "short"
+        },
+        "color": {
+          "mode": "scheme",
+          "scheme": "Oranges",
+          "steps": 64
+        },
+        "rowsFrame": {
+          "layout": "auto"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "single",
+          "yHistogram": true
+        },
+        "legend": {
+          "show": true
         }
       },
       "id": 10
@@ -534,9 +534,9 @@
       "id": 13
     },
     {
-      "type": "timeseries",
-      "title": "Part des notifications envoyées en moins de 5 s",
-      "description": "",
+      "type": "heatmap",
+      "title": "Délai d'envoi des notifications",
+      "description": "Délai entre la demande et l'envoi (bornes 1 / 5 / 30 / 120 s).",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -553,30 +553,36 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(rate(notification_delay_seconds_bucket{namespace=\"$namespace\",le=\"5.0\"}[1m])) / sum(rate(notification_delay_seconds_count{namespace=\"$namespace\"}[1m]))",
-          "legendFormat": "< 5 s",
-          "refId": "A"
+          "expr": "sum by (le) (rate(notification_delay_seconds_bucket{namespace=\"$namespace\"}[1m]))",
+          "legendFormat": "{{le}}",
+          "refId": "A",
+          "format": "heatmap"
         }
       ],
       "fieldConfig": {
-        "defaults": {
-          "unit": "percentunit",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 5
-          },
-          "min": 0,
-          "max": 1
-        },
+        "defaults": {},
         "overrides": []
       },
       "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+        "calculate": false,
+        "cellGap": 1,
+        "yAxis": {
+          "unit": "s"
+        },
+        "color": {
+          "mode": "scheme",
+          "scheme": "Oranges",
+          "steps": 64
+        },
+        "rowsFrame": {
+          "layout": "auto"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "single",
+          "yHistogram": true
+        },
+        "legend": {
+          "show": true
         }
       },
       "id": 14

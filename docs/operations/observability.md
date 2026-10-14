@@ -34,13 +34,20 @@ Solutions pour l'animateur : `observability/sloth/solutions/` (`kubectl apply -n
 
 Accès anonyme en lecture, à l'adresse affichée par `setup.sh` (port 3000).
 
-- **DocShare · Parcours** : métriques brutes de chaque parcours pour l'équipe choisie.
+- **DocShare · Démarrage** : page d'accueil de Grafana. Navigation pour débutants (dashboards, *Drilldown › Metrics*, Explore), catalogue des métriques avec un lien ▶ vers l'Explore prérempli pour chacune, et PromQL en 4 étapes sur l'exemple du SLI d'upload.
+- **DocShare · Parcours** : métriques brutes de chaque parcours pour l'équipe choisie : débits par statut, file d'attente, et les histogrammes en heatmaps. Aucun ratio de SLI : ce serait la solution de la séquence « SLI mesurable ».
 - **DocShare · Burn rate et budget** : pour un SLO de l'équipe, burn rate sur 5 min, 30 min et 1 h avec les seuils 6 et 14,4, SLI et objectif, budget restant sur 30 jours, temps avant épuisement, alertes actives.
 - **Explore** : ouvert aux visiteurs pour écrire des requêtes PromQL (séquence « SLI mesurable »). Les dashboards ne peuvent pas être enregistrés.
 
 Le budget restant suppose que **la période non observée est parfaite** : il intègre le taux d'erreur sur la plage affichée (3 h par défaut) et le rapporte au budget de 30 jours. On n'utilise pas `slo:period_error_budget_remaining:ratio` de Sloth, qui ferait la moyenne sur le seul historique disponible et compterait 30 min de panne comme un quart du mois.
 
 Avec un historique de quelques heures, les fenêtres longues réagissent fort : après une grosse panne, l'alerte page 6 h + 30 min peut sonner encore une vingtaine de minutes après la coupure. Attendez que les burn rates repassent sous 1 avant la panne suivante.
+
+La page d'accueil est une préférence de l'organisation Grafana, posée par `setup.sh`. Grafana n'a pas de stockage persistant : si son pod redémarre, l'accueil redevient la page standard. Pour la remettre sans relancer les équipes :
+
+```bash
+kubectl exec -i -n monitoring deploy/kps-grafana -c grafana-sc-dashboard -- python - < deploy/monitoring/grafana-home.py
+```
 
 Les dashboards sont produits par `observability/grafana/generate.py` (modifier le script, puis `python3 observability/grafana/generate.py observability/grafana` et relancer `deploy/scripts/setup.sh`).
 

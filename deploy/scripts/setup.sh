@@ -84,8 +84,10 @@ k apply -f "$MONITORING_ROOT/rbac.yaml" >/dev/null
 
 echo "==> Dashboards"
 k create configmap docshare-dashboards --namespace monitoring --from-file="$GRAFANA_ROOT/parcours.json" \
-  --from-file="$GRAFANA_ROOT/burn-rate.json" --dry-run=client -o yaml \
+  --from-file="$GRAFANA_ROOT/burn-rate.json" --from-file="$GRAFANA_ROOT/demarrage.json" --dry-run=client -o yaml \
   | k label --local -f - grafana_dashboard=1 -o yaml | k apply -f - >/dev/null
+# Page d'accueil : préférence de l'organisation, perdue si le pod Grafana redémarre.
+k exec -i -n monitoring deploy/kps-grafana -c grafana-sc-dashboard -- python - < "$MONITORING_ROOT/grafana-home.py" >/dev/null
 
 # --- Équipes -----------------------------------------------------------------
 
