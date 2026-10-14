@@ -20,7 +20,7 @@ Côté participants : `kubectl` installé, un kubeconfig, un navigateur.
 | 25 min | SLI fonctionnel | Listent ce qui compte pour un utilisateur (déposer, retrouver, être notifié) | Guide vers un SLI par parcours |
 | 25 min | SLI mesurable | Partent de la page d'accueil de Grafana (catalogue des métriques), puis écrivent leurs requêtes PromQL dans l'Explore | Fait la démo de prise en main (5 min, ci-dessous), puis aide sur les buckets (`le="1.0"`) |
 | 25 min | SLO, budget, burn rate | Complètent un fichier `observability/sloth/*.yaml` et l'appliquent | Lit `kubectl logs -n monitoring deploy/sloth` en cas d'erreur |
-| 25 min | Pannes en direct | Observent l'interface et le dashboard burn rate | Active une panne à la fois (voir plus bas) |
+| 25 min | Pannes en direct | Observent l'interface et le dashboard burn rate | Active une panne à la fois (voir plus bas) et suit toutes les équipes sur la *Vue d'ensemble des SLO* |
 | 10 min | Débrief | Comparent ce qu'a vu l'utilisateur et ce qu'ont vu les SLI | Montre les angles morts (`stale_index`, `notifier_drop`) |
 
 ## Prise en main de Grafana (5 min)

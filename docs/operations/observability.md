@@ -36,6 +36,7 @@ Accès anonyme en lecture, à l'adresse affichée par `setup.sh` (port 3000).
 
 - **DocShare · Démarrage** : page d'accueil de Grafana. Navigation pour débutants (dashboards, *Drilldown › Metrics*, Explore), catalogue des métriques avec un lien ▶ vers l'Explore prérempli pour chacune, et PromQL en 4 étapes sur l'exemple du SLI d'upload.
 - **DocShare · Parcours** : métriques brutes de chaque parcours pour l'équipe choisie : débits par statut, file d'attente, et les histogrammes en heatmaps. Aucun ratio de SLI : ce serait la solution de la séquence « SLI mesurable ».
+- **DocShare · Vue d'ensemble des SLO** : pour l'animateur, tous les SLO de toutes les équipes. Matrices équipes × SLO du burn rate sur 1 h (orange au-delà de 6, rouge au-delà de 14,4) et du budget restant, courbes du burn rate, alertes actives. Un clic sur une case ouvre le détail ci-dessous.
 - **DocShare · Burn rate et budget** : pour un SLO de l'équipe, burn rate sur 5 min, 30 min et 1 h avec les seuils 6 et 14,4, SLI et objectif, budget restant sur 30 jours, temps avant épuisement, alertes actives.
 - **Explore** : ouvert aux visiteurs pour écrire des requêtes PromQL (séquence « SLI mesurable »). Les dashboards ne peuvent pas être enregistrés.
 

@@ -136,6 +136,62 @@ ns_var = var_namespace(); ns_var["query"]["query"] = ns_var["definition"] = "lab
 burnrate = dashboard("docshare-burn-rate", "DocShare · Burn rate et budget", b, [ns_var, slo_var],
                      "Burn rate, alertes et budget d'erreur d'un SLO de l'équipe choisie.")
 
+# --- Vue d'ensemble des SLO -------------------------------------------------------
+# Pour l'animateur pendant les pannes : toutes les équipes et tous les SLO d'un coup.
+# Mêmes calculs que le dashboard burn rate, agrégés par (namespace, sloth_id).
+NSRE = 'namespace=~"$namespace"'
+BY = "(namespace, sloth_id)"
+BUDGET_ALL = f'max by {BY} (slo:error_budget:ratio{{{NSRE}}})'
+BURN_1H_ALL = f'max by {BY} (slo:sli_error:ratio_rate1h{{{NSRE}}}) / on {BY} {BUDGET_ALL}'
+REMAINING_ALL = (f'clamp_min(1 - (sum by {BY} (sum_over_time(slo:sli_error:ratio_rate5m{{{NSRE}}}[$__range])) * 15)'
+                 f' / on {BY} ({BUDGET_ALL} * 30 * 86400), 0)')
+BURN_STEPS = [{"color": "green", "value": None}, {"color": "orange", "value": 6}, {"color": "red", "value": 14.4}]
+BUDGET_STEPS = [{"color": "red", "value": None}, {"color": "orange", "value": 0.25}, {"color": "green", "value": 0.5}]
+
+def slo_matrix(title, expr, y, unit, decimals, steps, desc):
+    """Tableau équipes × SLO ; un clic sur une case ouvre le dashboard burn rate correspondant."""
+    link = {"title": "Détail de ce SLO",
+            "url": "/d/docshare-burn-rate?var-namespace=${__data.fields.Équipe}&var-slo=docshare-${__field.name}&${__url_time_range}"}
+    return {"type": "table", "title": title, "description": desc, "datasource": DS,
+            "gridPos": {"x": 0, "y": y, "w": 24, "h": 7},
+            "targets": [target(expr, instant=True, fmt="table")],
+            "fieldConfig": {"defaults": {"unit": unit, "decimals": decimals, "noValue": "—", "links": [link],
+                                         "thresholds": {"mode": "absolute", "steps": steps},
+                                         "custom": {"align": "center", "cellOptions": {"type": "color-background", "mode": "basic"}}},
+                            "overrides": [{"matcher": {"id": "byName", "options": "Équipe"},
+                                           "properties": [{"id": "custom.cellOptions", "value": {"type": "auto"}},
+                                                          {"id": "links", "value": []}, {"id": "custom.align", "value": "left"}]}]},
+            "transformations": [
+                {"id": "groupingToMatrix", "options": {"columnField": "sloth_id", "rowField": "namespace", "valueField": "Value"}},
+                {"id": "renameByRegex", "options": {"regex": "^docshare-(.*)$", "renamePattern": "$1"}},
+                {"id": "organize", "options": {"renameByName": {"namespace\\sloth_id": "Équipe"}}},
+                {"id": "sortBy", "options": {"sort": [{"field": "Équipe"}]}}],
+            "options": {"showHeader": True, "cellHeight": "md"}}
+
+o = []
+o.append(slo_matrix("Burn rate sur 1 h", BURN_1H_ALL, 0, "short", 1, BURN_STEPS,
+                    "1 = budget épuisé en 30 jours pile. Orange au-delà de 6, rouge au-delà de 14,4 (seuils des alertes page). "
+                    "Cliquer une case pour le détail."))
+o.append(slo_matrix("Budget restant (30 j)", REMAINING_ALL, 7, "percentunit", 0, BUDGET_STEPS,
+                    "Part du budget mensuel encore disponible, sur la plage affichée ; la période non observée est supposée parfaite."))
+o.append(ts("Burn rate sur 1 h, par équipe et SLO", [target(BURN_1H_ALL, "{{namespace}} · {{sloth_id}}")], 0, 14, w=24, h=9, minv=0,
+            thresholds=[{"color": "orange", "value": 6}, {"color": "red", "value": 14.4}],
+            desc="Le moment où chaque panne commence à consommer du budget."))
+o.append({"type": "table", "title": "Alertes actives", "datasource": DS, "gridPos": {"x": 0, "y": 23, "w": 24, "h": 7},
+          "targets": [target(f'ALERTS{{{NSRE},alertstate="firing"}}', instant=True, fmt="table")],
+          "fieldConfig": {"defaults": {"noValue": "Aucune alerte"}, "overrides": []},
+          "transformations": [{"id": "organize", "options": {
+              "excludeByName": {"Time": True, "Value": True, "__name__": True, "alertstate": True, "sloth_id": True},
+              "indexByName": {"namespace": 0, "severity": 1, "alertname": 2},
+              "renameByName": {"namespace": "Équipe", "alertname": "Alerte", "severity": "Sévérité",
+                               "sloth_service": "Service", "sloth_slo": "SLO"}}},
+              {"id": "sortBy", "options": {"sort": [{"field": "Équipe"}]}}]})
+all_ns = var_namespace()
+all_ns["query"]["query"] = all_ns["definition"] = "label_values(slo:objective:ratio, namespace)"
+all_ns.update(multi=True, includeAll=True, current={"selected": True, "text": ["All"], "value": ["$__all"]})
+overview = dashboard("docshare-slo-overview", "DocShare · Vue d'ensemble des SLO", o, [all_ns],
+                     "Burn rate, budget et alertes de tous les SLO de toutes les équipes.")
+
 # --- Démarrage ---------------------------------------------------------------------
 # Page d'accueil de Grafana (préférence posée par deploy/monitoring/grafana-home.py) : prise en main pour des
 # participants qui n'ont jamais utilisé Grafana. Liens vers l'Explore prérempli avec des
@@ -219,6 +275,7 @@ demarrage = dashboard("docshare-demarrage", "DocShare · Démarrage", dm, [var_n
                       "Prise en main de Grafana et catalogue des métriques de DocShare.")
 demarrage["refresh"] = ""
 
-for name, d in (("parcours.json", parcours), ("burn-rate.json", burnrate), ("demarrage.json", demarrage)):
+for name, d in (("parcours.json", parcours), ("burn-rate.json", burnrate), ("demarrage.json", demarrage),
+                ("slo-overview.json", overview)):
     with open(f"{OUT}/{name}", "w") as f:
         json.dump(d, f, ensure_ascii=False, indent=2); f.write("\n")
