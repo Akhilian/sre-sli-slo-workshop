@@ -30,6 +30,6 @@
 ## 5. Validation sur les cibles managées
 
 - [x] 5.1 (abandonné — GKE n'est plus ciblé) Installer 4 équipes sur GKE Standard (3 × `e2-standard-4`) et relever la consommation réelle par rapport au dimensionnement
-- [ ] 5.2 (remise à plus tard — infra EKS) Installer sur EKS (au moins une équipe) et vérifier stockage, LoadBalancer de Grafana et absence d'alertes parasites
+- [x] 5.2 (remise à plus tard — infra EKS) Installer sur EKS (au moins une équipe) et vérifier stockage, LoadBalancer de Grafana et absence d'alertes parasites. Fait le 2026-10-14 avec une équipe : PVC liés sur `gp3`, aucune alerte hors pannes ; le NLB de Grafana était interne, corrigé par l'annotation `aws-load-balancer-scheme: internet-facing` (`deploy/environments/eks/monitoring.yaml`)
 - [x] 6.1 GKE abandonné : `deploy/environments/gke` supprimé, EKS seule cible cloud
 - [x] 6.2 Terraform EKS (`deploy/terraform/eks` : VPC, cluster, EBS CSI, gp3 par défaut, AWS Load Balancer Controller), validé par `terraform validate`, non appliqué

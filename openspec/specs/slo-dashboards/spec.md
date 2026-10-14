@@ -18,11 +18,15 @@ Les dashboards SHALL être livrés sous forme de JSON dans `observability/grafan
 - **THEN** les dashboards apparaissent dans Grafana et la variable `namespace` propose l'équipe
 
 ### Requirement: Vue par parcours
-Un dashboard SHALL présenter, pour le namespace choisi, les métriques de chaque parcours (upload, traitement, recherche, notifications), y compris `queue_depth` agrégée par `max()`.
+Un dashboard SHALL présenter, pour le namespace choisi, les métriques de chaque parcours (upload, traitement, recherche, notifications), y compris `queue_depth` agrégée par `max()`. Il MUST NOT afficher de ratio « bons événements / total » ni de seuil sur un histogramme : les histogrammes sont montrés en distribution brute. Construire les SLI est l'exercice des équipes.
 
 #### Scenario: Panne de lenteur visible sur la vue
 - **WHEN** `worker_slow=10` est active
 - **THEN** la vue montre la file qui grossit et le délai de traitement qui augmente, tandis que les panneaux d'upload restent nominaux
+
+#### Scenario: Aucune solution sur la vue
+- **WHEN** une équipe ouvre la vue par parcours avant la séquence « SLI mesurable »
+- **THEN** aucun panneau ne donne la part des événements sous un seuil
 
 ### Requirement: Dashboard burn rate
 Un dashboard SHALL afficher, pour le namespace et le SLO choisis, les burn rates sur 5 min, 30 min et 1 h avec des lignes de seuil à 14.4 et 6, les alertes actives (`ALERTS`) du namespace, le budget restant sur 30 j et le temps avant épuisement au rythme actuel.
@@ -41,3 +45,18 @@ Le budget restant MUST NOT utiliser directement `slo:period_error_budget_remaini
 #### Scenario: Aucune erreur
 - **WHEN** aucune panne n'a eu lieu depuis l'installation
 - **THEN** le budget restant affiché est 100 % et le temps avant épuisement est indéfini ou affiché comme « ∞ »
+
+### Requirement: Guide de démarrage
+Un dashboard *DocShare · Démarrage* SHALL être la page d'accueil de Grafana. Il MUST expliquer comment choisir son équipe, parcourir les métriques (*Drilldown › Metrics*) et écrire une requête dans l'Explore, et lister chaque métrique de `service-metrics` avec son type, ses labels et un lien vers l'Explore prérempli d'une requête brute filtrée sur le namespace choisi. Seul l'exemple du SLI de disponibilité de l'upload, déjà fourni, MAY y apparaître comme ratio.
+
+#### Scenario: Premier accès d'un participant
+- **WHEN** un participant ouvre Grafana sans se connecter
+- **THEN** il arrive sur *DocShare · Démarrage* et un lien du catalogue ouvre l'Explore sur une requête qui renvoie des séries de son équipe
+
+### Requirement: Vue d'ensemble des SLO
+Un dashboard *DocShare · Vue d'ensemble des SLO* SHALL afficher, pour les namespaces choisis (tous par défaut), une matrice équipes × SLO du burn rate sur 1 h colorée selon les seuils 6 et 14.4, une matrice du budget restant calculé comme dans le dashboard burn rate, le burn rate sur 1 h dans le temps et les alertes actives de toutes les équipes. Chaque case MUST ouvrir le dashboard burn rate sur l'équipe et le SLO correspondants.
+
+#### Scenario: Deux pannes sur deux équipes
+- **WHEN** `stale_index=1` est active dans une équipe et `worker_slow=10` dans une autre, avec les SLO des solutions appliqués partout
+- **THEN** la matrice montre un burn rate élevé sur `search-quality` de la première et sur `processing-freshness` de la seconde, et proche de 0 ailleurs
+

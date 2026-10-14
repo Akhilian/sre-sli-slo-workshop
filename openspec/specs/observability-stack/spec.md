@@ -1,5 +1,8 @@
-## ADDED Requirements
+# observability-stack Specification
 
+## Purpose
+TBD - created by archiving change add-k8s-deployment. Update Purpose after archive.
+## Requirements
 ### Requirement: Monitoring partagé
 Le namespace `monitoring` SHALL héberger kube-prometheus-stack (Prometheus Operator, Prometheus, Grafana, kube-state-metrics, node-exporter), sans Alertmanager.
 
@@ -22,11 +25,15 @@ Prometheus SHALL stocker ses données sur un PVC de 10 Gi avec une rétention de
 - **THEN** l'historique et les burn rates calculés avant le redémarrage sont conservés
 
 ### Requirement: Grafana accessible aux équipes
-Grafana SHALL être exposé par un Service `LoadBalancer` sur le port 3000, limité par `loadBalancerSourceRanges` hors local, avec un accès anonyme en lecture seule, et charger les dashboards depuis les ConfigMaps portant le label `grafana_dashboard`.
+Grafana SHALL être exposé par un Service `LoadBalancer` sur le port 3000, limité par `loadBalancerSourceRanges` hors local, avec un accès anonyme en lecture seule, et charger les dashboards depuis les ConfigMaps portant le label `grafana_dashboard`. Sur EKS, le load balancer MUST être `internet-facing` (annotation `service.beta.kubernetes.io/aws-load-balancer-scheme`) : l'AWS Load Balancer Controller crée sinon un NLB interne, injoignable depuis la salle. Grafana SHALL conserver sa base sur un volume persistant, avec une stratégie de déploiement `Recreate` (volume `ReadWriteOnce`).
 
 #### Scenario: Accès depuis la salle
 - **WHEN** un participant ouvre l'adresse du LoadBalancer depuis une IP autorisée
 - **THEN** il consulte les dashboards sans se connecter et ne peut pas les modifier
+
+#### Scenario: Redémarrage de Grafana
+- **WHEN** le pod Grafana redémarre pendant la séance
+- **THEN** la page d'accueil et les préférences sont conservées
 
 #### Scenario: Accès refusé hors de la salle
 - **WHEN** une IP non autorisée tente d'accéder à Grafana
@@ -42,3 +49,4 @@ La configuration SHALL désactiver la collecte des composants du plan de contrô
 #### Scenario: Disque de la machine hôte presque plein en local
 - **WHEN** le disque du Mac qui héberge colima a moins de 15 % d'espace libre
 - **THEN** aucune alerte `NodeFilesystemSpaceFillingUp` n'est déclenchée
+

@@ -29,5 +29,5 @@ Le chart SHALL permettre d'activer un Ingress par équipe avec un `ingressClassN
 Le projet SHALL documenter les ressources demandées pour 4 équipes (environ 4 vCPU et 7 Gi) et la taille de cluster recommandée par cible, et MUST donner la commande `colima` qui crée un k3s local capable d'héberger 4 équipes.
 
 #### Scenario: 4 équipes sur le cluster recommandé
-- **WHEN** 4 équipes sont installées sur 3 nœuds `e2-standard-4`
+- **WHEN** 4 équipes sont installées sur 2 nœuds `m6i.xlarge` (EKS) ou sur le k3s de colima à 6 vCPU
 - **THEN** aucun pod ne reste en `Pending` et aucun quota n'est dépassé sous le trafic k6

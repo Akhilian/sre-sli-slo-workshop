@@ -2,7 +2,7 @@
 
 DocShare est un système fictif de partage de documents servant de support à un atelier SLI/SLO de deux heures. Les participants observent l’effet de pannes réelles sur le parcours utilisateur, puis le mesurent avec Prometheus, Sloth et Grafana.
 
-> Le backend, l’interface web, le déploiement Kubernetes, le trafic k6, les SLO et les dashboards sont présents. Le déroulé détaillé de la séance et les temps de réaction mesurés des alertes restent à finaliser ; voir `openspec list`.
+> Le backend, l’interface web, le déploiement Kubernetes (k3s local et EKS), le trafic k6, les SLO, les dashboards et le déroulé de la séance sont en place. Les temps de réaction des alertes ont été mesurés sur le k3s local ; voir [Observabilité](docs/operations/observability.md).
 
 ## Démarrage rapide
 
