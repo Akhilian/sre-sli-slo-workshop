@@ -1,0 +1,129 @@
+name: CI
+
+# Vérifie tout ce que contient le dépôt : application, interface web, chart Helm,
+# scripts, Terraform, observabilité, specs OpenSpec et construction des images.
+# Réutilisé par image.yml (workflow_call) avant toute publication.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_call:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Tests Python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: app/requirements*.txt
+      - run: pip install -r app/requirements-dev.txt
+      # Adaptateurs en mémoire : ni Redis ni Postgres nécessaires.
+      - run: pytest
+
+  web:
+    name: Interface web (tests et build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+  helm:
+    name: Chart Helm (lint et rendu)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [local, eks]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint
+        run: helm lint deploy/helm/docshare -f deploy/environments/${{ matrix.environment }}/docshare.yaml --set team=ci
+      - name: Rendu
+        run: helm template docshare deploy/helm/docshare -f deploy/environments/${{ matrix.environment }}/docshare.yaml --set team=ci > /dev/null
+
+  scripts:
+    name: Scripts shell (shellcheck)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: shellcheck deploy/scripts/*.sh
+
+  terraform:
+    name: Terraform EKS (format et validation)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: deploy/terraform/eks
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform fmt -check -recursive
+      # Aucun identifiant AWS : ni backend ni plan, uniquement la cohérence de la configuration.
+      - run: terraform init -backend=false -input=false
+      - run: terraform validate
+
+  observability:
+    name: Observabilité (dashboards et SLO)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dashboards à jour avec generate.py
+        run: |
+          python3 observability/grafana/generate.py observability/grafana
+          git diff --exit-code -- observability/grafana
+      # Les 4 SLO à la racine sont des gabarits à compléter par les participants : exclus.
+      - name: SLO Sloth valides (fourni et solutions)
+        run: |
+          docker run --rm -v "$PWD/observability/sloth":/s ghcr.io/slok/sloth:v0.16.0 \
+            validate -i /s -e '^/s/(notification-coverage|processing-freshness|search-quality|upload-latency)\.yaml$'
+
+  openspec:
+    name: Specs OpenSpec
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npx --yes @fission-ai/openspec@1.5.0 validate --all
+
+  images:
+    name: Build ${{ matrix.image }} (sans publication)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - image: docshare
+            context: .
+          - image: docshare-web
+            context: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          push: false
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,scope=${{ matrix.image }},mode=max
