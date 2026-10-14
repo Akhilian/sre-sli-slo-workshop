@@ -2,4 +2,8 @@
 # deploy/scripts/setup.sh (variable GRAFANA_SOURCE_RANGES, obligatoire pour cette cible).
 grafana:
   service:
+    # Sans cette annotation, l'AWS Load Balancer Controller crée un NLB interne,
+    # injoignable depuis la salle.
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     loadBalancerSourceRanges: []
