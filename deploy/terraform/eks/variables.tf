@@ -25,7 +25,7 @@ variable "node_instance_type" {
 variable "teams" {
   description = "Nombre d'équipes de la séance ; le nombre de nœuds en est déduit."
   type        = number
-  default     = 4
+  default     = 1
 
   validation {
     condition     = var.teams >= 1 && var.teams <= 12 && floor(var.teams) == var.teams
