@@ -17,6 +17,9 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  GRYPE_IMAGE: anchore/grype:v0.120.1
+
 jobs:
   python:
     name: Tests Python
@@ -108,8 +111,17 @@ jobs:
           node-version: "22"
       - run: npx --yes @fission-ai/openspec@1.5.0 validate --all
 
+  dependencies:
+    name: Scan des dépendances (grype)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Échec dès « high », et seulement si un correctif existe.
+      - name: Dépendances Python et npm du dépôt
+        run: docker run --rm -v "$PWD":/w "$GRYPE_IMAGE" dir:/w --only-fixed --fail-on high --exclude '**/node_modules' --exclude '**/.terraform'
+
   images:
-    name: Build ${{ matrix.image }} (sans publication)
+    name: Build et scan ${{ matrix.image }} (sans publication)
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -124,6 +136,10 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.context }}
-          push: false
+          # Chargée dans le démon local pour être scannée.
+          load: true
+          tags: scan/${{ matrix.image }}:ci
           cache-from: type=gha,scope=${{ matrix.image }}
           cache-to: type=gha,scope=${{ matrix.image }},mode=max
+      - name: Scan de l'image (grype)
+        run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock "$GRYPE_IMAGE" scan/${{ matrix.image }}:ci --only-fixed --fail-on high
