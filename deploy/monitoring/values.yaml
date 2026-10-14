@@ -71,6 +71,14 @@ grafana:
     # pendant la séquence « SLI mesurable ». Les dashboards restent non enregistrables.
     users:
       viewers_can_edit: true
+  # Base SQLite persistante : la page d'accueil (deploy/monitoring/grafana-home.py)
+  # survit à un redémarrage du pod.
+  persistence:
+    enabled: true
+    size: 1Gi
+  # Volume ReadWriteOnce : l'ancien pod doit libérer le disque avant que le nouveau démarre.
+  deploymentStrategy:
+    type: Recreate
   service:
     type: LoadBalancer
     port: 3000

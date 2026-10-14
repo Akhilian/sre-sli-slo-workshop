@@ -43,7 +43,7 @@ Le budget restant suppose que **la période non observée est parfaite** : il in
 
 Avec un historique de quelques heures, les fenêtres longues réagissent fort : après une grosse panne, l'alerte page 6 h + 30 min peut sonner encore une vingtaine de minutes après la coupure. Attendez que les burn rates repassent sous 1 avant la panne suivante.
 
-La page d'accueil est une préférence de l'organisation Grafana, posée par `setup.sh`. Grafana n'a pas de stockage persistant : si son pod redémarre, l'accueil redevient la page standard. Pour la remettre sans relancer les équipes :
+La page d'accueil est une préférence de l'organisation Grafana, posée par `setup.sh` et conservée dans la base de Grafana (volume persistant de 1 Gi). Si l'accueil redevient la page standard (volume recréé, par exemple), pour la remettre sans relancer les équipes :
 
 ```bash
 kubectl exec -i -n monitoring deploy/kps-grafana -c grafana-sc-dashboard -- python - < deploy/monitoring/grafana-home.py

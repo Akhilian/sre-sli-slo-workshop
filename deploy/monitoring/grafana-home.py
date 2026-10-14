@@ -5,8 +5,8 @@
 #   kubectl exec -i -n monitoring deploy/kps-grafana -c grafana-sc-dashboard -- python - < deploy/monitoring/grafana-home.py
 #
 # default_home_dashboard_path ne convient pas : Grafana 13 en fait une copie sans droits,
-# illisible pour les visiteurs anonymes. La préférence vit dans la base de Grafana, sans
-# persistance : à réappliquer après un redémarrage du pod.
+# illisible pour les visiteurs anonymes. La préférence vit dans la base de Grafana, sur
+# son volume persistant.
 import base64, json, os, time, urllib.error, urllib.request
 
 UID = "docshare-demarrage"

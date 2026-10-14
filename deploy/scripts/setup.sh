@@ -64,6 +64,13 @@ fi
 # --- Monitoring partagé ------------------------------------------------------
 
 echo "==> Monitoring (kube-prometheus-stack $KPS_VERSION)"
+# Grafana installé avant son volume persistant : passer en Recreate à la main. En
+# server-side apply (Helm 4), le rollingUpdate posé par défaut resterait et l'API
+# refuserait le Deployment.
+if [[ $(k get deployment kps-grafana -n monitoring -o jsonpath='{.spec.strategy.type}' 2>/dev/null) == RollingUpdate ]]; then
+  k patch deployment kps-grafana -n monitoring --type json \
+    -p '[{"op":"remove","path":"/spec/strategy/rollingUpdate"},{"op":"replace","path":"/spec/strategy/type","value":"Recreate"}]' >/dev/null
+fi
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts --force-update >/dev/null
 h upgrade --install kps prometheus-community/kube-prometheus-stack \
   --version "$KPS_VERSION" \
@@ -86,7 +93,7 @@ echo "==> Dashboards"
 k create configmap docshare-dashboards --namespace monitoring --from-file="$GRAFANA_ROOT/parcours.json" \
   --from-file="$GRAFANA_ROOT/burn-rate.json" --from-file="$GRAFANA_ROOT/demarrage.json" --dry-run=client -o yaml \
   | k label --local -f - grafana_dashboard=1 -o yaml | k apply -f - >/dev/null
-# Page d'accueil : préférence de l'organisation, perdue si le pod Grafana redémarre.
+# Page d'accueil : préférence de l'organisation, conservée sur le volume de Grafana.
 k exec -i -n monitoring deploy/kps-grafana -c grafana-sc-dashboard -- python - < "$MONITORING_ROOT/grafana-home.py" >/dev/null
 
 # --- Équipes -----------------------------------------------------------------
